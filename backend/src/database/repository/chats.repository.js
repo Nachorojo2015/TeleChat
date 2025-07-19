@@ -15,14 +15,4 @@ export class ChatsRepository {
     return result.rows;
   }
 
-  static async getChat({ chatId }) {
-    const result = await pool.query(`
-    SELECT c.picture, c.title, COUNT(ch.user_id) AS quantity_members FROM chats c
-    JOIN chat_members ch ON c.id = ch.chat_id
-    WHERE c.id = $1
-    GROUP BY c.picture, c.title`, [chatId]);
-
-    return result.rows
-  }
-
 }

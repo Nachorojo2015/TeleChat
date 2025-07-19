@@ -10,14 +10,3 @@ export const getChats = async (req, res) => {
     res.status(400).send(error.message);
   }
 };
-
-export const getChat = async (req, res) => {
-  const { chatId } = req.params;
-
-  try {
-    const chat = await ChatsRepository.getChat({ chatId });
-    res.send(chat)
-  } catch (error) {
-    res.status(400).send(error.message)
-  }
-}

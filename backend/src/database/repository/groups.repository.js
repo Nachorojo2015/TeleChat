@@ -54,4 +54,51 @@ export class GroupsRepository {
 
     return result.rows[0]
   }
+
+  static async getOut({ userId, groupId }) {
+    const result = await pool.query(`DELETE FROM chat_members WHERE user_id = $1 AND chat_id = $2`, [userId, groupId])
+
+    if (result.rowCount === 0) {
+      throw new Error('No pudiste salir del grupo')
+    }
+  }
+
+  static async deleteGroup({ groupId }) {
+    const result = await pool.query(`DELETE FROM chats WHERE id = $1`, [groupId])
+
+    if (result.rowCount === 0) {
+      throw new Error('No se pudo borrar el grupo')
+    }
+  }
+
+  static async editGroup({ groupId, title, description, picture, is_public }) {
+    const result = await pool.query(`
+    UPDATE chats 
+    SET title = $1, description = $2, picture = $3, is_public = $4
+    WHERE id = $5`, [title, description, picture, is_public, groupId])
+
+    if (result.rowCount === 0) {
+      throw new Error('No se pudo editar el grupo')
+    }
+  }
+
+  static async joinGroup({ groupId, userId }) {
+    const result = await pool.query(`
+    INSERT INTO chat_members (chat_id, user_id)
+    VALUES ($1, $2)`, [groupId, userId])
+
+    if (result.rowCount === 0) {
+      throw new Error('No pudiste unirte al grupo')
+    }
+  }
+
+  static async addMember({ groupId, userId }) {
+    const result = await pool.query(`
+    INSERT INTO chat_members (chat_id, user_id)
+    VALUES ($1, $2)`, [groupId, userId])
+
+    if (result.rowCount === 0) {
+      throw new Error('No pudiste unirte al grupo')
+    }
+  }
 }

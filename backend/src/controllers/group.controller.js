@@ -6,7 +6,7 @@ export const createGroup = async (req, res) => {
 
   try {
     await GroupsRepository.createGroup({ members, picture, title, userId });
-    res.send("Group created");
+    res.send("Grupo creado");
   } catch (error) {
     res.status(201).send(error.message);
   }
@@ -22,3 +22,62 @@ export const getGroup = async (req, res) => {
     res.status(400).send(error.message);
   }
 };
+
+export const getOut = async (req, res) => {
+  const { id } = req.params
+  const { userId } = req.user;
+
+  try {
+    await GroupsRepository.getOut({ userId, groupId: id })
+    res.send('Afuera')
+  } catch (error) {
+    res.status(201).send(error.message)
+  }
+}
+
+export const deleteGroup = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await GroupsRepository.deleteGroup({ groupId: id })
+    res.send('Grupo eliminado')
+  } catch (error) {
+    res.status(201).send(error.message)
+  }
+}
+
+export const editGroup = async (req, res) => {
+  const { id } = req.params;
+  const { title, description, picture, is_public } = req.body;
+
+  try {
+    await GroupsRepository.editGroup({ groupId: id, title, description, picture, is_public })
+    res.send('Grupo editado')
+  } catch (error) {
+    res.status(201).send(error.message)
+  }
+}
+
+export const joinGroup = async (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.user;
+
+  try {
+    await GroupsRepository.joinGroup({ groupId: id, userId })
+    res.send('Te uniste al grupo')
+  } catch (error) {
+    res.status(201).send(error.message)
+  }
+}
+
+export const addMember = async (req, res) => {
+  const { groupId, userId } = req.params;
+
+  try {
+    await GroupsRepository.addMember({ groupId, userId })
+    res.send('Usuario agregado')
+  } catch (error) {
+    res.status(201).send(error.message)
+  }
+}
+
