@@ -18,7 +18,7 @@ export class GroupsRepository {
 
     const res = await pool.query(
       `INSERT INTO chat_members (chat_id, user_id, role) 
-            VALUES ($1, $2, $3)`,
+      VALUES ($1, $2, $3)`,
       [groupId, userId, "owner"]
     );
 
@@ -27,15 +27,7 @@ export class GroupsRepository {
     }
 
     for (let i = 0; i < members.length; i++) {
-      const result = await pool.query(
-        `INSERT INTO chat_members (chat_id, user_id)
-            VALUES ($1, $2)`,
-        [groupId, members[i]]
-      );
-
-      if (result.rowCount === 0) {
-        throw new Error("No se pudo agregar al usuario");
-      }
+      await this.addMember({ groupId, userId: members[i]})
     }
 
     return groupId;
@@ -83,6 +75,12 @@ export class GroupsRepository {
   }
 
   static async joinGroup({ groupId, userId }) {
+    const imBanned = await this.isBanned({ groupId, userId })
+
+    if (imBanned) {
+      throw new Error('Estas baneado del grupo')
+    }
+
     const result = await pool.query(`
     INSERT INTO chat_members (chat_id, user_id)
     VALUES ($1, $2)`, [groupId, userId])
@@ -93,12 +91,44 @@ export class GroupsRepository {
   }
 
   static async addMember({ groupId, userId }) {
+    const isBannedMember = await this.isBanned({ groupId, userId })
+
+    if (isBannedMember) {
+      throw new Error('El usuario esta baneado del grupo')
+    }
+
     const result = await pool.query(`
     INSERT INTO chat_members (chat_id, user_id)
     VALUES ($1, $2)`, [groupId, userId])
 
     if (result.rowCount === 0) {
-      throw new Error('No pudiste unirte al grupo')
+      throw new Error('No se pudo agregar al usuario')
     }
+  }
+
+  static async removeMember({ groupId, userId }) {
+    const result = await pool.query(`DELETE FROM chat_members WHERE chat_id = $1 AND user_id = $2`, [groupId, userId])
+
+    if (result.rowCount === 0) {
+      throw new Error('Miembro no eliminado')
+    }
+  }
+
+  static async banMember({ groupId, userBanId, userId }) {
+    await this.removeMember({ groupId, userId: userBanId })
+
+    const result = await pool.query(`
+    INSERT INTO chat_bans (chat_id, user_id, banned_by)
+    VALUES ($1, $2, $3)`, [groupId, userBanId, userId])
+
+    if (result.rowCount === 0) {
+      throw new Error('No se pudo banear al usuario')
+    }
+  }
+
+  static async isBanned({ groupId, userId }) {
+    const result = await pool.query(`SELECT 1 FROM chat_bans WHERE chat_id = $1 AND user_id = $2`, [groupId, userId])
+
+    return result.rowCount > 0
   }
 }

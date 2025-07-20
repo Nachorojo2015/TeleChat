@@ -6,6 +6,7 @@ import { chatsRouter } from "./routes/chats.routes.js";
 import cookieParser from "cookie-parser";
 import { authenticateToken } from "./middlewares/authenticateToken.middleware.js";
 import { groupRouter } from "./routes/groups.routes.js";
+import { channelRouter } from "./routes/channels.routes.js";
 
 const app = express()
 app.use(express.json())
@@ -15,6 +16,7 @@ app.use('/auth', authRouter)
 app.use('/users', authenticateToken, usersRouter)
 app.use('/chats', authenticateToken, chatsRouter)
 app.use('/groups', authenticateToken, groupRouter)
+app.use('/channels', authenticateToken, channelRouter)
 
 
 app.listen(PORT, () => {

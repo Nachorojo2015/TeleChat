@@ -75,9 +75,31 @@ export const addMember = async (req, res) => {
 
   try {
     await GroupsRepository.addMember({ groupId, userId })
-    res.send('Usuario agregado')
+    res.send('Miembro agregado')
   } catch (error) {
     res.status(201).send(error.message)
   }
 }
 
+export const removeMember = async (req, res) => {
+  const { groupId, userId } = req.params;
+  
+  try {
+    await GroupsRepository.removeMember({ groupId, userId })
+    res.send('Miembro eliminado')
+  } catch (error) {
+    res.status(201).send(error.message)
+  }
+}
+
+export const banMember = async (req, res) => {
+  const { groupId, userBanId } = req.params;
+  const { userId } = req.user;
+
+  try {
+    await GroupsRepository.banMember({ groupId, userBanId, userId })
+    res.send('Baneado')
+  } catch (error) {
+    res.status(201).send(error.message)
+  }
+}
