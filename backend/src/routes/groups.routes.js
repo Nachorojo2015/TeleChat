@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addMember, banMember, createGroup, deleteGroup, editGroup, getGroup, getOut, joinGroup, removeMember } from "../controllers/group.controller.js";
+import { addMember, banMember, becomeMember, becomeMemberAdmin, createGroup, deleteGroup, editGroup, getGroup, getOut, joinGroup, muteMember, removeMember, unbanMember, unmuteMember } from "../controllers/group.controller.js";
 
 const groupRouter = Router();
 
@@ -20,5 +20,15 @@ groupRouter.post('/add/:groupId/:userId', addMember)
 groupRouter.delete('/remove/:groupId/:userId', removeMember)
 
 groupRouter.delete('/ban/:groupId/:userBanId', banMember)
+
+groupRouter.post('/unban/:groupId/:userBanId', unbanMember)
+
+groupRouter.put('/mute/:groupId/:userId', muteMember)
+
+groupRouter.put('/unmute/:groupId/:userId', unmuteMember)
+
+groupRouter.put('/admin/:groupId/:userId', becomeMemberAdmin)
+
+groupRouter.put('/member/:groupId/:userId', becomeMember)
 
 export { groupRouter }

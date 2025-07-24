@@ -14,12 +14,29 @@ export class UsersRepository {
     return result.rows[0];
   }
 
-  static async getUser({ userId }) {
-    const result = await pool.query(`
-    SELECT u.display_name, u.profile_picture, us.last_active FROM users u
-    JOIN user_sessions us ON u.id = us.user_id
-    WHERE u.id = $1`, [userId])
+  static async blockUser({ userId, blockedId }) {
+    if (userId === blockedId) {
+      throw new Error('Error de identificador')
+    }
 
-    return result.rows
+    const result = await pool.query(`
+    INSERT INTO blocked_users (blocker_id, blocked_id)
+    VALUES ($1, $2)`, [userId, blockedId])
+
+    if (result.rowCount === 0) {
+      throw new Error('No se pudo bloquear al usuario')
+    }
+  }
+
+  static async unlockUser({ userId, blockedId }) {
+    if (userId === blockedId) {
+      throw new Error('Error de identificador')
+    }
+
+    const result = await pool.query(`DELETE FROM blocked_users WHERE blocker_id = $1 AND blocked_id = $2`, [userId, blockedId])
+
+    if (result.rowCount === 0) {
+      throw new Error('No se pudo desbloquear al usuario')
+    }
   }
 }

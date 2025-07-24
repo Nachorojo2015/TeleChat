@@ -131,4 +131,58 @@ export class GroupsRepository {
 
     return result.rowCount > 0
   }
+
+  static async unbanMember({ groupId, userId }) {
+    const result = await pool.query(`DELETE FROM chat_bans WHERE chat_id = $1 AND user_id = $2`, [groupId, userId])
+
+    if (result.rowCount === 0) {
+      throw new Error('No se pudo desbanear al usuario')
+    }
+
+    await this.addMember({ groupId, userId })
+  }
+
+  static async muteMember({ groupId, userId }) {
+    const result = await pool.query(`
+    UPDATE chat_members
+    SET is_muted = true
+    WHERE chat_id = $1 AND user_id = $2`, [groupId, userId])
+
+    if (result.rowCount === 0) {
+      throw new Error('No se pudo mutear al usuario')
+    }
+  }
+
+  static async unmuteMember({ groupId, userId }) {
+    const result = await pool.query(`
+    UPDATE chat_members
+    SET is_muted = false
+    WHERE chat_id = $1 AND user_id = $2`, [groupId, userId])
+
+    if (result.rowCount === 0) {
+      throw new Error('No se pudo desmutear al usuario')
+    }
+  }
+
+  static async becomeMemberAdmin({ groupId, userId }) {
+    const result = await pool.query(`
+    UPDATE chat_members
+    SET role = 'admin'
+    WHERE chat_id = $1 AND user_id = $2`, [groupId, userId])
+
+    if (result.rowCount === 0) {
+      throw new Error('No se pudo volver administrador al miembro')
+    }
+  }
+
+  static async becomeMember({ groupId, userId }) {
+    const result = await pool.query(`
+    UPDATE chat_members
+    SET role = 'member'
+    WHERE chat_id = $1 AND user_id = $2`, [groupId, userId])
+
+    if (result.rowCount === 0) {
+      throw new Error('No se pudo volver miembro al usuario')
+    }
+  }
 }

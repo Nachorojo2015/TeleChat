@@ -1,10 +1,12 @@
 import { Router } from "express";
-import { getMyUser, getUser } from "../controllers/users.controller.js";
+import { blockUser, getMyUser, unlockUser } from "../controllers/users.controller.js";
 
 const usersRouter = Router()
 
 usersRouter.get('/myUser', getMyUser)
 
-usersRouter.get('/user/:id', getUser)
+usersRouter.post('/block/:id', blockUser)
+
+usersRouter.delete('/unlock/:id', unlockUser)
 
 export { usersRouter }

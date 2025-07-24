@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import { authenticateToken } from "./middlewares/authenticateToken.middleware.js";
 import { groupRouter } from "./routes/groups.routes.js";
 import { channelRouter } from "./routes/channels.routes.js";
+import { privateChatRouter } from "./routes/privateChats.routes.js";
 
 const app = express()
 app.use(express.json())
@@ -17,6 +18,7 @@ app.use('/users', authenticateToken, usersRouter)
 app.use('/chats', authenticateToken, chatsRouter)
 app.use('/groups', authenticateToken, groupRouter)
 app.use('/channels', authenticateToken, channelRouter)
+app.use('/privates', authenticateToken, privateChatRouter)
 
 
 app.listen(PORT, () => {

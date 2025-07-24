@@ -99,9 +99,9 @@ export const refreshToken = async (req, res) => {
 };
 
 export const logout = async (req, res) => {
-  const { userId } = req.user;
+  const token = req.cookies.refresh_token;
 
-  await AuthRepository.deleteSessionUser({ userId });
+  await AuthRepository.deleteSessionUser({ token });
 
   res.clearCookie("access_token", {
     httpOnly: true,

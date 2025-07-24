@@ -103,3 +103,59 @@ export const banMember = async (req, res) => {
     res.status(201).send(error.message)
   }
 }
+
+export const unbanMember = async (req, res) => {
+  const { groupId, userBanId } = req.params;
+
+  try {
+    await GroupsRepository.unbanMember({ groupId, userId: userBanId })
+    res.send('Miembro desbaneado')
+  } catch (error) {
+    res.status(201).send(error.message)
+  }
+}
+
+export const muteMember = async (req, res) => {
+  const { groupId, userId } = req.params;
+
+  try {
+    await GroupsRepository.muteMember({ groupId, userId })
+    res.send('Miembro muteado')
+  } catch (error) {
+    res.status(201).send(error.message)
+  }
+}
+
+export const unmuteMember = async (req, res) => {
+  const { groupId, userId } = req.params;
+
+  try {
+    await GroupsRepository.unmuteMember({ groupId, userId })
+    res.send('Miembro desmuteado')
+  } catch (error) {
+    res.status(201).send(error.message)
+  }
+}
+
+export const becomeMemberAdmin = async (req, res) => {
+  const { groupId, userId } = req.params;
+
+  try {
+    await GroupsRepository.becomeMemberAdmin({ groupId, userId })
+    res.send('Miembro admin')
+  } catch (error){
+    res.status(201).send(error.message)
+  }
+}
+
+export const becomeMember = async (req, res) => {
+  const { groupId, userId } = req.params;
+
+  try {
+    await GroupsRepository.becomeMember({ groupId, userId })
+    res.send('Usuario miembro')
+  } catch (error){
+    res.status(201).send(error.message)
+  }
+}
+

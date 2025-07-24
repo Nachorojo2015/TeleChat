@@ -114,12 +114,11 @@ export class AuthRepository {
     );
   }
 
-  static async deleteSessionUser({ userId }) {
-    const result = await pool.query(`DELETE FROM user_sessions WHERE user_id = $1`, [userId])
+  static async deleteSessionUser({ token }) {
+    const result = await pool.query(`DELETE FROM user_sessions WHERE token = $1`, [token])
 
     if (result.rowCount === 0) {
       throw new Error('No se encontró sesión activa para el usuario')
     }
-    
   }
 }

@@ -11,13 +11,26 @@ export const getMyUser = async (req, res) => {
   }
 };
 
-export const getUser = async (req, res) => {
+export const blockUser = async (req, res) => {
   const { id } = req.params;
+  const { userId } = req.user;
 
   try {
-    const user = await UsersRepository.getUser({ userId: id })
-    res.send(user)
+    await UsersRepository.blockUser({ userId, blockedId: id })
+    res.send('Usuario bloqueado')
   } catch (error) {
-    res.status(400).send(error.message)
+    res.status(201).send(error.message)
+  }
+}
+
+export const unlockUser = async (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.user;
+
+  try {
+    await UsersRepository.unlockUser({ userId, blockedId: id })
+    res.send('Usuario desbloqueado')
+  } catch (error) {
+    res.status(201).send(error.message)
   }
 }
