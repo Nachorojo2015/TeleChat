@@ -75,6 +75,12 @@ export class GroupsRepository {
   }
 
   static async joinGroup({ groupId, userId }) {
+    const imMember = await this.isMember({ groupId, userId })
+
+    if (imMember) {
+      throw new Error('Ya estas en el grupo')
+    }
+
     const imBanned = await this.isBanned({ groupId, userId })
 
     if (imBanned) {
@@ -91,6 +97,12 @@ export class GroupsRepository {
   }
 
   static async addMember({ groupId, userId }) {
+    const isMember = await this.isMember({ groupId, userId })
+
+    if (isMember) {
+      throw new Error('El usuario ya esta en el grupo')
+    }
+
     const isBannedMember = await this.isBanned({ groupId, userId })
 
     if (isBannedMember) {
@@ -184,5 +196,11 @@ export class GroupsRepository {
     if (result.rowCount === 0) {
       throw new Error('No se pudo volver miembro al usuario')
     }
+  }
+
+  static async isMember({ groupId, userId }) {
+    const result = await pool.query(`SELECT FROM chat_members WHERE chat_id = $1 AND user_id = $2`, [groupId, userId])
+
+    return result.rowCount > 0
   }
 }

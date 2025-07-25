@@ -39,4 +39,16 @@ export class UsersRepository {
       throw new Error('No se pudo desbloquear al usuario')
     }
   }
+
+  static async getUsersByUsername({ username, userId }) {
+    const result = await pool.query(`
+    SELECT id, display_name, username, profile_picture FROM users
+    WHERE username ILIKE $1 AND id != $2`, [`%${username}%`, userId])
+
+    if (result.rowCount === 0) {
+      throw new Error('No se encontro ningun usuario')
+    }
+
+    return result.rows
+  }
 }

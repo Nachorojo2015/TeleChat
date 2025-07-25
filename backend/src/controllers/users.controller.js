@@ -34,3 +34,15 @@ export const unlockUser = async (req, res) => {
     res.status(201).send(error.message)
   }
 }
+
+export const getUsersByUsername = async (req, res) => {
+  const { username } = req.params;
+  const { userId } = req.user;
+
+  try {
+    const users = await UsersRepository.getUsersByUsername({ username, userId })
+    res.send(users)
+  } catch (error) {
+    res.status(400).send(error.message)
+  }
+}

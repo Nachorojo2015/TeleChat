@@ -8,19 +8,37 @@ import { authenticateToken } from "./middlewares/authenticateToken.middleware.js
 import { groupRouter } from "./routes/groups.routes.js";
 import { channelRouter } from "./routes/channels.routes.js";
 import { privateChatRouter } from "./routes/privateChats.routes.js";
+import { messagesRouter } from "./routes/messages.routes.js";
+import http from "http";
+import { Server } from "socket.io";
 
-const app = express()
-app.use(express.json())
-app.use(cookieParser())
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
 
-app.use('/auth', authRouter)
-app.use('/users', authenticateToken, usersRouter)
-app.use('/chats', authenticateToken, chatsRouter)
-app.use('/groups', authenticateToken, groupRouter)
-app.use('/channels', authenticateToken, channelRouter)
-app.use('/privates', authenticateToken, privateChatRouter)
+app.use("/auth", authRouter);
+app.use("/users", authenticateToken, usersRouter);
+app.use("/chats", authenticateToken, chatsRouter);
+app.use("/groups", authenticateToken, groupRouter);
+app.use("/channels", authenticateToken, channelRouter);
+app.use("/privates", authenticateToken, privateChatRouter);
+app.use("/messages", authenticateToken, messagesRouter);
 
+// Comunicacion con sockets
+const server = http.createServer(app);
 
-app.listen(PORT, () => {
-    console.log(`App running on port ${PORT}`)
-})
+const io = new Server(server);
+
+io.on("connection", (socket) => {
+    console.log('Usuario conectado')
+
+    socket.on('recieve-message', ({ }))
+
+    socket.on('disconnect', () => {
+        console.log('Usuario desconectado')
+    })
+});
+
+server.listen(PORT, () => {
+  console.log(`App running on port ${PORT}`);
+});
