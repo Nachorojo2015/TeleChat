@@ -1,12 +1,13 @@
 import { ChannelsRepository } from "../database/repository/channels.repository.js";
 
 export const createChannel = async (req, res) => {
-  const { title, picture } = req.body;
+  const file = req.file;
+  const { title } = req.body;
   const { userId } = req.user;
 
   try {
-    await ChannelsRepository.createChannel({ title, picture, userId })
-    res.send('Grupo creado')
+    await ChannelsRepository.createChannel({ title, picture: file, userId })
+    res.send('Canal creado')
   } catch (error) {
     res.status(201).send(error.message)
   }
@@ -45,6 +46,19 @@ export const getOut = async (req, res) => {
   } catch (error) {
     res.status(201).send(error.message)
   }
+}
+
+export const editChannel = async (req, res) => {
+   const file = req.file;
+   const { id } = req.params;
+   const { title, description, is_public } = req.body;
+ 
+   try {
+     await ChannelsRepository.editChannel({ channelId: id, title, description, picture: file, is_public })
+     res.send('Canal editado')
+   } catch (error) {
+     res.status(201).send(error.message)
+   }
 }
 
 export const deleteChannel = async (req, res) => {

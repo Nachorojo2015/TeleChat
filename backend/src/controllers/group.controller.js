@@ -1,11 +1,12 @@
 import { GroupsRepository } from "../database/repository/groups.repository.js";
 
 export const createGroup = async (req, res) => {
+  const file = req.file;
   const { userId } = req.user;
-  const { members, picture, title } = req.body;
+  const { members, title } = req.body;
 
   try {
-    await GroupsRepository.createGroup({ members, picture, title, userId });
+    await GroupsRepository.createGroup({ members, picture: file, title, userId });
     res.send("Grupo creado");
   } catch (error) {
     res.status(201).send(error.message);
@@ -47,11 +48,12 @@ export const deleteGroup = async (req, res) => {
 }
 
 export const editGroup = async (req, res) => {
+  const file = req.file;
   const { id } = req.params;
-  const { title, description, picture, is_public } = req.body;
+  const { title, description, is_public } = req.body;
 
   try {
-    await GroupsRepository.editGroup({ groupId: id, title, description, picture, is_public })
+    await GroupsRepository.editGroup({ groupId: id, title, description, picture: file, is_public })
     res.send('Grupo editado')
   } catch (error) {
     res.status(201).send(error.message)

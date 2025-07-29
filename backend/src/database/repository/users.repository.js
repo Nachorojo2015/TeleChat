@@ -1,3 +1,4 @@
+import { getFileUrl, uploadFile } from "../../config/firebaseConfig.js";
 import { pool } from "../connection/db.js";
 
 export class UsersRepository {
@@ -50,5 +51,20 @@ export class UsersRepository {
     }
 
     return result.rows
+  }
+
+  static async updateProfilePicture({ userId, file }) {
+    const destination = `users/profile-picture/${userId}.png`
+
+    await uploadFile(file.path, destination)
+
+    const fileUrl = await getFileUrl(destination)
+
+    const result = await pool.query(`
+    UPDATE users
+    SET profile_picture = $1
+    WHERE id = $2`, [fileUrl, userId])
+
+    if (result.rowCount === 0) throw new Error('No se pudo actualizar la imagen')
   }
 }
