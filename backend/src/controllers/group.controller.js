@@ -3,10 +3,10 @@ import { GroupsRepository } from "../database/repository/groups.repository.js";
 export const createGroup = async (req, res) => {
   const file = req.file;
   const { userId } = req.user;
-  const { members, title } = req.body;
+  const { title } = req.body;
 
   try {
-    await GroupsRepository.createGroup({ members, picture: file, title, userId });
+    await GroupsRepository.createGroup({ picture: file, title, userId });
     res.send("Grupo creado");
   } catch (error) {
     res.status(201).send(error.message);

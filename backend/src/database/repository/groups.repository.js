@@ -1,54 +1,63 @@
 import { getFileUrl, uploadFile } from "../../config/firebaseConfig.js";
+import { getDefaultPicture } from "../../utils/getDefaultPicture.js";
 import { pool } from "../connection/db.js";
 import fs from "fs/promises";
 
 export class GroupsRepository {
-  static async createGroup({ members, picture, title, userId }) {
-    let pictureUrl = `https://ui-avatars.com/api/?size=128&length=1&name=${encodeURIComponent(
-      title.charAt(0)
-    )}&bold=true`;
+  /**
+   * Crea un grupo
+   * @param picture - Imagen del grupo (opcional)
+   * @param title - Titulo del grupo
+   * @param userId - Id del usuario que crea el grupo (será el dueño)
+   * @returns string - Retorna el id del grupo creado
+   **/
+  static async createGroup({ picture, title, userId }) {
+    let pictureUrl = getDefaultPicture(title);
 
-    const result = await pool.query(
+    const createdGroup = await pool.query(
       `
-    INSERT INTO chats (type, picture, title, owner_id)
-    VALUES ('group', $1, $2, $3)
-    RETURNING id`,
+      INSERT INTO chats (type, picture, title, owner_id)
+      VALUES ('group', $1, $2, $3)
+      RETURNING id
+      `,
       [pictureUrl, title, userId]
     );
 
-    if (result.rowCount === 0) {
-      throw new Error("No se pudo crear el grupo");
-    }
+    if (!createdGroup.rowCount) throw new Error("No se pudo crear el grupo");
 
-    const groupId = result.rows[0].id;
+    const groupId = createdGroup.rows[0].id;
 
-    if (picture) {
-      const uploadedUrl = await this.uploadPictureGroup({ picture, groupId });
-
-      await pool.query(`UPDATE chats SET picture = $1 WHERE id = $2`, [
-        uploadedUrl,
-        groupId,
-      ]);
-    }
-
-    const res = await pool.query(
+    const addOwner = await pool.query(
       `INSERT INTO chat_members (chat_id, user_id, role) 
-     VALUES ($1, $2, $3)`,
+       VALUES ($1, $2, $3)`,
       [groupId, userId, "owner"]
     );
 
-    if (res.rowCount === 0) {
-      throw new Error("No se pudo agregar al usuario");
-    }
+    if (!addOwner.rowCount)
+      throw new Error("No se pudo agregar al dueño del grupo");
 
-    // Añadimos a los demás miembros
-    for (let i = 0; i < members.length; i++) {
-      await this.addMember({ groupId, userId: members[i] });
+    if (picture) {
+      const url = await this.uploadPictureGroup({ picture, groupId });
+
+      const updatePicture = await pool.query(
+        `UPDATE chats SET picture = $1 WHERE id = $2`,
+        [url, groupId]
+      );
+
+      if (!updatePicture.rowCount)
+        throw new Error("No se pudo subir la imagen del grupo");
     }
 
     return groupId;
   }
 
+  /**
+   * Sube la imagen del grupo a Firebase
+   * @param picture - Imagen del grupo
+   * @param groupId - Id del grupo
+   * @returns string - URL de la imagen subida
+   * @throws {Error} - Si no se pudo subir la imagen
+   */
   static async uploadPictureGroup({ picture, groupId }) {
     const destination = `groups/picture/${groupId}.png`;
 
@@ -56,7 +65,6 @@ export class GroupsRepository {
 
     const fileUrl = await getFileUrl(destination);
 
-    // Eliminar el archivo local después de subirlo exitosamente
     try {
       await fs.unlink(picture.path);
       console.log(`Archivo local eliminado: ${picture.path}`);
@@ -67,52 +75,74 @@ export class GroupsRepository {
     return fileUrl;
   }
 
+  /**
+   * Obtiene la información del grupo
+   * @param groupId - Id del grupo
+   * @returns {Object} - Información del grupo (picture, title, quantity_members)
+   * @throws {Error} - Si no se encuentra el grupo
+   */
   static async getGroup({ groupId }) {
-    const result = await pool.query(
+    const group = await pool.query(
       `
     SELECT c.picture, c.title, COUNT(ch.user_id) AS quantity_members FROM chats c
     JOIN chat_members ch ON c.id = ch.chat_id
     WHERE c.id = $1
-    GROUP BY c.picture, c.title`,
+    GROUP BY c.picture, c.title
+    `,
       [groupId]
     );
 
-    if (result.rowCount === 0) {
-      throw new Error("No se encontro el grupo");
-    }
+    if (!group.rowCount) throw new Error("No se encontro el grupo");
 
-    return result.rows[0];
+    return group.rows[0];
   }
 
+  /**
+   * Sale de un grupo
+   * @param userId - Id del usuario que sale
+   * @param groupId - Id del grupo
+   * @throws {Error} - Si no se pudo eliminar al miembro
+   */
   static async getOut({ userId, groupId }) {
-    const result = await pool.query(
+    const removeMember = await pool.query(
       `DELETE FROM chat_members WHERE user_id = $1 AND chat_id = $2`,
       [userId, groupId]
     );
 
-    if (result.rowCount === 0) {
+    if (!removeMember.rowCount) {
       throw new Error("No pudiste salir del grupo");
     }
   }
 
+  /**
+   * Elimina un grupo
+   * @param groupId - Id del grupo a eliminar
+   */
   static async deleteGroup({ groupId }) {
-    const result = await pool.query(`DELETE FROM chats WHERE id = $1`, [
+    const deletedGroup = await pool.query(`DELETE FROM chats WHERE id = $1`, [
       groupId,
     ]);
 
-    if (result.rowCount === 0) {
+    if (!deletedGroup.rowCount) {
       throw new Error("No se pudo borrar el grupo");
     }
   }
 
+  /**
+   * Edita un grupo
+   * @param groupId - Id del grupo a editar
+   * @param title - Nuevo título del grupo
+   * @param description - Nueva descripción del grupo
+   * @param picture - Nueva imagen del grupo
+   * @param is_public - Nuevo estado de visibilidad del grupo
+   */
   static async editGroup({ groupId, title, description, picture, is_public }) {
     if (picture) {
       const uploadedUrl = await this.uploadPictureGroup({ picture, groupId });
-
-      picture = uploadedUrl
+      picture = uploadedUrl;
     }
 
-    const result = await pool.query(
+    const updatedGroup = await pool.query(
       `
     UPDATE chats 
     SET title = $1, description = $2, picture = $3, is_public = $4
@@ -120,111 +150,129 @@ export class GroupsRepository {
       [title, description, picture, is_public, groupId]
     );
 
-    if (result.rowCount === 0) {
-      throw new Error("No se pudo editar el grupo");
-    }
+    if (!updatedGroup.rowCount) throw new Error("No se pudo editar el grupo");
   }
 
+  /**
+   * Agrega un miembro al grupo
+   * @param groupId - Id del grupo
+   * @param userId - Id del usuario
+   */
   static async joinGroup({ groupId, userId }) {
     const imMember = await this.isMember({ groupId, userId });
 
-    if (imMember) {
-      throw new Error("Ya estas en el grupo");
-    }
+    if (imMember) throw new Error("Ya estas en el grupo");
 
     const imBanned = await this.isBanned({ groupId, userId });
 
-    if (imBanned) {
-      throw new Error("Estas baneado del grupo");
-    }
+    if (imBanned) throw new Error("Estas baneado del grupo");
 
-    const result = await pool.query(
+    const insertMember = await pool.query(
       `
     INSERT INTO chat_members (chat_id, user_id)
     VALUES ($1, $2)`,
       [groupId, userId]
     );
 
-    if (result.rowCount === 0) {
-      throw new Error("No pudiste unirte al grupo");
-    }
+    if (!insertMember.rowCount) throw new Error("No pudiste unirte al grupo");
   }
 
+  /**
+   * Agrega un miembro al grupo
+   * @param groupId - Id del grupo
+   * @param userId - Id del usuario
+   */
   static async addMember({ groupId, userId }) {
     const isMember = await this.isMember({ groupId, userId });
 
-    if (isMember) {
-      throw new Error("El usuario ya esta en el grupo");
-    }
+    if (isMember) throw new Error("El usuario ya esta en el grupo");
 
     const isBannedMember = await this.isBanned({ groupId, userId });
 
-    if (isBannedMember) {
-      throw new Error("El usuario esta baneado del grupo");
-    }
+    if (isBannedMember) throw new Error("El usuario esta baneado del grupo");
 
-    const result = await pool.query(
+    const insertMember = await pool.query(
       `
     INSERT INTO chat_members (chat_id, user_id)
     VALUES ($1, $2)`,
       [groupId, userId]
     );
 
-    if (result.rowCount === 0) {
+    if (!insertMember.rowCount)
       throw new Error("No se pudo agregar al usuario");
-    }
   }
 
+  /**
+   * Elimina un miembro del grupo
+   * @param groupId - Id del grupo
+   * @param userId - Id del usuario
+   */
   static async removeMember({ groupId, userId }) {
-    const result = await pool.query(
+    const removedMember = await pool.query(
       `DELETE FROM chat_members WHERE chat_id = $1 AND user_id = $2`,
       [groupId, userId]
     );
 
-    if (result.rowCount === 0) {
-      throw new Error("Miembro no eliminado");
-    }
+    if (!removedMember.rowCount) throw new Error("Miembro no eliminado");
   }
 
+  /**
+   * Banea a un miembro del grupo
+   * @param groupId - Id del grupo
+   * @param userBanId - Id del usuario a banear
+   * @param userId - Id del usuario que banea
+   */
   static async banMember({ groupId, userBanId, userId }) {
     await this.removeMember({ groupId, userId: userBanId });
 
-    const result = await pool.query(
+    const banedMember = await pool.query(
       `
     INSERT INTO chat_bans (chat_id, user_id, banned_by)
     VALUES ($1, $2, $3)`,
       [groupId, userBanId, userId]
     );
 
-    if (result.rowCount === 0) {
-      throw new Error("No se pudo banear al usuario");
-    }
+    if (!banedMember.rowCount) throw new Error("No se pudo banear al usuario");
   }
 
+  /**
+   * Verifica si un usuario está baneado del grupo
+   * @param groupId - Id del grupo
+   * @param userId - Id del usuario
+   */
   static async isBanned({ groupId, userId }) {
-    const result = await pool.query(
+    const isBannedUser = await pool.query(
       `SELECT 1 FROM chat_bans WHERE chat_id = $1 AND user_id = $2`,
       [groupId, userId]
     );
 
-    return result.rowCount > 0;
+    return isBannedUser.rowCount > 0;
   }
 
+  /**
+   * Desbanea a un miembro del grupo
+   * @param groupId - Id del grupo
+   * @param userId - Id del usuario
+   */
   static async unbanMember({ groupId, userId }) {
-    const result = await pool.query(
+    const unbanMember = await pool.query(
       `DELETE FROM chat_bans WHERE chat_id = $1 AND user_id = $2`,
       [groupId, userId]
     );
 
-    if (result.rowCount === 0) {
+    if (!unbanMember.rowCount)
       throw new Error("No se pudo desbanear al usuario");
-    }
 
     await this.addMember({ groupId, userId });
   }
 
+  /**
+   * Mutea a un miembro del grupo
+   * @param groupId - Id del grupo
+   * @param userId - Id del usuario
+   */
   static async muteMember({ groupId, userId }) {
-    const result = await pool.query(
+    const mutedMember = await pool.query(
       `
     UPDATE chat_members
     SET is_muted = true
@@ -232,13 +280,16 @@ export class GroupsRepository {
       [groupId, userId]
     );
 
-    if (result.rowCount === 0) {
-      throw new Error("No se pudo mutear al usuario");
-    }
+    if (!mutedMember.rowCount) throw new Error("No se pudo mutear al usuario");
   }
 
+  /**
+   * Desmutea a un miembro del grupo
+   * @param groupId - Id del grupo
+   * @param userId - Id del usuario
+   */
   static async unmuteMember({ groupId, userId }) {
-    const result = await pool.query(
+    const unmutedMember = await pool.query(
       `
     UPDATE chat_members
     SET is_muted = false
@@ -246,13 +297,17 @@ export class GroupsRepository {
       [groupId, userId]
     );
 
-    if (result.rowCount === 0) {
+    if (!unmutedMember.rowCount)
       throw new Error("No se pudo desmutear al usuario");
-    }
   }
 
+  /**
+   * Promueve a un miembro del grupo a administrador
+   * @param groupId - Id del grupo
+   * @param userId - Id del usuario
+   */
   static async becomeMemberAdmin({ groupId, userId }) {
-    const result = await pool.query(
+    const becomeAdmin = await pool.query(
       `
     UPDATE chat_members
     SET role = 'admin'
@@ -260,13 +315,17 @@ export class GroupsRepository {
       [groupId, userId]
     );
 
-    if (result.rowCount === 0) {
+    if (!becomeAdmin.rowCount)
       throw new Error("No se pudo volver administrador al miembro");
-    }
   }
 
+  /**
+   * Vuelve a un miembro del grupo
+   * @param groupId - Id del grupo
+   * @param userId - Id del usuario
+   */
   static async becomeMember({ groupId, userId }) {
-    const result = await pool.query(
+    const becomeMember = await pool.query(
       `
     UPDATE chat_members
     SET role = 'member'
@@ -274,17 +333,21 @@ export class GroupsRepository {
       [groupId, userId]
     );
 
-    if (result.rowCount === 0) {
+    if (!becomeMember.rowCount)
       throw new Error("No se pudo volver miembro al usuario");
-    }
   }
 
+  /**
+   * Verifica si un usuario es miembro del grupo
+   * @param groupId - Id del grupo
+   * @param userId - Id del usuario
+   */
   static async isMember({ groupId, userId }) {
-    const result = await pool.query(
-      `SELECT FROM chat_members WHERE chat_id = $1 AND user_id = $2`,
+    const isMemberUser = await pool.query(
+      `SELECT 1 FROM chat_members WHERE chat_id = $1 AND user_id = $2`,
       [groupId, userId]
     );
 
-    return result.rowCount > 0;
+    return isMemberUser.rowCount > 0;
   }
 }
