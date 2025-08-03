@@ -1,5 +1,6 @@
 import { getFileUrl, uploadFile } from "../../config/firebaseConfig.js";
 import { pool } from "../connection/db.js";
+import fs from "fs/promises";
 
 export class GroupsRepository {
   static async createGroup({ members, picture, title, userId }) {
@@ -54,6 +55,14 @@ export class GroupsRepository {
     await uploadFile(picture.path, destination);
 
     const fileUrl = await getFileUrl(destination);
+
+    // Eliminar el archivo local después de subirlo exitosamente
+    try {
+      await fs.unlink(picture.path);
+      console.log(`Archivo local eliminado: ${picture.path}`);
+    } catch (error) {
+      console.warn(`No se pudo eliminar el archivo local: ${error.message}`);
+    }
 
     return fileUrl;
   }

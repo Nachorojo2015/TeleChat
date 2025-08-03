@@ -12,12 +12,13 @@ export const getMessages = async (req, res) => {
 };
 
 export const createMessage = async (req, res) => {
+  const file = req.file;
   const { chatId } = req.params;
   const { userId } = req.user;
-  const { replyId, content, type, fileUrl, forwardedId } = req.body;
+  const { replyId, content, type, forwardedId } = req.body;
 
   try {
-    await MessagesRepository.createMessage({ userId, chatId, replyId, content, type, fileUrl, forwardedId })
+    await MessagesRepository.createMessage({ userId, chatId, replyId, content, type, fileUrl: file, forwardedId })
     res.send('Mensaje creado')
   } catch (error) {
     res.status(201).send(error.message)
