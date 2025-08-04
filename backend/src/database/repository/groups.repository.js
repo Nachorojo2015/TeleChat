@@ -350,4 +350,26 @@ export class GroupsRepository {
 
     return isMemberUser.rowCount > 0;
   }
+
+  /**
+   * Obtiene grupos por nombre
+   * @param name - Nombre del grupo
+   * @returns {Array} - Lista de grupos que coinciden con el nombre
+   * @throws {Error} - Si no se encuentra ningún grupo
+   */
+  static async getGroupsByName({ name }) {
+    const groups = await pool.query(
+      `
+      SELECT title, picture, type, COUNT(ch.user_id) AS quantity_members FROM chats c
+      JOIN chat_members ch ON ch.chat_id = c.id
+      WHERE title ILIKE $1
+      GROUP BY c.title, c.picture, c.type
+      `,
+      [`%${name}%`]
+    );
+
+    if (!groups.rowCount) throw new Error("Grupo no encontrado");
+
+    return groups.rows[0];
+  }
 }

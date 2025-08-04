@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createChannel, deleteChannel, editChannel, getChannel, getOut, joinChannel } from "../controllers/channel.controller.js";
+import { createChannel, deleteChannel, editChannel, getChannel, getChannelsByName, getOut, joinChannel } from "../controllers/channel.controller.js";
 import multer from "multer";
 import { storage } from "../config/multerConfig.js";
 
@@ -18,5 +18,7 @@ channelRouter.delete('/out/:id', getOut)
 channelRouter.delete('/delete/:id', deleteChannel)
 
 channelRouter.put('/edit/:id', upload.single('picture'), editChannel)
+
+channelRouter.get('/:name', getChannelsByName)
 
 export { channelRouter }

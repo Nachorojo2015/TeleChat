@@ -131,4 +131,21 @@ export class ChannelsRepository {
       throw new Error("No se pudo eliminar el canal");
     }
   }
+
+  static async getChannelsByName({ name }) {
+    const result = await pool.query(
+      `
+    SELECT title, picture, type, COUNT(ch.user_id) AS quantity_members FROM chats c
+    JOIN chat_members ch ON ch.chat_id = c.id
+    WHERE title ILIKE $1
+    GROUP BY c.title, c.picture, c.type`,
+      [`%${name}%`]
+    );
+
+    if (result.rowCount === 0) {
+      throw new Error("No se encontraron canales");
+    }
+
+    return result.rows;
+  }
 }

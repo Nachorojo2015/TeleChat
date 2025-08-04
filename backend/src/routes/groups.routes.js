@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addMember, banMember, becomeMember, becomeMemberAdmin, createGroup, deleteGroup, editGroup, getGroup, getOut, joinGroup, muteMember, removeMember, unbanMember, unmuteMember } from "../controllers/group.controller.js";
+import { addMember, banMember, becomeMember, becomeMemberAdmin, createGroup, deleteGroup, editGroup, getGroup, getGroupsByName, getOut, joinGroup, muteMember, removeMember, unbanMember, unmuteMember } from "../controllers/group.controller.js";
 import multer from "multer";
 import { storage } from "../config/multerConfig.js";
 
@@ -34,5 +34,7 @@ groupRouter.put('/unmute/:groupId/:userId', unmuteMember)
 groupRouter.put('/admin/:groupId/:userId', becomeMemberAdmin)
 
 groupRouter.put('/member/:groupId/:userId', becomeMember)
+
+groupRouter.get('/:name', getGroupsByName)
 
 export { groupRouter }

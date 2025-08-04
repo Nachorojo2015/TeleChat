@@ -71,3 +71,14 @@ export const deleteChannel = async (req, res) => {
     res.status(201).send(error.message)
   }
 }
+
+export const getChannelsByName = async (req, res) => {
+  const { name } = req.params;
+
+  try {
+    const channels = await ChannelsRepository.getChannelsByName({ name });
+    res.send(channels);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+}

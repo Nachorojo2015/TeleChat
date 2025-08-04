@@ -161,3 +161,14 @@ export const becomeMember = async (req, res) => {
   }
 }
 
+export const getGroupsByName = async (req, res) => {
+  const { name } = req.params;
+
+  try {
+    const groups = await GroupsRepository.getGroupsByName({ name });
+    res.send(groups);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+}
+
