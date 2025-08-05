@@ -32,7 +32,9 @@ const io = new Server(server);
 io.on("connection", (socket) => {
     console.log('Usuario conectado')
 
-    socket.on('recieve-message', ({ }))
+    socket.on('recieve-message', ({ message, chatId }) => {
+      socket.broadcast.emit('send-message', { message, chatId });
+    });
 
     socket.on('disconnect', () => {
         console.log('Usuario desconectado')

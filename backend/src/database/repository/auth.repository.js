@@ -2,6 +2,7 @@ import { z } from "zod";
 import { pool } from "../connection/db.js";
 import bcrypt from "bcrypt";
 import { dbErrorHandler } from "../../utils/dbErrorHandler.utils.js";
+import { getDefaultPicture } from "../../utils/getDefaultPicture.js";
 
 export class AuthRepository {
   static async register({ email, password, username, display_name }) {
@@ -28,16 +29,19 @@ export class AuthRepository {
 
     const passwordHash = await bcrypt.hash(password, 12);
 
+    const defaultPicture = getDefaultPicture(validatedData.display_name);
+
     try {
       const result = await pool.query(
-        `INSERT INTO users (email, password_hash, username, display_name)
-       VALUES ($1, $2, $3, $4)
+        `INSERT INTO users (email, password_hash, username, display_name, profile_picture)
+       VALUES ($1, $2, $3, $4, $5)
        RETURNING id`,
         [
           validatedData.email,
           passwordHash,
           validatedData.username,
           validatedData.display_name,
+          defaultPicture,
         ]
       );
 
