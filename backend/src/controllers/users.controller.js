@@ -47,15 +47,15 @@ export const getUsersByUsername = async (req, res) => {
   }
 }
 
-export const updateProfilePicture = async (req, res) => {
+export const editProfile = async (req, res) => {
   const file = req.file
-  if (!file) return res.status(400).send('No hay imagen')
-
   const { userId } = req.user;
 
+  const { displayName, bio } = req.body;
+
   try {
-    await UsersRepository.updateProfilePicture({ userId, file })
-    res.send('Imagen actualizada')
+    await UsersRepository.editProfile({ userId, file, displayName, bio })
+    res.send('Perfil actualizado')
   } catch (error) {
     res.status(201).send(error.message)
   }

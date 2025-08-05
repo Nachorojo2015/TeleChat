@@ -1,12 +1,10 @@
-import { getFileUrl, uploadFile } from "../../config/firebaseConfig.js";
+import { getDefaultPicture } from "../../utils/getDefaultPicture.js";
+import { uploadImageToStorage } from "../../utils/uploadImageToStorage.js";
 import { pool } from "../connection/db.js";
-import fs from "fs/promises";
 
 export class ChannelsRepository {
   static async createChannel({ title, picture, userId }) {
-    let pictureUrl = `https://ui-avatars.com/api/?size=128&length=1&name=${encodeURIComponent(
-      title.charAt(0)
-    )}&bold=true`;
+    let pictureUrl = getDefaultPicture(title);
 
     const result = await pool.query(
       `
@@ -23,7 +21,7 @@ export class ChannelsRepository {
     const channelId = result.rows[0].id;
 
     if (picture) {
-      const uploadedUrl = await this.uploadPictureChannel({ channelId, picture })
+      const uploadedUrl = await uploadImageToStorage(`channels/picture/${channelId}.png`, picture)
 
       await pool.query(`UPDATE chats SET picture = $1 WHERE id = $2`, [
         uploadedUrl,
@@ -41,24 +39,6 @@ export class ChannelsRepository {
     if (res.rowCount === 0) {
       throw new Error("No se puedo agregar al usuario");
     }
-  }
-
-  static async uploadPictureChannel({ channelId, picture }) {
-    const destination = `channels/picture/${channelId}.png`;
-
-    await uploadFile(picture.path, destination);
-
-    const fileUrl = await getFileUrl(destination);
-
-    // Eliminar el archivo local después de subirlo exitosamente
-    try {
-      await fs.unlink(picture.path);
-      console.log(`Archivo local eliminado: ${picture.path}`);
-    } catch (error) {
-      console.warn(`No se pudo eliminar el archivo local: ${error.message}`);
-    }
-
-    return fileUrl;
   }
 
   static async getChannel({ channelId }) {
@@ -104,15 +84,14 @@ export class ChannelsRepository {
 
   static async editChannel({ channelId, title, description, picture, is_public }) {
     if (picture) {
-      const uploadedUrl = await this.uploadPictureChannel({ picture, channelId });
-
+      const uploadedUrl = await uploadImageToStorage(`channels/picture/${channelId}.png`, picture);
       picture = uploadedUrl
     }
 
     const result = await pool.query(
       `
     UPDATE chats 
-    SET title = $1, description = $2, picture = $3, is_public = $4
+    SET title = COALESCE($1, title), description = $2, picture = COALESCE($3, picture), is_public = $4
     WHERE id = $5`,
     [title, description, picture, is_public, channelId]
     );

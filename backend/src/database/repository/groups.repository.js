@@ -1,7 +1,6 @@
-import { getFileUrl, uploadFile } from "../../config/firebaseConfig.js";
 import { getDefaultPicture } from "../../utils/getDefaultPicture.js";
+import { uploadImageToStorage } from "../../utils/uploadImageToStorage.js";
 import { pool } from "../connection/db.js";
-import fs from "fs/promises";
 
 export class GroupsRepository {
   /**
@@ -37,7 +36,7 @@ export class GroupsRepository {
       throw new Error("No se pudo agregar al dueño del grupo");
 
     if (picture) {
-      const url = await this.uploadPictureGroup({ picture, groupId });
+      const url = await uploadImageToStorage(`groups/picture/${groupId}.png`, picture);
 
       const updatePicture = await pool.query(
         `UPDATE chats SET picture = $1 WHERE id = $2`,
@@ -49,30 +48,6 @@ export class GroupsRepository {
     }
 
     return groupId;
-  }
-
-  /**
-   * Sube la imagen del grupo a Firebase
-   * @param picture - Imagen del grupo
-   * @param groupId - Id del grupo
-   * @returns string - URL de la imagen subida
-   * @throws {Error} - Si no se pudo subir la imagen
-   */
-  static async uploadPictureGroup({ picture, groupId }) {
-    const destination = `groups/picture/${groupId}.png`;
-
-    await uploadFile(picture.path, destination);
-
-    const fileUrl = await getFileUrl(destination);
-
-    try {
-      await fs.unlink(picture.path);
-      console.log(`Archivo local eliminado: ${picture.path}`);
-    } catch (error) {
-      console.warn(`No se pudo eliminar el archivo local: ${error.message}`);
-    }
-
-    return fileUrl;
   }
 
   /**
@@ -145,9 +120,9 @@ export class GroupsRepository {
     const updatedGroup = await pool.query(
       `
     UPDATE chats 
-    SET title = $1, description = $2, picture = $3, is_public = $4
+    SET title = COALESCE($1, title), description = $2, picture = COALESCE($3, picture), is_public = $4
     WHERE id = $5`,
-      [title, description, picture, is_public, groupId]
+    [title, description, picture, is_public, groupId]
     );
 
     if (!updatedGroup.rowCount) throw new Error("No se pudo editar el grupo");
