@@ -11,10 +11,12 @@ import { privateChatRouter } from "./routes/privateChats.routes.js";
 import { messagesRouter } from "./routes/messages.routes.js";
 import http from "http";
 import { Server } from "socket.io";
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
 
 app.use("/auth", authRouter);
 app.use("/users", authenticateToken, usersRouter);
@@ -27,7 +29,12 @@ app.use("/messages", authenticateToken, messagesRouter);
 // Comunicacion con sockets
 const server = http.createServer(app);
 
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    credentials: true,
+  },
+});
 
 io.on("connection", (socket) => {
     console.log('Usuario conectado')

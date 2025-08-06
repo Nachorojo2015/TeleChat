@@ -29,20 +29,20 @@ export const login = async (req, res) => {
 
     res
       .cookie("access_token", accessToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        httpOnly: false,
+        secure: false,
+        sameSite: "lax",
         maxAge: 15 * 60 * 1000,
       })
       .cookie("refresh_token", refreshToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: false,
+        sameSite: "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .send({ userId });
   } catch (error) {
-    res.status(201).send(error.message);
+    res.status(400).send(error.message);
   }
 };
 
