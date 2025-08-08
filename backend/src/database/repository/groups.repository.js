@@ -56,15 +56,16 @@ export class GroupsRepository {
    * @returns {Object} - Información del grupo (picture, title, quantity_members)
    * @throws {Error} - Si no se encuentra el grupo
    */
-  static async getGroup({ groupId }) {
+  static async getGroup({ groupId, userId }) {
     const group = await pool.query(
       `
-    SELECT c.picture, c.title, COUNT(ch.user_id) AS quantity_members FROM chats c
+    SELECT c.picture, c.title, c.description, COUNT(ch.user_id) AS quantity_members, ch.role FROM chats c
     JOIN chat_members ch ON c.id = ch.chat_id
     WHERE c.id = $1
-    GROUP BY c.picture, c.title
+	  AND ch.user_id = $2
+    GROUP BY c.picture, c.title, c.description, ch.role
     `,
-      [groupId]
+      [groupId, userId]
     );
 
     if (!group.rowCount) throw new Error("No se encontro el grupo");
@@ -346,5 +347,30 @@ export class GroupsRepository {
     if (!groups.rowCount) throw new Error("Grupo no encontrado");
 
     return groups.rows[0];
+  }
+
+  static async getMembers({ groupId }) {
+    const members = await pool.query(
+      `
+    SELECT 
+    u.id, 
+    u.username, 
+    u.display_name, 
+    u.profile_picture, 
+    cm.role, 
+    cm.is_muted, 
+    MAX(us.last_active) AS last_active
+    FROM chat_members cm
+    JOIN users u ON cm.user_id = u.id
+    JOIN user_sessions us ON us.user_id = u.id
+    WHERE cm.chat_id = $1
+    GROUP BY u.id, u.username, u.display_name, u.profile_picture, cm.role, cm.is_muted;
+      `,
+      [groupId]
+    );
+
+    if (!members.rowCount) throw new Error("No se encontraron miembros del grupo");
+
+    return members.rows;
   }
 }

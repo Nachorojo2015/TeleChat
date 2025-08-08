@@ -2,12 +2,12 @@ import { ChannelsRepository } from "../database/repository/channels.repository.j
 
 export const createChannel = async (req, res) => {
   const file = req.file;
-  const { title } = req.body;
+  const { title, description } = req.body;
   const { userId } = req.user;
 
   try {
-    await ChannelsRepository.createChannel({ title, picture: file, userId })
-    res.send('Canal creado')
+    const channelId = await ChannelsRepository.createChannel({ title, description, picture: file, userId })
+    res.send({ channelId });
   } catch (error) {
     res.status(201).send(error.message)
   }

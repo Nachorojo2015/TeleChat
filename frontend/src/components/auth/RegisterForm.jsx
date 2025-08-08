@@ -1,7 +1,40 @@
 import { useRegisterForm } from "../../hooks/auth/useRegisterForm";
+import { register } from "../../services/auth/authService";
+import { isValidPassword } from "../../utils/isValidPassword";
 
 const RegisterForm = () => {
-  const { formData, handleChange, handleSubmit } = useRegisterForm();
+  const { formData, handleChange } = useRegisterForm();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    const isValid = isValidPassword(formData.password);
+
+    if (!isValid) {
+      alert(
+        "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
+      );
+      return;
+    }
+
+    try {
+      await register(
+        formData.username,
+        formData.email,
+        formData.password,
+        formData.fullname
+      );
+      alert("User registered successfully!");
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Error registering user:", error);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">

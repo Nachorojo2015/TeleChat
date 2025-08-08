@@ -3,15 +3,15 @@ import { uploadImageToStorage } from "../../utils/uploadImageToStorage.js";
 import { pool } from "../connection/db.js";
 
 export class ChannelsRepository {
-  static async createChannel({ title, picture, userId }) {
+  static async createChannel({ title, description, picture, userId }) {
     let pictureUrl = getDefaultPicture(title);
 
     const result = await pool.query(
       `
-    INSERT INTO chats (type, title, picture, is_public, owner_id)
-    VALUES ('channel', $1, $2, true, $3)
+    INSERT INTO chats (type, title, description, picture, is_public, owner_id)
+    VALUES ('channel', $1, $2, $3, true, $4)
     RETURNING id`,
-      [title, pictureUrl, userId]
+      [title, description, pictureUrl, userId]
     );
 
     if (result.rowCount === 0) {
@@ -39,6 +39,8 @@ export class ChannelsRepository {
     if (res.rowCount === 0) {
       throw new Error("No se puedo agregar al usuario");
     }
+
+    return channelId;
   }
 
   static async getChannel({ channelId }) {

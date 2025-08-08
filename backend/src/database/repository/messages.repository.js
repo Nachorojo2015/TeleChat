@@ -37,10 +37,11 @@ export class MessagesRepository {
 
     const messageId = result.rows[0].id;
 
+    console.log(fileUrl, "fileUrl en createMessage");
+
     if (fileUrl) {
-      const { url, fileName, fileSize, width, height } = await this.uploadFileMessage(
-        { messageId, fileUrl }
-      );
+      const { url, fileName, fileSize, width, height } =
+        await this.uploadFileMessage({ messageId, fileUrl });
 
       console.log("Archivo subido:", url);
 
@@ -70,6 +71,83 @@ export class MessagesRepository {
         throw new Error("No se pudo guardar la información del archivo");
       }
     }
+
+    return this.getMessage({ messageId });
+  }
+
+  static async getMessage({ messageId }) {
+    const result = await pool.query(
+      `
+      SELECT
+  m.id AS message_id,
+  m.content,
+  m.type,
+  m.file_url,
+  m.deleted,
+  m.pinned,
+  m.sent_at,
+  m.edited_at,
+
+  -- Usuario que envió el mensaje
+  u.id AS sender_id,
+  u.display_name AS sender_name,
+  u.profile_picture AS sender_avatar,
+
+  -- Mensaje al que responde
+  reply.id AS reply_id,
+  reply.content AS reply_content,
+  reply.type AS reply_type,
+
+  -- Usuario original si es reenviado
+  fwd.id AS forwarded_user_id,
+  fwd.display_name AS forwarded_display_name,
+  fwd.profile_picture AS forwarded_user_avatar,
+
+  -- Reacciones agregadas
+  COALESCE(
+    JSON_AGG(
+      DISTINCT JSONB_BUILD_OBJECT(
+        'user_id', r.user_id,
+        'reaction', r.reaction,
+        'reacted_at', r.reacted_at
+      )
+    ) FILTER (WHERE r.user_id IS NOT NULL),
+    '[]'
+  ) AS reactions,
+
+  -- Vistos por
+  COALESCE(
+    JSON_AGG(
+      DISTINCT JSONB_BUILD_OBJECT(
+        'user_id', v.user_id,
+        'viewed_at', v.viewed_at
+      )
+    ) FILTER (WHERE v.user_id IS NOT NULL),
+    '[]'
+  ) AS views
+
+FROM messages m
+JOIN users u ON m.sender_id = u.id
+LEFT JOIN messages reply ON m.reply_to_id = reply.id
+LEFT JOIN users fwd ON m.forwarded_from_id = fwd.id
+LEFT JOIN message_reactions r ON m.id = r.message_id
+LEFT JOIN message_views v ON m.id = v.message_id
+
+WHERE m.id = $1
+GROUP BY
+  m.id,
+  u.id,
+  reply.id,
+  fwd.id
+ORDER BY m.sent_at ASC;
+`,
+      [messageId]
+    );
+
+    if (result.rowCount === 0) {
+      throw new Error("Mensaje no encontrado");
+    }
+    return result.rows[0];
   }
 
   static async getMessages({ chatId }) {
@@ -322,7 +400,7 @@ ORDER BY m.sent_at ASC;
 
       console.log("Subiendo archivo a Firebase:", destination);
       await uploadFile(filePath, destination);
-      
+
       console.log("Obteniendo URL del archivo...");
       const url = await getFileUrl(destination);
       console.log("URL obtenida:", url);

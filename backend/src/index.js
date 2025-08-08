@@ -16,7 +16,7 @@ import cors from "cors";
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
+app.use(cors({ origin: ['http://localhost:5173'], credentials: true }));
 
 app.use("/auth", authRouter);
 app.use("/users", authenticateToken, usersRouter);
@@ -31,7 +31,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: 'http://localhost:5173',
     credentials: true,
   },
 });
@@ -39,7 +39,8 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
     console.log('Usuario conectado')
 
-    socket.on('recieve-message', ({ message, chatId }) => {
+    socket.on('receive-message', ({ message, chatId }) => {
+      console.log("Mensaje recibido en el servidor:", message, chatId);
       socket.broadcast.emit('send-message', { message, chatId });
     });
 

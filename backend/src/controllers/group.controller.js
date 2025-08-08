@@ -6,8 +6,8 @@ export const createGroup = async (req, res) => {
   const { title } = req.body;
 
   try {
-    await GroupsRepository.createGroup({ picture: file, title, userId });
-    res.send("Grupo creado");
+    const groupId = await GroupsRepository.createGroup({ picture: file, title, userId });
+    res.send({ groupId });
   } catch (error) {
     res.status(201).send(error.message);
   }
@@ -15,9 +15,10 @@ export const createGroup = async (req, res) => {
 
 export const getGroup = async (req, res) => {
   const { id } = req.params;
+  const { userId } = req.user;
 
   try {
-    const group = await GroupsRepository.getGroup({ groupId: id });
+    const group = await GroupsRepository.getGroup({ groupId: id, userId });
     res.send(group);
   } catch (error) {
     res.status(400).send(error.message);
@@ -169,6 +170,19 @@ export const getGroupsByName = async (req, res) => {
     res.send(groups);
   } catch (error) {
     res.status(400).send(error.message);
+  }
+}
+
+export const getMembers = async (req, res) => {
+  const { id } = req.params;
+
+  console.log("Fetching members for group ID:", id);
+
+  try {
+    const members = await GroupsRepository.getMembers({ groupId: id });
+    res.send({ members });
+  } catch (error) {
+    res.status(400).send({ error: error.message });
   }
 }
 

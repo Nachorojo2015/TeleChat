@@ -7,7 +7,7 @@ export const getMessages = async (req, res) => {
     const messages = await MessagesRepository.getMessages({ chatId });
     res.send(messages);
   } catch (error) {
-    res.status(201).send(error.message);
+    res.status(500).send(error.message);
   }
 };
 
@@ -18,10 +18,10 @@ export const createMessage = async (req, res) => {
   const { replyId, content, type, forwardedId } = req.body;
 
   try {
-    await MessagesRepository.createMessage({ userId, chatId, replyId, content, type, fileUrl: file, forwardedId })
-    res.send('Mensaje creado')
+    const message = await MessagesRepository.createMessage({ userId, chatId, replyId, content, type, fileUrl: file, forwardedId })
+    res.send({ message });
   } catch (error) {
-    res.status(201).send(error.message)
+    res.status(500).send({ error: error.message });
   }
 }
 

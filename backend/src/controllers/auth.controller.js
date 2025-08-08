@@ -29,15 +29,15 @@ export const login = async (req, res) => {
 
     res
       .cookie("access_token", accessToken, {
-        httpOnly: false,
-        secure: false,
-        sameSite: "lax",
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
         maxAge: 15 * 60 * 1000,
       })
       .cookie("refresh_token", refreshToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: true,
+        sameSite: "none",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .send({ userId });
@@ -86,15 +86,17 @@ export const refreshToken = async (req, res) => {
         httpOnly: true,
         secure: true,
         sameSite: "none",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .cookie("access_token", newAccessToken, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
+        maxAge: 15 * 60 * 1000,
       })
       .send({ accessToken: newAccessToken });
   } catch (error) {
-    res.status(201).send(error.message);
+    res.status(400).send(error.message);
   }
 };
 

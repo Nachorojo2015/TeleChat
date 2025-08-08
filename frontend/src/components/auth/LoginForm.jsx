@@ -1,7 +1,18 @@
 import { useLoginForm } from "../../hooks/auth/useLoginForm";
+import { login } from "../../services/auth/authService";
 
 const LoginForm = () => {
-  const { formData, handleChange, handleSubmit } = useLoginForm();
+  const { formData, handleChange } = useLoginForm();
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await login(formData.username, formData.password);
+      window.location.href = "/"; // Redirect to home or dashboard
+    } catch (error) {
+      console.error("Login error:", error);
+    }
+  };
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
