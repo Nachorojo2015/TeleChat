@@ -1,14 +1,17 @@
+import { useNavigate } from "react-router-dom";
 import { useLoginForm } from "../../hooks/auth/useLoginForm";
 import { login } from "../../services/auth/authService";
 
 const LoginForm = () => {
   const { formData, handleChange } = useLoginForm();
+
+  const navigate = useNavigate();
   
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await login(formData.username, formData.password);
-      window.location.href = "/"; // Redirect to home or dashboard
+      navigate("/"); // Redirect to home or dashboard
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -23,6 +26,7 @@ const LoginForm = () => {
         name="username"
         value={formData.username}
         onChange={handleChange}
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
       />
       <input
         type="password"
@@ -31,6 +35,7 @@ const LoginForm = () => {
         name="password"
         value={formData.password}
         onChange={handleChange}
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
       />
       <button
         type="submit"

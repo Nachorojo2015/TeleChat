@@ -8,13 +8,11 @@ import { getGroup } from "../../services/groupsService";
 import { useState } from "react";
 import { sendMessage } from "../../services/messagesService";
 import { useRef } from "react";
-import { IoMdClose } from "react-icons/io";
-import { CiCircleInfo } from "react-icons/ci";
-import { GoPaperclip } from "react-icons/go";
 import { LuPencil } from "react-icons/lu";
-
 import { io } from "socket.io-client";
-import Members from "../Members";
+import { useMenuStore } from "../../store/menuStore";
+import EditGroupForm from "../EditGroupForm";
+import InfoGroup from "../InfoGroup";
 
 const socket = io("http://localhost:3000", { withCredentials: true });
 
@@ -28,6 +26,8 @@ const Chatgroup = () => {
   const [isOpenInfo, setIsOpenInfo] = useState(false);
 
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+
+  const { isOpenEditGroupForm, openEditGroupForm } = useMenuStore();
 
   const inputMessage = useRef(null);
 
@@ -43,10 +43,6 @@ const Chatgroup = () => {
 
   const openInfo = () => {
     setIsOpenInfo(true);
-  };
-
-  const closeInfo = () => {
-    setIsOpenInfo(false);
   };
 
   const toggleDropDown = () => {
@@ -103,9 +99,17 @@ const Chatgroup = () => {
 
             {isDropDownOpen && (
               <ul className="absolute right-0 top-12 bg-white border shadow-md rounded-md w-48 z-10">
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                  Ver info. del grupo
-                </li>
+                {group?.role === "owner" && (
+                  <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                    <button
+                      className="flex items-center gap-6"
+                      onClick={openEditGroupForm}
+                    >
+                      <LuPencil size={20} />
+                      <span>Editar</span>
+                    </button>
+                  </li>
+                )}
               </ul>
             )}
           </div>
@@ -135,72 +139,8 @@ const Chatgroup = () => {
         </footer>
       </div>
 
-      {/* Info Chat */}
-      {isOpenInfo ? (
-        <div className="border-l flex flex-col h-screen w-[30%]">
-          <header className="flex items-center gap-4 p-4 border-b flex-shrink-0">
-            <IoMdClose
-              size={24}
-              onClick={closeInfo}
-              className="cursor-pointer"
-            />
-            <b>Info. del grupo</b>
-
-            {group?.role === "owner" && <LuPencil size={20} className="ml-auto"/>}
-          </header>
-
-          <div className="flex-1 overflow-y-auto">
-            <picture className="relative">
-              <img
-                src={group?.picture}
-                alt="Group"
-                className="w-full max-h-96 object-cover"
-              />
-
-              <div className="absolute bottom-2 left-2 text-white">
-                <b>{group?.title}</b>
-                <p>{group?.quantity_members} miembros</p>
-              </div>
-            </picture>
-
-            <article className="flex flex-col gap-2 p-4">
-              <div className="flex items-center gap-2">
-                <CiCircleInfo size={30} />
-                <div>
-                  <p>{group?.description}</p>
-                  <span className="text-sm">Información</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <GoPaperclip size={30} />
-                <div>
-                  <p className="truncate max-w-64">
-                    http://localhost:5173/join/{id}
-                  </p>
-                  <span className="text-sm">Link</span>
-                </div>
-              </div>
-            </article>
-
-            <nav className="p-4 flex items-center">
-              <ul className="flex gap-8 overflow-x-auto">
-                <li>Miembros</li>
-                <li>Imagenes</li>
-                <li>Videos</li>
-                <li>Documentos</li>
-                <li>Audios</li>
-              </ul>
-            </nav>
-
-            <section className="mt-2 px-4">
-              <Members groupId={id} />
-            </section>
-          </div>
-        </div>
-      ) : (
-        <></>
-      )}
+      {/* Info Group */}
+      {isOpenEditGroupForm ? <EditGroupForm group={group} id={id}/> : isOpenInfo ? <InfoGroup group={group} id={id} /> : <></>}
     </section>
   );
 };

@@ -115,3 +115,59 @@ export const getMembers = async (groupId) => {
     throw error;
   }
 };
+
+export const editGroup = async (groupId, groupData) => {
+  const formData = new FormData();
+  formData.append('title', groupData.title);
+  formData.append('description', groupData.description);
+  formData.append('isPublic', groupData.isPublic);
+  if (groupData.picture) {
+    formData.append('picture', groupData.picture);
+  }
+
+  try {
+    let response = await fetch(
+      `http://localhost:3000/groups/edit/${groupId}`,
+      {
+        method: "PUT",
+        body: formData,
+        credentials: "include", // si usas cookies para auth
+      }
+    );
+
+    if (response.status === 401) {
+      console.warn("Token expirado, intentando refrescar...");
+
+      // Llamar a /refresh
+      const refreshRes = await fetch("http://localhost:3000/auth/refresh", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!refreshRes.ok) {
+        throw new Error("No se pudo refrescar el token");
+      }
+
+      // Reintentar la petición con el nuevo token
+      response = await fetch(
+        `http://localhost:3000/groups/edit/${groupId}`,
+        {
+          method: "PUT",
+          body: formData,
+          credentials: "include", // si usas cookies para auth
+        }
+      );
+    }
+
+    if (!response.ok) {
+      throw new Error("Error al editar el grupo");
+    }
+
+    const data = await response.json();
+    console.log("Group edited:", data);
+    return data;
+  } catch (error) {
+    console.error("Error editing group:", error);
+    throw error;
+  }
+}

@@ -11,4 +11,9 @@ export const useMenuStore = create((set) => ({
   isOpenCreateChannelForm: false,
   closeCreateChannelForm: () => set({ isOpenCreateChannelForm: false }),
   openCreateChannelForm: () => set({ isOpenCreateChannelForm: true }),
+
+  // Menu para editar un grupo
+  isOpenEditGroupForm: false,
+  closeEditGroupForm: () => set({ isOpenEditGroupForm: false }),
+  openEditGroupForm: () => set({ isOpenEditGroupForm: true }),
 }));

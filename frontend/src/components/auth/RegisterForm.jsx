@@ -1,9 +1,12 @@
+import { Link, useNavigate } from "react-router-dom";
 import { useRegisterForm } from "../../hooks/auth/useRegisterForm";
 import { register } from "../../services/auth/authService";
 import { isValidPassword } from "../../utils/isValidPassword";
 
-const RegisterForm = () => {
+const RegisterhtmlForm = () => {
   const { formData, handleChange } = useRegisterForm();
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,62 +33,102 @@ const RegisterForm = () => {
         formData.fullname
       );
       alert("User registered successfully!");
-      window.location.href = "/login";
+      navigate("/login");
     } catch (error) {
       console.error("Error registering user:", error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <input
-        type="text"
-        placeholder="Username"
-        name="username"
-        value={formData.username}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        name="email"
-        value={formData.email}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="text"
-        placeholder="Fullname"
-        name="fullname"
-        value={formData.fullname}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        name="password"
-        value={formData.password}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="password"
-        placeholder="Confirm Password"
-        name="confirmPassword"
-        value={formData.confirmPassword}
-        onChange={handleChange}
-        required
-      />
+    <form className="space-y-4" onSubmit={handleSubmit}>
+      <div>
+        <label
+          htmlFor="email"
+          className="block mb-2 text-sm font-medium"
+        >
+          Your email
+        </label>
+        <input
+          type="email"
+          name="email"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+          placeholder="name@company.com"
+          required
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <label
+          htmlFor="username"
+          className="block mb-2 text-sm font-medium"
+        >
+          Your username
+        </label>
+        <input
+          type="text"
+          name="username"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+          placeholder="Username"
+          required
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <label
+          htmlFor="fullname"
+          className="block mb-2 text-sm font-medium"
+        >
+          Your fullname
+        </label>
+        <input
+          type="text"
+          name="fullname"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+          placeholder="Full Name"
+          required
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <label
+          htmlFor="password"
+          className="block mb-2 text-sm font-medium"
+        >
+          Password
+        </label>
+        <input
+          type="password"
+          name="password"
+          placeholder="••••••••"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+          required
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <label
+          htmlFor="confirmPassword"
+          className="block mb-2 text-sm font-medium"
+        >
+          Confirm password
+        </label>
+        <input
+          type="confirm-password"
+          name="confirmPassword"
+          placeholder="••••••••"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+          required
+          onChange={handleChange}
+        />
+      </div>
       <button
         type="submit"
-        className="bg-blue-500 text-white py-2 px-4 rounded cursor-pointer"
+        className="w-full font-medium bg-blue-500 text-white rounded-lg text-sm px-5 py-2.5 text-center"
       >
-        Register
+        Create an account
       </button>
     </form>
   );
 };
 
-export default RegisterForm;
+export default RegisterhtmlForm;

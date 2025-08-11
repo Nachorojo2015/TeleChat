@@ -59,11 +59,11 @@ export class GroupsRepository {
   static async getGroup({ groupId, userId }) {
     const group = await pool.query(
       `
-    SELECT c.picture, c.title, c.description, COUNT(ch.user_id) AS quantity_members, ch.role FROM chats c
+    SELECT c.picture, c.title, c.is_public, c.description, COUNT(ch.user_id) AS quantity_members, ch.role FROM chats c
     JOIN chat_members ch ON c.id = ch.chat_id
     WHERE c.id = $1
 	  AND ch.user_id = $2
-    GROUP BY c.picture, c.title, c.description, ch.role
+    GROUP BY c.picture, c.title, c.is_public, c.description, ch.role
     `,
       [groupId, userId]
     );
@@ -127,6 +127,8 @@ export class GroupsRepository {
     );
 
     if (!updatedGroup.rowCount) throw new Error("No se pudo editar el grupo");
+
+    return groupId;
   }
 
   /**
