@@ -75,7 +75,7 @@ const Chatgroup = () => {
   };
 
   return (
-    <section className="flex w-full">
+    <section className="flex w-[75%]">
       {/* Chat */}
       <div className="flex flex-col w-full">
         <header className="flex items-center gap-4 p-1 border-b px-6">

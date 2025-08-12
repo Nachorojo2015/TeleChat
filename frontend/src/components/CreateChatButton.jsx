@@ -47,9 +47,9 @@ const CreateChatButton = () => {
       {/* Botón principal */}
       <button
         onClick={toggleMenu}
-        className="rounded-full bg-blue-500 text-white p-3 shadow-lg hover:bg-blue-600 transition-colors"
+        className="rounded-full bg-blue-500 text-white p-4 shadow-lg hover:bg-blue-600 transition-colors"
       >
-        <LuPencil size={20} />
+        <LuPencil size={25} />
       </button>
     </div>
   );
