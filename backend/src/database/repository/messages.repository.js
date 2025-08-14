@@ -37,13 +37,9 @@ export class MessagesRepository {
 
     const messageId = result.rows[0].id;
 
-    console.log(fileUrl, "fileUrl en createMessage");
-
     if (fileUrl) {
       const { url, fileName, fileSize, width, height } =
         await this.uploadFileMessage({ messageId, fileUrl });
-
-      console.log("Archivo subido:", url);
 
       if (!url) {
         throw new Error("No se pudo subir el archivo del mensaje");
@@ -84,7 +80,6 @@ export class MessagesRepository {
   m.type,
   m.file_url,
   m.deleted,
-  m.pinned,
   m.sent_at,
   m.edited_at,
 
@@ -101,37 +96,12 @@ export class MessagesRepository {
   -- Usuario original si es reenviado
   fwd.id AS forwarded_user_id,
   fwd.display_name AS forwarded_display_name,
-  fwd.profile_picture AS forwarded_user_avatar,
-
-  -- Reacciones agregadas
-  COALESCE(
-    JSON_AGG(
-      DISTINCT JSONB_BUILD_OBJECT(
-        'user_id', r.user_id,
-        'reaction', r.reaction,
-        'reacted_at', r.reacted_at
-      )
-    ) FILTER (WHERE r.user_id IS NOT NULL),
-    '[]'
-  ) AS reactions,
-
-  -- Vistos por
-  COALESCE(
-    JSON_AGG(
-      DISTINCT JSONB_BUILD_OBJECT(
-        'user_id', v.user_id,
-        'viewed_at', v.viewed_at
-      )
-    ) FILTER (WHERE v.user_id IS NOT NULL),
-    '[]'
-  ) AS views
+  fwd.profile_picture AS forwarded_user_avatar
 
 FROM messages m
 JOIN users u ON m.sender_id = u.id
 LEFT JOIN messages reply ON m.reply_to_id = reply.id
 LEFT JOIN users fwd ON m.forwarded_from_id = fwd.id
-LEFT JOIN message_reactions r ON m.id = r.message_id
-LEFT JOIN message_views v ON m.id = v.message_id
 
 WHERE m.id = $1
 GROUP BY
@@ -159,7 +129,6 @@ ORDER BY m.sent_at ASC;
   m.type,
   m.file_url,
   m.deleted,
-  m.pinned,
   m.sent_at,
   m.edited_at,
 
@@ -176,37 +145,12 @@ ORDER BY m.sent_at ASC;
   -- Usuario original si es reenviado
   fwd.id AS forwarded_user_id,
   fwd.display_name AS forwarded_display_name,
-  fwd.profile_picture AS forwarded_user_avatar,
-
-  -- Reacciones agregadas
-  COALESCE(
-    JSON_AGG(
-      DISTINCT JSONB_BUILD_OBJECT(
-        'user_id', r.user_id,
-        'reaction', r.reaction,
-        'reacted_at', r.reacted_at
-      )
-    ) FILTER (WHERE r.user_id IS NOT NULL),
-    '[]'
-  ) AS reactions,
-
-  -- Vistos por
-  COALESCE(
-    JSON_AGG(
-      DISTINCT JSONB_BUILD_OBJECT(
-        'user_id', v.user_id,
-        'viewed_at', v.viewed_at
-      )
-    ) FILTER (WHERE v.user_id IS NOT NULL),
-    '[]'
-  ) AS views
+  fwd.profile_picture AS forwarded_user_avatar
 
 FROM messages m
 JOIN users u ON m.sender_id = u.id
 LEFT JOIN messages reply ON m.reply_to_id = reply.id
 LEFT JOIN users fwd ON m.forwarded_from_id = fwd.id
-LEFT JOIN message_reactions r ON m.id = r.message_id
-LEFT JOIN message_views v ON m.id = v.message_id
 
 WHERE m.chat_id = $1
 GROUP BY
@@ -215,8 +159,6 @@ GROUP BY
   reply.id,
   fwd.id
 ORDER BY m.sent_at ASC;
-
-    ;
 `,
       [chatId]
     );
