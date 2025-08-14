@@ -18,7 +18,7 @@ const Menu = () => {
   }
 
   return (
-    <aside className="relative border-r w-[25%]">
+    <aside className="relative border-r border-slate-50 w-[25%]">
         <nav className="flex items-center gap-4 px-4 py-1">
             <GiHamburgerMenu className="text-2xl cursor-pointer" />
 

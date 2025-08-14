@@ -75,10 +75,10 @@ const Chatgroup = () => {
   };
 
   return (
-    <section className="flex w-[75%]">
+      <>
       {/* Chat */}
       <div className="flex flex-col w-full">
-        <header className="flex items-center gap-4 p-1 border-b px-6">
+        <header className="flex items-center gap-4 p-1 px-6 bg-white shadow">
           <img
             src={group?.picture}
             alt="picture-of-group"
@@ -121,12 +121,12 @@ const Chatgroup = () => {
           </ul>
         </div>
 
-        <footer className="flex items-center gap-2 p-4 border-t">
+        <footer className="flex items-center gap-2 p-4 shadow bg-white">
           <FaPaperclip size={24} />
           <input
             type="text"
             placeholder="Escribe un mensaje..."
-            className="w-full bg-slate-50 p-1"
+            className="w-full bg-slate-50 p-1 outline-none"
             onChange={handleMessage}
             ref={inputMessage}
           />
@@ -141,7 +141,7 @@ const Chatgroup = () => {
 
       {/* Info Group */}
       {isOpenEditGroupForm ? <EditGroupForm group={group} id={id}/> : isOpenInfo ? <InfoGroup group={group} id={id} /> : <></>}
-    </section>
+      </>
   );
 };
 
