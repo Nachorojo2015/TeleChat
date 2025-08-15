@@ -79,7 +79,6 @@ export class MessagesRepository {
   m.content,
   m.type,
   m.file_url,
-  m.deleted,
   m.sent_at,
   m.edited_at,
 
@@ -87,28 +86,15 @@ export class MessagesRepository {
   u.id AS sender_id,
   u.display_name AS sender_name,
   u.profile_picture AS sender_avatar,
-
-  -- Mensaje al que responde
-  reply.id AS reply_id,
-  reply.content AS reply_content,
-  reply.type AS reply_type,
-
-  -- Usuario original si es reenviado
-  fwd.id AS forwarded_user_id,
-  fwd.display_name AS forwarded_display_name,
-  fwd.profile_picture AS forwarded_user_avatar
+  u.username AS sender_username
 
 FROM messages m
 JOIN users u ON m.sender_id = u.id
-LEFT JOIN messages reply ON m.reply_to_id = reply.id
-LEFT JOIN users fwd ON m.forwarded_from_id = fwd.id
 
 WHERE m.id = $1
 GROUP BY
   m.id,
-  u.id,
-  reply.id,
-  fwd.id
+  u.id
 ORDER BY m.sent_at ASC;
 `,
       [messageId]
@@ -128,7 +114,6 @@ ORDER BY m.sent_at ASC;
   m.content,
   m.type,
   m.file_url,
-  m.deleted,
   m.sent_at,
   m.edited_at,
 
@@ -136,28 +121,15 @@ ORDER BY m.sent_at ASC;
   u.id AS sender_id,
   u.display_name AS sender_name,
   u.profile_picture AS sender_avatar,
-
-  -- Mensaje al que responde
-  reply.id AS reply_id,
-  reply.content AS reply_content,
-  reply.type AS reply_type,
-
-  -- Usuario original si es reenviado
-  fwd.id AS forwarded_user_id,
-  fwd.display_name AS forwarded_display_name,
-  fwd.profile_picture AS forwarded_user_avatar
+  u.username AS sender_username
 
 FROM messages m
 JOIN users u ON m.sender_id = u.id
-LEFT JOIN messages reply ON m.reply_to_id = reply.id
-LEFT JOIN users fwd ON m.forwarded_from_id = fwd.id
 
 WHERE m.chat_id = $1
 GROUP BY
   m.id,
-  u.id,
-  reply.id,
-  fwd.id
+  u.id
 ORDER BY m.sent_at ASC;
 `,
       [chatId]
@@ -169,8 +141,7 @@ ORDER BY m.sent_at ASC;
   static async deleteMessage({ messageId }) {
     const result = await pool.query(
       `
-    UPDATE messages
-    SET deleted = true
+    DELETE FROM messages
     WHERE id = $1`,
       [messageId]
     );
@@ -181,12 +152,6 @@ ORDER BY m.sent_at ASC;
   }
 
   static async editMessage({ messageId, content }) {
-    const isDeletedMessage = await this.isDeletedMessage({ messageId });
-
-    if (isDeletedMessage) {
-      throw new Error("El mensaje fue eliminado");
-    }
-
     const result = await pool.query(
       `
     UPDATE messages
@@ -198,17 +163,6 @@ ORDER BY m.sent_at ASC;
     if (result.rowCount === 0) {
       throw new Error("No se pudo editar el mensaje");
     }
-  }
-
-  static async isDeletedMessage({ messageId }) {
-    const result = await pool.query(
-      `
-    SELECT 1 FROM messages WHERE id = $1
-    AND deleted`,
-      [messageId]
-    );
-
-    return result.rowCount > 0;
   }
 
   static async uploadFileMessage({ messageId, fileUrl }) {

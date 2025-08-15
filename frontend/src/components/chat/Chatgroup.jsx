@@ -1,7 +1,7 @@
 import { FaPaperclip } from "react-icons/fa6";
 import { FaArrowUp } from "react-icons/fa6";
 import Messages from "../Messages";
-import { useParams } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useEffect } from "react";
 import { getGroup } from "../../services/groupsService";
@@ -17,6 +17,9 @@ import InfoGroup from "../InfoGroup";
 const socket = io("http://localhost:3000", { withCredentials: true });
 
 const Chatgroup = () => {
+
+  const { myUser } = useOutletContext();
+
   const { id } = useParams();
 
   const [group, setGroup] = useState(null);
@@ -117,16 +120,16 @@ const Chatgroup = () => {
 
         <div className="relative flex flex-1">
           <ul className="overflow-y-auto overflow-x-hidden absolute h-full w-full px-4 py-2">
-            <Messages chatId={id} />
+            <Messages chatId={id} myUser={myUser} typeChat="group"/>
           </ul>
         </div>
 
-        <footer className="flex items-center gap-2 p-4 shadow bg-white">
-          <FaPaperclip size={24} />
+        <footer className="flex items-center gap-2 p-2 shadow bg-white">
+          <FaPaperclip size={20} />
           <input
             type="text"
             placeholder="Escribe un mensaje..."
-            className="w-full bg-slate-50 p-1 outline-none"
+            className="w-full p-1 outline-none"
             onChange={handleMessage}
             ref={inputMessage}
           />

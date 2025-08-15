@@ -46,10 +46,12 @@ export class ChannelsRepository {
   static async getChannel({ channelId }) {
     const result = await pool.query(
       `
-    SELECT c.picture, c.title, COUNT(ch.user_id) AS quantity_members FROM chats c
+    SELECT c.picture, c.title, COUNT(ch.user_id) AS quantity_members, u.username AS owner_username FROM chats c
     JOIN chat_members ch ON c.id = ch.chat_id
+	  JOIN users u ON u.id = ch.user_id
     WHERE c.id = $1
-    GROUP BY c.picture, c.title`,
+   	AND ch.role = 'owner'
+    GROUP BY c.picture, c.title, ch.chat_id, u.username`,
       [channelId]
     );
 

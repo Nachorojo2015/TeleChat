@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getChats } from "../services/chatsService";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { formatLastMessageChatTime } from "../utils/formatLastMessageChatTime";
 
 import { io } from "socket.io-client";
@@ -9,6 +9,9 @@ const socket = io("http://localhost:3000", { withCredentials: true });
 
 const Chats = () => {
   const [chats, setChats] = useState([]);
+
+  const location = useLocation();
+  const chatId = location.pathname.split('/').pop();
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -39,7 +42,7 @@ const Chats = () => {
   }, []);
 
   return (
-    <ul className="overflow-y-auto p-3">
+    <ul className="overflow-y-auto p-3 overflow-x-hidden absolute h-full w-full">
       {chats?.length === 0 ? (
         <li>No hay chats disponibles</li>
       ) : (
@@ -53,7 +56,7 @@ const Chats = () => {
                 : `/p/${chat.id}`
             }
             key={chat.id}
-            className="flex p-2 items-center gap-2 hover:bg-slate-100 transition-colors rounded-lg"
+            className={`flex p-2 mt-1 items-center gap-2 transition-colors rounded-lg ${chat.id === chatId ? "bg-blue-500 text-white" : "hover:bg-slate-100"}`}
           >
             <img
               src={chat.picture}
