@@ -2,22 +2,27 @@ import { useEffect, useState } from "react";
 import { getChats } from "../services/chatsService";
 import { Link, useLocation } from "react-router-dom";
 import { formatLastMessageChatTime } from "../utils/formatLastMessageChatTime";
+import HashLoader from "react-spinners/HashLoader";
+import { IoChatbubbleEllipses } from "react-icons/io5";
 
 import { io } from "socket.io-client";
 
 const socket = io("http://localhost:3000", { withCredentials: true });
 
 const Chats = () => {
-  const [chats, setChats] = useState([]);
+  const [chats, setChats] = useState(null);
+  const [loader, setLoader] = useState(false);
 
   const location = useLocation();
   const chatId = location.pathname.split('/').pop();
 
   useEffect(() => {
     const fetchChats = async () => {
+      setLoader(true);
       const data = await getChats();
       console.log("Chats data:", data);
       setChats(data);
+      setLoader(false);
     };
 
     fetchChats();
@@ -41,11 +46,29 @@ const Chats = () => {
     };
   }, []);
 
+  if (loader) {
+    return (
+      <ul className="flex items-center justify-center h-full w-full absolute">
+        <HashLoader />
+      </ul>
+    );
+  }
+
+  if (chats?.length === 0) {
+    return (
+      <ul className="flex items-center justify-center h-full w-full absolute">
+        <div className="flex flex-col items-center justify-center gap-3">
+          <IoChatbubbleEllipses size={50}/>
+          <p>No tienes chats</p>
+          <p className="text-sm text-center font-semibold">Busca usuarios para chatear, unete a grupos o canales de difusión</p>
+        </div>
+      </ul>
+    );
+  }
+
   return (
     <ul className="overflow-y-auto p-3 overflow-x-hidden absolute h-full w-full">
-      {chats?.length === 0 ? (
-        <li>No hay chats disponibles</li>
-      ) : (
+      {
         chats?.map((chat) => (
           <Link
             to={
@@ -74,7 +97,7 @@ const Chats = () => {
             </div>
           </Link>
         ))
-      )}
+      }
     </ul>
   );
 };
