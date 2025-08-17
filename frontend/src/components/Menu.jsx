@@ -5,9 +5,11 @@ import { useMenuStore } from "../store/menuStore";
 import CreateGroupForm from "./CreateGroupForm";
 import CreateChannelForm from "./CreateChannelForm";
 import { CiSearch } from "react-icons/ci";
+import { useState } from "react";
 
 const Menu = () => {
   const { isOpenCreateGroupForm, isOpenCreateChannelForm } = useMenuStore();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   if (isOpenCreateGroupForm) {
     return <CreateGroupForm />; // Si el formulario de creación de grupo está abierto, no mostrar el menú
@@ -20,7 +22,24 @@ const Menu = () => {
   return (
     <aside className="relative border-r flex flex-col border-slate-50 w-[25%] group">
       <nav className="flex items-center gap-4 px-4 py-1">
-        <GiHamburgerMenu className="text-2xl cursor-pointer" />
+        <div className="relative">
+          <button
+            className="cursor-pointer"
+            onClick={() => setIsDropdownOpen((prev) => !prev)}
+          >
+            <GiHamburgerMenu size={24} />
+          </button>
+          {isDropdownOpen && (
+            <div className="absolute left-0 top-full mt-5 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-40 z-20">
+              <button className="w-full px-4 py-2 text-left hover:bg-gray-100 text-gray-700">
+                Opción 1
+              </button>
+              <button className="w-full px-4 py-2 text-left hover:bg-gray-100 text-gray-700">
+                Opción 2
+              </button>
+            </div>
+          )}
+        </div>
 
         <div className="relative w-full">
           <input

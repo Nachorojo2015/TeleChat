@@ -96,11 +96,11 @@ const Chatgroup = () => {
             />
 
             {isDropDownOpen && (
-              <ul className="absolute right-0 top-12 bg-white border shadow-md rounded-md w-48 z-10">
+              <ul className="absolute right-0 top-12 bg-white shadow-md rounded-md w-48 z-10">
                 {group?.role === "owner" && (
-                  <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
                     <button
-                      className="flex items-center gap-6"
+                      className="flex items-center gap-6 cursor-pointer"
                       onClick={openEditGroupForm}
                     >
                       <LuPencil size={20} />
