@@ -26,11 +26,10 @@ const Chatgroup = () => {
 
   const [message, setMessage] = useState("");
 
-  const [isOpenInfo, setIsOpenInfo] = useState(false);
 
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
-  const { isOpenEditGroupForm, openEditGroupForm } = useMenuStore();
+  const { isOpenEditGroupForm, openEditGroupForm, isOpenInfoGroup, openInfoGroup } = useMenuStore();
 
   const inputMessage = useRef(null);
 
@@ -43,10 +42,6 @@ const Chatgroup = () => {
 
     fetchGroup();
   }, [id]);
-
-  const openInfo = () => {
-    setIsOpenInfo(true);
-  };
 
   const toggleDropDown = () => {
     setIsDropDownOpen(!isDropDownOpen);
@@ -86,7 +81,7 @@ const Chatgroup = () => {
             src={group?.picture}
             alt="picture-of-group"
             className="w-12 h-12 rounded-full object-cover cursor-pointer"
-            onClick={openInfo}
+            onClick={openInfoGroup}
           />
 
           <div>
@@ -143,7 +138,7 @@ const Chatgroup = () => {
       </div>
 
       {/* Info Group */}
-      {isOpenEditGroupForm ? <EditGroupForm group={group} id={id}/> : isOpenInfo ? <InfoGroup group={group} id={id} /> : <></>}
+      {isOpenEditGroupForm ? <EditGroupForm group={group} id={id}/> : isOpenInfoGroup ? <InfoGroup group={group} id={id} /> : <></>}
       </>
   );
 };

@@ -17,7 +17,7 @@ const Members = ({ groupId }) => {
   }, [groupId]);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 mt-2">
       {members.map((member) => (
         <article key={member.id} className="flex items-center">
           <img
@@ -26,7 +26,7 @@ const Members = ({ groupId }) => {
           />
           <div className="ml-4">
             <p>
-              {member.display_name} | <b>{member.role}</b>
+              {member.display_name} | Role: <b>{member.role}</b>
             </p>
             <p>{formatLastSessionTime(member.last_active)}</p>
           </div>

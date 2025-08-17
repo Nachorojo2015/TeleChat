@@ -4,6 +4,8 @@ import { CiCamera } from "react-icons/ci";
 import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { editGroup } from "../services/groupsService";
+import { MdPublic } from "react-icons/md";
+import { RiGitRepositoryPrivateFill } from "react-icons/ri";
 
 const EditGroupForm = ({ group, id }) => {
   const { closeEditGroupForm } = useMenuStore();
@@ -36,6 +38,17 @@ const EditGroupForm = ({ group, id }) => {
     }
   };
 
+  const handlePublicGroup = () => {
+    console.log("Publico");
+    setIsPublic(true);
+    console.log(isPublic);
+  };
+
+  const handlePrivateGroup = () => {
+    setIsPublic(false);
+    console.log(isPublic);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -43,7 +56,7 @@ const EditGroupForm = ({ group, id }) => {
       title,
       description,
       is_public: isPublic,
-      picture
+      picture,
     };
 
     if (picture) {
@@ -59,8 +72,8 @@ const EditGroupForm = ({ group, id }) => {
   };
 
   return (
-    <div className="border-l flex flex-col h-screen w-[30%] relative">
-      <header className="flex items-center gap-4 p-4 border-b">
+    <div className="shadow flex flex-col h-screen w-[40%] relative bg-white">
+      <header className="flex items-center gap-4 p-4">
         <FaArrowLeft
           size={24}
           onClick={closeEditGroupForm}
@@ -69,62 +82,72 @@ const EditGroupForm = ({ group, id }) => {
         <b>Editar</b>
       </header>
 
-      <form onSubmit={handleSubmit}>
-        <label>
-          <div className="relative">
-            <img
-              src={picture}
-              alt="picture-of-group"
-              className="object-cover rounded-full m-auto mt-12 w-36 h-36"
-              style={{ filter: "brightness(50%)" }}
-            />
-            <CiCamera
-              size={60}
-              className="absolute top-10 right-1/2 left-1/2 transform -translate-x-1/2"
-              color="white"
-            />
-          </div>
-
-          <input type="file" hidden accept="image/*" onChange={handlePicture} />
-        </label>
-
-        <input
-          type="text"
-          placeholder="Nombre del grupo"
-          defaultValue={title}
-          onChange={handleTitle}
-        />
-        <input
-          type="text"
-          placeholder="Descripcion"
-          defaultValue={description}
-          onChange={handleDescription}
-        />
-
-        <div className="flex flex-col">
-          <p>Tipo de grupo</p>
+      <div className="flex-1 overflow-y-auto">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 px-4 py-3">
+          {/* Editar imagen */}
           <label>
-            <input
-              type="checkbox"
-              checked={isPublic}
-              onChange={(e) => setIsPublic(e.target.checked)}
-            />
-            Grupo público
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={!isPublic}
-              onChange={(e) => setIsPublic(!e.target.checked)}
-            />
-            Grupo privado
-          </label>
-        </div>
+            <picture className="relative group cursor-pointer m-auto">
+              <img
+                src={picture}
+                alt="picture-of-group"
+                className="object-cover rounded-full m-auto w-52 h-52"
+                style={{ filter: "brightness(50%)" }}
+                accept="image/*"
+              />
+              <CiCamera
+                size={60}
+                className="absolute top-20 right-1/2 left-1/2 transform -translate-x-1/2 group-hover:scale-110 transition"
+                color="white"
+              />
+            </picture>
 
-        <button className="absolute bottom-4 right-0 transform -translate-x-1/2">
-          <FaCheck />
-        </button>
-      </form>
+            <input
+              type="file"
+              hidden
+              accept="image/*"
+              onChange={handlePicture}
+            />
+          </label>
+
+          {/* Editar nombre del grupo */}
+          <input
+            type="text"
+            placeholder="Nombre del grupo"
+            defaultValue={title}
+            onChange={handleTitle}
+            className="w-full bg-transparent mt-4 placeholder:text-slate-400 text-slate-700 text-lg border border-slate-200 rounded-xl px-3 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300"
+          />
+          {/* Editar descripcion del grupo */}
+          <input
+            type="text"
+            placeholder="Descripcion"
+            defaultValue={description}
+            onChange={handleDescription}
+            className="w-full bg-transparent mt-4 placeholder:text-slate-400 text-slate-700 text-lg border border-slate-200 rounded-xl px-3 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300"
+          />
+
+          {/* Editar tipo de grupo */}
+          <b>Tipo de grupo</b>
+          <ul class="flex w-full flex-col gap-4">
+            <div className={`block rounded-lg cursor-pointer p-5 border-2 hover:border-blue-500 transition-colors ${isPublic ? "border-blue-500" : ""}`} onClick={handlePublicGroup}>
+              <MdPublic />
+              <div className="w-full text-lg font-semibold">Grupo público</div>
+              <div className="w-full text-sm">
+                Una comunidad abierta para todos. Cualquier persona puede unirse
+                y participar.
+              </div>
+            </div>
+            <div className={`block rounded-lg cursor-pointer p-5 border-2 hover:border-blue-500 transition-colors ${!isPublic ? "border-blue-500" : ""}`} onClick={handlePrivateGroup}>
+              <RiGitRepositoryPrivateFill />
+              <div className="w-full text-lg font-semibold">Grupo privado</div>
+              <div className="w-full text-sm">
+                Una comunidad cerrada donde solo los miembros invitados pueden
+                unirse.
+              </div>
+            </div>
+          </ul>
+        </form>
+      </div>
     </div>
   );
 };

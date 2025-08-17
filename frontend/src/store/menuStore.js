@@ -3,7 +3,6 @@ import { create } from "zustand";
 export const useMenuStore = create((set) => ({
   // Menu de creación de grupos
   isOpenCreateGroupForm: false,
-
   closeCreateGroupForm: () => set({ isOpenCreateGroupForm: false }),
   openCreateGroupForm: () => set({ isOpenCreateGroupForm: true }),
 
@@ -11,6 +10,11 @@ export const useMenuStore = create((set) => ({
   isOpenCreateChannelForm: false,
   closeCreateChannelForm: () => set({ isOpenCreateChannelForm: false }),
   openCreateChannelForm: () => set({ isOpenCreateChannelForm: true }),
+
+  // Menu para ver información del grupo
+  isOpenInfoGroup: false,
+  closeInfoGroup: () => set({ isOpenInfoGroup: false }),
+  openInfoGroup: () => set({ isOpenInfoGroup: true }),
 
   // Menu para editar un grupo
   isOpenEditGroupForm: false,
