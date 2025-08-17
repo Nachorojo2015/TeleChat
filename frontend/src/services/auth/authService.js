@@ -47,3 +47,22 @@ export const register = async (username, email, password, displayName) => {
     throw error; // Propagate the error for handling in the component
   }
 };
+
+export const logout = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/auth/logout", {
+      method: "DELETE",
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(error);
+    }
+
+    return "User logout successfully!";
+  } catch (error) {
+    console.error("Logout error:", error);
+    throw error; // Propagate the error for handling in the component
+  }
+}

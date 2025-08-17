@@ -9,6 +9,6 @@ authRouter.post('/login', login)
 
 authRouter.post('/refresh', refreshToken)
 
-authRouter.post('/logout', logout)
+authRouter.delete('/logout', logout)
 
 export { authRouter }

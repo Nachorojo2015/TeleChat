@@ -6,10 +6,23 @@ import CreateGroupForm from "./CreateGroupForm";
 import CreateChannelForm from "./CreateChannelForm";
 import { CiSearch } from "react-icons/ci";
 import { useState } from "react";
+import { CiLogout } from "react-icons/ci";
+import { logout } from "../services/auth/authService";
+import { useNavigate } from "react-router-dom";
 
 const Menu = () => {
   const { isOpenCreateGroupForm, isOpenCreateChannelForm } = useMenuStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   if (isOpenCreateGroupForm) {
     return <CreateGroupForm />; // Si el formulario de creación de grupo está abierto, no mostrar el menú
@@ -31,11 +44,9 @@ const Menu = () => {
           </button>
           {isDropdownOpen && (
             <div className="absolute left-0 top-full mt-5 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-40 z-20">
-              <button className="w-full px-4 py-2 text-left hover:bg-gray-100 text-gray-700">
-                Opción 1
-              </button>
-              <button className="w-full px-4 py-2 text-left hover:bg-gray-100 text-gray-700">
-                Opción 2
+              <button className="w-full flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100 text-red-500" onClick={handleLogout}>
+                <CiLogout size={20} />
+                <span>Cerrar sesión</span>
               </button>
             </div>
           )}
