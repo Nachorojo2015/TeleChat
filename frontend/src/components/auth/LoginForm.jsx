@@ -1,19 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import { useLoginForm } from "../../hooks/auth/useLoginForm";
 import { login } from "../../services/auth/authService";
+import { useState } from "react";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const LoginForm = () => {
   const { formData, handleChange } = useLoginForm();
+  const [loader, setLoader] = useState(false);
 
   const navigate = useNavigate();
   
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setLoader(true);
+
     try {
       await login(formData.username, formData.password);
       navigate("/"); // Redirect to home or dashboard
     } catch (error) {
       console.error("Login error:", error);
+      setLoader(false);
     }
   };
 
@@ -39,9 +46,12 @@ const LoginForm = () => {
       />
       <button
         type="submit"
+        disabled={loader}
         className="bg-blue-500 text-white py-2 px-4 rounded cursor-pointer"
       >
-        Login
+        {
+          loader ? <ClipLoader size={24} color="white" cssOverride={{display: 'block', margin: '0 auto'}}/> : "Login"
+        }
       </button>
     </form>
   );

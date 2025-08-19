@@ -2,9 +2,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRegisterForm } from "../../hooks/auth/useRegisterForm";
 import { register } from "../../services/auth/authService";
 import { isValidPassword } from "../../utils/isValidPassword";
+import { useState } from "react";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const RegisterhtmlForm = () => {
   const { formData, handleChange } = useRegisterForm();
+  const [loader, setLoader] = useState(false);
 
   const navigate = useNavigate();
 
@@ -25,6 +28,8 @@ const RegisterhtmlForm = () => {
       return;
     }
 
+    setLoader(true);
+
     try {
       await register(
         formData.username,
@@ -36,6 +41,7 @@ const RegisterhtmlForm = () => {
       navigate("/login");
     } catch (error) {
       console.error("Error registering user:", error);
+      setLoader(false);
     }
   };
 
@@ -123,9 +129,12 @@ const RegisterhtmlForm = () => {
       </div>
       <button
         type="submit"
-        className="w-full font-medium bg-blue-500 text-white rounded-lg text-sm px-5 py-2.5 text-center"
+        disabled={loader}
+        className="w-full cursor-pointer font-medium bg-blue-500 text-white rounded-lg text-sm px-5 py-2.5 text-center"
       >
-        Create an account
+        {
+          loader ? <ClipLoader size={24} color="white" cssOverride={{display: 'block', margin: '0 auto'}}/> : "Create an account"
+        }
       </button>
     </form>
   );
