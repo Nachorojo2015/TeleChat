@@ -12,6 +12,7 @@ const CreateGroupForm = () => {
   );
 
   const [picture, setPicture] = useState(null);
+  const [picturePreview, setPicturePreview] = useState(null);
   const [name, setName] = useState("");
   const [loader, setLoader] = useState(false);
 
@@ -19,9 +20,11 @@ const CreateGroupForm = () => {
     const file = e.target.files[0];
 
     if (file) {
+      setPicture(file);
+
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPicture(reader.result);
+        setPicturePreview(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -59,10 +62,10 @@ const CreateGroupForm = () => {
         onSubmit={handleSubmit}
       >
         <label>
-          {picture ? (
+          {picturePreview ? (
             <div className="relative cursor-pointer group">
               <img
-                src={picture}
+                src={picturePreview}
                 alt="camera"
                 className="w-32 h-32 rounded-full object-cover"
                 style={{ filter: "brightness(50%)" }}

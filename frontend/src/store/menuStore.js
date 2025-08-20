@@ -20,4 +20,9 @@ export const useMenuStore = create((set) => ({
   isOpenEditGroupForm: false,
   closeEditGroupForm: () => set({ isOpenEditGroupForm: false }),
   openEditGroupForm: () => set({ isOpenEditGroupForm: true }),
+
+  // Menu para editar el perfil del usuario
+  isOpenEditProfileForm: false,
+  closeEditProfileForm: () => set({ isOpenEditProfileForm: false }),
+  openEditProfileForm: () => set({ isOpenEditProfileForm: true }),
 }));

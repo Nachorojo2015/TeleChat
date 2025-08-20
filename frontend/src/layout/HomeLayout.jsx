@@ -25,7 +25,7 @@ const HomeLayout = () => {
 
   return (
     <section className="flex h-[100dvh] overflow-hidden">
-      <Menu />
+      <Menu myUser={myUser} />
 
       <section className="flex w-[75%] bg-contain bg-[url(/background-chat.png)]">
         <Outlet context={{ myUser }} />
