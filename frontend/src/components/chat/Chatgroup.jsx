@@ -1,7 +1,7 @@
 import { FaPaperclip } from "react-icons/fa6";
 import { FaArrowUp } from "react-icons/fa6";
 import Messages from "../Messages";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useEffect } from "react";
 import { getGroup } from "../../services/groupsService";
@@ -17,9 +17,6 @@ import InfoGroup from "../InfoGroup";
 const socket = io("http://localhost:3000", { withCredentials: true });
 
 const Chatgroup = () => {
-
-  const { myUser } = useOutletContext();
-
   const { id } = useParams();
 
   const [group, setGroup] = useState(null);
@@ -115,7 +112,7 @@ const Chatgroup = () => {
 
         <div className="relative flex flex-1">
           <ul className="overflow-y-auto overflow-x-hidden absolute h-full w-full px-4 py-2">
-            <Messages chatId={id} myUser={myUser} typeChat="group"/>
+            <Messages chatId={id} typeChat="group"/>
           </ul>
         </div>
 

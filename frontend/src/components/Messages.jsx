@@ -11,7 +11,7 @@ import { io } from "socket.io-client";
 
 const socket = io("http://localhost:3000", { withCredentials: true });
 
-const Messages = ({ chatId, myUser }) => {
+const Messages = ({ chatId }) => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const Messages = ({ chatId, myUser }) => {
     <ul className="flex flex-col gap-2">
       {messages.map((message) =>
         message.type === "text" ? (
-          <TextMessage key={message.message_id} messageData={message} myUser={myUser} />
+          <TextMessage key={message.message_id} messageData={message} />
         ) : message.type === "image" ? (
           <ImageMessage key={message.message_id} messageData={message} />
         ) : message.type === "file" ? (

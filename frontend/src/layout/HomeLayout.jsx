@@ -2,10 +2,10 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Menu from "../components/Menu";
 import { useEffect } from "react";
 import { getMyUser } from "../services/userService";
-import { useState } from "react";
+import { useUserStore } from "../store/userStore";
 
 const HomeLayout = () => {
-  const [myUser, setMyUsername] = useState(null);
+  const { setUser } = useUserStore();
 
   const navigate = useNavigate();
 
@@ -13,7 +13,7 @@ const HomeLayout = () => {
     const fetchMyUserData = async () => {
       try {
         const data = await getMyUser();
-        setMyUsername(data);
+        setUser(data);
       } catch (error) {
         console.error("Error fetching user data:", error);
         navigate("/login"); // Redirigir a login si hay un error
@@ -21,14 +21,14 @@ const HomeLayout = () => {
     };
 
     fetchMyUserData();
-  }, [navigate]);
+  }, [navigate, setUser]);
 
   return (
     <section className="flex h-[100dvh] overflow-hidden">
-      <Menu myUser={myUser} />
+      <Menu />
 
       <section className="flex w-[75%] bg-contain bg-[url(/background-chat.png)]">
-        <Outlet context={{ myUser }} />
+        <Outlet />
       </section>
     </section>
   );

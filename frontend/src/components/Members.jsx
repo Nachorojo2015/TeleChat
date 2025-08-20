@@ -22,7 +22,7 @@ const Members = ({ groupId }) => {
         <article key={member.id} className="flex items-center">
           <img
             src={member.profile_picture}
-            className="w-14 h-14 rounded-full"
+            className="w-14 h-14 rounded-full object-cover"
           />
           <div className="ml-4">
             <p>

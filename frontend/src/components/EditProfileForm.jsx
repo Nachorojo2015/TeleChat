@@ -4,17 +4,19 @@ import { useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { TbCameraPlus } from "react-icons/tb";
 import { editProfile } from "../services/userService";
+import { useUserStore } from "../store/userStore";
 
-const EditProfileForm = ({ myUser }) => {
+const EditProfileForm = () => {
+  const { user, setUser } = useUserStore();
   const [picture, setPicture] = useState(null);
-  const [picturePreview, setPicturePreview] = useState(myUser?.profile_picture || null); 
-  const [fullname, setFullname] = useState(myUser?.display_name || "");
-  const [bio, setBio] = useState(myUser?.bio || "");
+  const [picturePreview, setPicturePreview] = useState(
+    user?.profile_picture || null
+  );
+  const [fullname, setFullname] = useState(user?.display_name || "");
+  const [bio, setBio] = useState(user?.bio || "");
   const [loader, setLoader] = useState(false);
 
   const { closeEditProfileForm } = useMenuStore();
-
-  console.log(picture)
 
   const handlePictureChange = (e) => {
     const file = e.target.files[0];
@@ -47,7 +49,13 @@ const EditProfileForm = ({ myUser }) => {
 
     try {
       await editProfile({ fullname, bio, picture });
-      closeEditProfileForm();
+
+      setUser({
+        ...user,
+        display_name: fullname,
+        bio,
+        profile_picture: picturePreview || user.profile_picture,
+      });
     } catch (error) {
       console.error("Error al editar perfil:", error);
     } finally {

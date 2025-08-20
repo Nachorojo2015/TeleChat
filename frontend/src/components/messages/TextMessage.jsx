@@ -1,10 +1,11 @@
+import { useUserStore } from "../../store/userStore";
 import { formatTimestampToHHMM } from "../../utils/formatTimestampToHHMM";
 
-const TextMessage = ({ messageData, myUser }) => {
-  console.log("TextMessage data:", messageData);
+const TextMessage = ({ messageData }) => {
+  const { user } = useUserStore();
 
   // Verifica si el usuario actual es el remitente del mensaje
-  if (myUser?.username === messageData.sender_username) {
+  if (user?.username === messageData.sender_username) {
     return (
       <li className="bg-blue-500 rounded-l-xl flex flex-col rounded-b-xl p-2 text-white max-w-xs ml-auto">
         <p>{messageData.content}</p>
