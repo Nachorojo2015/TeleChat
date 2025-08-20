@@ -54,8 +54,8 @@ export const editGroup = async (req, res) => {
   const { title, description, is_public } = req.body;
 
   try {
-    const groupId = await GroupsRepository.editGroup({ groupId: id, title, description, picture: file, is_public })
-    res.send({ groupId })
+    const groupData = await GroupsRepository.editGroup({ groupId: id, title, description, picture: file, is_public })
+    res.send({ groupData })
   } catch (error) {
     res.status(201).send(error.message)
   }

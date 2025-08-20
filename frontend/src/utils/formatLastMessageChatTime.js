@@ -1,5 +1,4 @@
 export const formatLastMessageChatTime = (timestamp) => {
-  console.log(timestamp)
   const date = new Date(timestamp);
   const now = new Date();
 

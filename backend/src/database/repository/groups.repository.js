@@ -128,7 +128,14 @@ export class GroupsRepository {
 
     if (!updatedGroup.rowCount) throw new Error("No se pudo editar el grupo");
 
-    return groupId;
+    const groupData = {
+      title,
+      description,
+      picture,
+      is_public
+    }
+
+    return groupData;
   }
 
   /**

@@ -1,15 +1,16 @@
 import { useEffect } from "react";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getChannel } from "../../services/channelsService";
 import { useState } from "react";
 import { SlOptionsVertical } from "react-icons/sl";
 import Messages from "../Messages";
 import { FaArrowUp, FaPaperclip } from "react-icons/fa6";
+import { useUserStore } from "../../store/userStore";
 
 const ChatChannel = () => {
   const { id } = useParams();
 
-  const { myUser } = useOutletContext();
+  const { user } = useUserStore();
 
   const [channel, setChannel] = useState(null);
 
@@ -50,7 +51,7 @@ const ChatChannel = () => {
           </ul>
         </div>
 
-        {myUser?.username === channel?.owner_username && (
+        {user?.username === channel?.owner_username && (
           <footer className="flex items-center gap-2 p-2 shadow bg-white">
             <FaPaperclip size={20} />
             <input

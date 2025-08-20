@@ -23,10 +23,14 @@ const Chatgroup = () => {
 
   const [message, setMessage] = useState("");
 
-
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
-  const { isOpenEditGroupForm, openEditGroupForm, isOpenInfoGroup, openInfoGroup } = useMenuStore();
+  const {
+    isOpenEditGroupForm,
+    openEditGroupForm,
+    isOpenInfoGroup,
+    openInfoGroup,
+  } = useMenuStore();
 
   const inputMessage = useRef(null);
 
@@ -38,6 +42,17 @@ const Chatgroup = () => {
     };
 
     fetchGroup();
+
+    socket.on("group-edited", (data) => {
+      if (data.groupId === id) {
+        console.log("Grupo editado desde el socket:", data.groupData);
+        setGroup((prevGroup) => ({ ...prevGroup, ...data.groupData }));
+      }
+    });
+
+    return () => {
+      socket.off("group-edited");
+    };
   }, [id]);
 
   const toggleDropDown = () => {
@@ -70,7 +85,7 @@ const Chatgroup = () => {
   };
 
   return (
-      <>
+    <>
       {/* Chat */}
       <div className="flex flex-col w-full">
         <header className="flex items-center gap-4 p-1 px-6 bg-white shadow">
@@ -112,7 +127,7 @@ const Chatgroup = () => {
 
         <div className="relative flex flex-1">
           <ul className="overflow-y-auto overflow-x-hidden absolute h-full w-full px-4 py-2">
-            <Messages chatId={id} typeChat="group"/>
+            <Messages chatId={id} typeChat="group" />
           </ul>
         </div>
 
@@ -135,8 +150,14 @@ const Chatgroup = () => {
       </div>
 
       {/* Info Group */}
-      {isOpenEditGroupForm ? <EditGroupForm group={group} id={id}/> : isOpenInfoGroup ? <InfoGroup group={group} id={id} /> : <></>}
-      </>
+      {isOpenEditGroupForm ? (
+        <EditGroupForm group={group} id={id} />
+      ) : isOpenInfoGroup ? (
+        <InfoGroup group={group} id={id} />
+      ) : (
+        <></>
+      )}
+    </>
   );
 };
 

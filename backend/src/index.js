@@ -39,9 +39,16 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
     console.log('Usuario conectado')
 
+    // Mensajes
     socket.on('receive-message', ({ message, chatId }) => {
       console.log("Mensaje recibido en el servidor:", message, chatId);
       socket.broadcast.emit('send-message', { message, chatId });
+    });
+
+    // Grupos
+    socket.on('edit-group', ({ groupId, groupData }) => {
+      console.log("Grupo editado:", groupId, groupData);
+      io.emit('group-edited', { groupId, groupData });
     });
 
     socket.on('disconnect', () => {

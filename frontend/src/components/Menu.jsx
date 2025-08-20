@@ -18,8 +18,6 @@ const Menu = () => {
   const { user } = useUserStore();
   const navigate = useNavigate();
 
-  console.log('User:', user);
-
   const handleLogout = async () => {
     try {
       await logout();

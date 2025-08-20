@@ -40,7 +40,6 @@ export const createGroup = async (groupData) => {
     }
 
     const data = await response.json();
-    console.log("Group created:", data);
     return data;
   } catch (error) {
     console.error("Error creating group:", error);
@@ -62,7 +61,6 @@ export const getGroup = async (groupId) => {
     }
 
     const data = await response.json();
-    console.log("Group data:", data);
     return data;
   } catch (error) {
     console.error("Error fetching group:", error);
@@ -108,7 +106,6 @@ export const getMembers = async (groupId) => {
     }
 
     const data = await response.json();
-    console.log("Members data:", data);
     return data.members;
   } catch (error) {
     console.error("Error fetching members:", error);
@@ -164,7 +161,6 @@ export const editGroup = async (groupId, groupData) => {
     }
 
     const data = await response.json();
-    console.log("Group edited:", data);
     return data;
   } catch (error) {
     console.error("Error editing group:", error);

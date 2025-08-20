@@ -41,6 +41,17 @@ const Chats = () => {
 
     socket.on("send-message", handleNewMessage);
 
+    socket.on("group-edited", ({ groupId, groupData }) => {
+      setChats((prevChats) => {
+        return prevChats.map((chat) => {
+          if (chat.id === groupId) {
+            return { ...chat, picture: groupData.picture ?? chat.picture, title: groupData.title || chat.title }; // Actualiza los datos del grupo
+          }
+          return chat;
+        });
+      });
+    });
+
     return () => {
       socket.off("send-message", handleNewMessage);
     };

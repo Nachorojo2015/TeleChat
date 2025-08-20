@@ -7,8 +7,11 @@ import { MdPublic } from "react-icons/md";
 import { RiGitRepositoryPrivateFill } from "react-icons/ri";
 import ClipLoader from "react-spinners/ClipLoader";
 
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:3000", { withCredentials: true });
+
 const EditGroupForm = ({ group, id }) => {
-  console.log("Grupo a editar:", group);
   const { closeEditGroupForm } = useMenuStore();
 
   const [picture, setPicture] = useState(null);
@@ -62,23 +65,20 @@ const EditGroupForm = ({ group, id }) => {
       picture,
     };
 
-    console.log("Datos del grupo a editar:", groupData);
-
-    if (picture) {
-      groupData.picture = picture;
-    }
-
     setLoader(true)
 
     try {
       const updatedGroup = await editGroup(id, groupData);
       console.log("Grupo editado:", updatedGroup);
+
+      socket.emit('edit-group', { groupId: id, groupData: updatedGroup.groupData });
     } catch (error) {
       console.error("Error al editar el grupo:", error);
     } finally {
       setLoader(false);
     }
   };
+
 
   return (
     <div className="shadow flex flex-col h-screen w-[40%] relative bg-white">
