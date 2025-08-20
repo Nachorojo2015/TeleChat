@@ -2,21 +2,25 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { useMenuStore } from "../store/menuStore";
 import { CiCamera } from "react-icons/ci";
 import { useState } from "react";
-import { FaCheck } from "react-icons/fa";
 import { editGroup } from "../services/groupsService";
 import { MdPublic } from "react-icons/md";
 import { RiGitRepositoryPrivateFill } from "react-icons/ri";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const EditGroupForm = ({ group, id }) => {
+  console.log("Grupo a editar:", group);
   const { closeEditGroupForm } = useMenuStore();
 
-  const [picture, setPicture] = useState(group?.picture);
+  const [picture, setPicture] = useState(null);
+  const [picturePreview, setPicturePreview] = useState(group?.picture);
 
   const [title, setTitle] = useState(group?.title || "");
 
   const [description, setDescription] = useState(group?.description || "");
 
-  const [isPublic, setIsPublic] = useState(group?.isPublic || false);
+  const [isPublic, setIsPublic] = useState(group?.is_public || false);
+
+  const [loader, setLoader] = useState(false);
 
   const handleTitle = (e) => {
     setTitle(e.target.value);
@@ -30,23 +34,22 @@ const EditGroupForm = ({ group, id }) => {
     const file = e.target.files[0];
 
     if (file) {
+      setPicture(file);
+
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPicture(reader.result);
+        setPicturePreview(reader.result);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handlePublicGroup = () => {
-    console.log("Publico");
     setIsPublic(true);
-    console.log(isPublic);
   };
 
   const handlePrivateGroup = () => {
     setIsPublic(false);
-    console.log(isPublic);
   };
 
   const handleSubmit = async (e) => {
@@ -59,15 +62,21 @@ const EditGroupForm = ({ group, id }) => {
       picture,
     };
 
+    console.log("Datos del grupo a editar:", groupData);
+
     if (picture) {
       groupData.picture = picture;
     }
+
+    setLoader(true)
 
     try {
       const updatedGroup = await editGroup(id, groupData);
       console.log("Grupo editado:", updatedGroup);
     } catch (error) {
       console.error("Error al editar el grupo:", error);
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -88,7 +97,7 @@ const EditGroupForm = ({ group, id }) => {
           <label>
             <picture className="relative group cursor-pointer m-auto">
               <img
-                src={picture}
+                src={picturePreview}
                 alt="picture-of-group"
                 className="object-cover rounded-full m-auto w-52 h-52"
                 style={{ filter: "brightness(50%)" }}
@@ -128,7 +137,7 @@ const EditGroupForm = ({ group, id }) => {
 
           {/* Editar tipo de grupo */}
           <b>Tipo de grupo</b>
-          <ul class="flex w-full flex-col gap-4">
+          <ul className="flex w-full flex-col gap-4">
             <div className={`block rounded-lg cursor-pointer p-5 border-2 hover:border-blue-500 transition-colors ${isPublic ? "border-blue-500" : ""}`} onClick={handlePublicGroup}>
               <MdPublic />
               <div className="w-full text-lg font-semibold">Grupo público</div>
@@ -146,6 +155,17 @@ const EditGroupForm = ({ group, id }) => {
               </div>
             </div>
           </ul>
+
+
+          {/* Boton para editar el grupo */}
+          <button
+            type="submit"
+            className="w-full cursor-pointer bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+          >
+            {
+              loader ? <ClipLoader color="white" size={24} cssOverride={{ display: "block", margin: "0 auto" }} /> : "Editar Grupo"
+            }
+          </button>
         </form>
       </div>
     </div>

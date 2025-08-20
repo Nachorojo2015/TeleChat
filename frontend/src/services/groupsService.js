@@ -120,7 +120,7 @@ export const editGroup = async (groupId, groupData) => {
   const formData = new FormData();
   formData.append('title', groupData.title);
   formData.append('description', groupData.description);
-  formData.append('isPublic', groupData.isPublic);
+  formData.append('is_public', groupData.is_public);
   if (groupData.picture) {
     formData.append('picture', groupData.picture);
   }

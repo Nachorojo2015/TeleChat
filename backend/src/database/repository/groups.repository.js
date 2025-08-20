@@ -114,7 +114,7 @@ export class GroupsRepository {
    */
   static async editGroup({ groupId, title, description, picture, is_public }) {
     if (picture) {
-      const uploadedUrl = await this.uploadPictureGroup({ picture, groupId });
+      const uploadedUrl = await uploadImageToStorage(`groups/picture/${groupId}.png`, picture);
       picture = uploadedUrl;
     }
 
