@@ -148,10 +148,6 @@ export class GroupsRepository {
 
     if (imMember) throw new Error("Ya estas en el grupo");
 
-    const imBanned = await this.isBanned({ groupId, userId });
-
-    if (imBanned) throw new Error("Estas baneado del grupo");
-
     const insertMember = await pool.query(
       `
     INSERT INTO chat_members (chat_id, user_id)
@@ -160,31 +156,6 @@ export class GroupsRepository {
     );
 
     if (!insertMember.rowCount) throw new Error("No pudiste unirte al grupo");
-  }
-
-  /**
-   * Agrega un miembro al grupo
-   * @param groupId - Id del grupo
-   * @param userId - Id del usuario
-   */
-  static async addMember({ groupId, userId }) {
-    const isMember = await this.isMember({ groupId, userId });
-
-    if (isMember) throw new Error("El usuario ya esta en el grupo");
-
-    const isBannedMember = await this.isBanned({ groupId, userId });
-
-    if (isBannedMember) throw new Error("El usuario esta baneado del grupo");
-
-    const insertMember = await pool.query(
-      `
-    INSERT INTO chat_members (chat_id, user_id)
-    VALUES ($1, $2)`,
-      [groupId, userId]
-    );
-
-    if (!insertMember.rowCount)
-      throw new Error("No se pudo agregar al usuario");
   }
 
   /**
@@ -199,127 +170,6 @@ export class GroupsRepository {
     );
 
     if (!removedMember.rowCount) throw new Error("Miembro no eliminado");
-  }
-
-  /**
-   * Banea a un miembro del grupo
-   * @param groupId - Id del grupo
-   * @param userBanId - Id del usuario a banear
-   * @param userId - Id del usuario que banea
-   */
-  static async banMember({ groupId, userBanId, userId }) {
-    await this.removeMember({ groupId, userId: userBanId });
-
-    const banedMember = await pool.query(
-      `
-    INSERT INTO chat_bans (chat_id, user_id, banned_by)
-    VALUES ($1, $2, $3)`,
-      [groupId, userBanId, userId]
-    );
-
-    if (!banedMember.rowCount) throw new Error("No se pudo banear al usuario");
-  }
-
-  /**
-   * Verifica si un usuario está baneado del grupo
-   * @param groupId - Id del grupo
-   * @param userId - Id del usuario
-   */
-  static async isBanned({ groupId, userId }) {
-    const isBannedUser = await pool.query(
-      `SELECT 1 FROM chat_bans WHERE chat_id = $1 AND user_id = $2`,
-      [groupId, userId]
-    );
-
-    return isBannedUser.rowCount > 0;
-  }
-
-  /**
-   * Desbanea a un miembro del grupo
-   * @param groupId - Id del grupo
-   * @param userId - Id del usuario
-   */
-  static async unbanMember({ groupId, userId }) {
-    const unbanMember = await pool.query(
-      `DELETE FROM chat_bans WHERE chat_id = $1 AND user_id = $2`,
-      [groupId, userId]
-    );
-
-    if (!unbanMember.rowCount)
-      throw new Error("No se pudo desbanear al usuario");
-
-    await this.addMember({ groupId, userId });
-  }
-
-  /**
-   * Mutea a un miembro del grupo
-   * @param groupId - Id del grupo
-   * @param userId - Id del usuario
-   */
-  static async muteMember({ groupId, userId }) {
-    const mutedMember = await pool.query(
-      `
-    UPDATE chat_members
-    SET is_muted = true
-    WHERE chat_id = $1 AND user_id = $2`,
-      [groupId, userId]
-    );
-
-    if (!mutedMember.rowCount) throw new Error("No se pudo mutear al usuario");
-  }
-
-  /**
-   * Desmutea a un miembro del grupo
-   * @param groupId - Id del grupo
-   * @param userId - Id del usuario
-   */
-  static async unmuteMember({ groupId, userId }) {
-    const unmutedMember = await pool.query(
-      `
-    UPDATE chat_members
-    SET is_muted = false
-    WHERE chat_id = $1 AND user_id = $2`,
-      [groupId, userId]
-    );
-
-    if (!unmutedMember.rowCount)
-      throw new Error("No se pudo desmutear al usuario");
-  }
-
-  /**
-   * Promueve a un miembro del grupo a administrador
-   * @param groupId - Id del grupo
-   * @param userId - Id del usuario
-   */
-  static async becomeMemberAdmin({ groupId, userId }) {
-    const becomeAdmin = await pool.query(
-      `
-    UPDATE chat_members
-    SET role = 'admin'
-    WHERE chat_id = $1 AND user_id = $2`,
-      [groupId, userId]
-    );
-
-    if (!becomeAdmin.rowCount)
-      throw new Error("No se pudo volver administrador al miembro");
-  }
-
-  /**
-   * Vuelve a un miembro del grupo
-   * @param groupId - Id del grupo
-   * @param userId - Id del usuario
-   */
-  static async becomeMember({ groupId, userId }) {
-    const becomeMember = await pool.query(
-      `
-    UPDATE chat_members
-    SET role = 'member'
-    WHERE chat_id = $1 AND user_id = $2`,
-      [groupId, userId]
-    );
-
-    if (!becomeMember.rowCount)
-      throw new Error("No se pudo volver miembro al usuario");
   }
 
   /**
