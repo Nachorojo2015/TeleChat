@@ -36,15 +36,3 @@ export const deleteMessage = async (req, res) => {
   }
 }
 
-export const editMessage = async (req, res) => {
-  const { messageId } = req.params;
-  const { content } = req.body;
-
-  try {
-    await MessagesRepository.editMessage({ messageId, content })
-    res.send('Mensaje editado')
-  } catch (error) {
-    res.status(201).send(error.message)
-  }
-}
-

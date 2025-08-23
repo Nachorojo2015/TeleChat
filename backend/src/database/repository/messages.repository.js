@@ -151,20 +151,6 @@ ORDER BY m.sent_at ASC;
     }
   }
 
-  static async editMessage({ messageId, content }) {
-    const result = await pool.query(
-      `
-    UPDATE messages
-    SET content = $2, edited_at = NOW()
-    WHERE id = $1`,
-      [messageId, content]
-    );
-
-    if (result.rowCount === 0) {
-      throw new Error("No se pudo editar el mensaje");
-    }
-  }
-
   static async uploadFileMessage({ messageId, fileUrl }) {
     try {
       const { path: filePath, originalname, mimetype } = fileUrl;
