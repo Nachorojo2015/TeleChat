@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getChats } from "../services/chatsService";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { formatLastMessageChatTime } from "../utils/formatLastMessageChatTime";
 import HashLoader from "react-spinners/HashLoader";
 import { IoChatbubbleEllipses } from "react-icons/io5";
@@ -15,6 +15,8 @@ const Chats = () => {
 
   const location = useLocation();
   const chatId = location.pathname.split('/').pop();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -53,6 +55,10 @@ const Chats = () => {
     });
 
     socket.on("group-deleted", (groupId) => {
+      if (groupId === chatId) {
+        navigate("/");
+      }
+
       setChats((prevChats) => {
         return prevChats.filter((chat) => chat.id !== groupId);
       });
@@ -63,7 +69,7 @@ const Chats = () => {
       socket.off("group-deleted");
       socket.off("group-edited");
     };
-  }, []);
+  }, [chatId, navigate]);
 
   if (loader) {
     return (

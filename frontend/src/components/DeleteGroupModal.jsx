@@ -1,15 +1,12 @@
 import { forwardRef, useState } from "react";
 import { deleteGroup } from "../services/groupsService";
 import ClipLoader from "react-spinners/ClipLoader";
-import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 
 const socket = io("http://localhost:3000", { withCredentials: true });
 
 const DeleteGroupModal = forwardRef(({ group, id }, ref) => {
   const [loader, setLoader] = useState(false);
-
-  const navigate = useNavigate();
 
   const closeDeleteGroupModal = () => {
     ref.current.close();
@@ -20,8 +17,6 @@ const DeleteGroupModal = forwardRef(({ group, id }, ref) => {
       setLoader(true);
       await deleteGroup(id);
       closeDeleteGroupModal();
-
-      navigate('/')
 
       socket.emit('delete-group', id);
     } catch (error) {

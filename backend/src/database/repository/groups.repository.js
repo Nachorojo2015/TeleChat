@@ -159,20 +159,6 @@ export class GroupsRepository {
   }
 
   /**
-   * Elimina un miembro del grupo
-   * @param groupId - Id del grupo
-   * @param userId - Id del usuario
-   */
-  static async removeMember({ groupId, userId }) {
-    const removedMember = await pool.query(
-      `DELETE FROM chat_members WHERE chat_id = $1 AND user_id = $2`,
-      [groupId, userId]
-    );
-
-    if (!removedMember.rowCount) throw new Error("Miembro no eliminado");
-  }
-
-  /**
    * Verifica si un usuario es miembro del grupo
    * @param groupId - Id del grupo
    * @param userId - Id del usuario

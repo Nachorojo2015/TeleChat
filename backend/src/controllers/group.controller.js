@@ -73,17 +73,6 @@ export const joinGroup = async (req, res) => {
   }
 }
 
-export const removeMember = async (req, res) => {
-  const { groupId, userId } = req.params;
-  
-  try {
-    await GroupsRepository.removeMember({ groupId, userId })
-    res.send('Miembro eliminado')
-  } catch (error) {
-    res.status(201).send(error.message)
-  }
-}
-
 export const getGroupsByName = async (req, res) => {
   const { name } = req.params;
 
