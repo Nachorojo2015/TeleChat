@@ -1,4 +1,4 @@
-import { FaPaperclip } from "react-icons/fa6";
+import { FaPaperclip, FaTrash } from "react-icons/fa6";
 import { FaArrowUp } from "react-icons/fa6";
 import Messages from "../Messages";
 import { useParams } from "react-router-dom";
@@ -13,6 +13,7 @@ import { io } from "socket.io-client";
 import { useMenuStore } from "../../store/menuStore";
 import EditGroupForm from "../EditGroupForm";
 import InfoGroup from "../InfoGroup";
+import DeleteGroupModal from "../DeleteGroupModal";
 
 const socket = io("http://localhost:3000", { withCredentials: true });
 
@@ -24,6 +25,8 @@ const Chatgroup = () => {
   const [message, setMessage] = useState("");
 
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+
+  const deleteGroupModal = useRef(null);
 
   const {
     isOpenEditGroupForm,
@@ -84,6 +87,10 @@ const Chatgroup = () => {
     }
   };
 
+  const openDeleteGroupModal = () => {
+    deleteGroupModal.current.showModal();
+  };
+
   return (
     <>
       {/* Chat */}
@@ -110,15 +117,26 @@ const Chatgroup = () => {
             {isDropDownOpen && (
               <ul className="absolute right-0 top-12 bg-white shadow-md rounded-md w-48 z-10">
                 {group?.role === "owner" && (
-                  <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
-                    <button
-                      className="flex items-center gap-6 cursor-pointer"
-                      onClick={openEditGroupForm}
-                    >
-                      <LuPencil size={20} />
-                      <span>Editar</span>
-                    </button>
-                  </li>
+                  <>
+                    <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
+                      <button
+                        className="flex items-center gap-6 cursor-pointer"
+                        onClick={openEditGroupForm}
+                      >
+                        <LuPencil size={20} />
+                        <span>Editar</span>
+                      </button>
+                    </li>
+                    <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
+                      <button
+                        className="flex items-center gap-6 cursor-pointer"
+                        onClick={openDeleteGroupModal}
+                      >
+                        <FaTrash color="red" size={20} />
+                        <span>Eliminar grupo</span>
+                      </button>
+                    </li>
+                  </>
                 )}
               </ul>
             )}
@@ -157,6 +175,8 @@ const Chatgroup = () => {
       ) : (
         <></>
       )}
+
+      <DeleteGroupModal ref={deleteGroupModal} group={group} />
     </>
   );
 };
