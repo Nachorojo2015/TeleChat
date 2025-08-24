@@ -1,12 +1,34 @@
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
+import { deleteGroup } from "../services/groupsService";
+import ClipLoader from "react-spinners/ClipLoader";
+import { useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
 
-const DeleteGroupModal = forwardRef(({ group }, ref) => {
+const socket = io("http://localhost:3000", { withCredentials: true });
+
+const DeleteGroupModal = forwardRef(({ group, id }, ref) => {
+  const [loader, setLoader] = useState(false);
+
+  const navigate = useNavigate();
+
   const closeDeleteGroupModal = () => {
     ref.current.close();
   };
 
-  const handleDeleteGroup = () => {
-    // Lógica para eliminar el grupo
+  const handleDeleteGroup = async () => {
+    try {
+      setLoader(true);
+      await deleteGroup(id);
+      closeDeleteGroupModal();
+
+      navigate('/')
+
+      socket.emit('delete-group', id);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoader(false);
+    }
   };
 
   return (
@@ -29,8 +51,9 @@ const DeleteGroupModal = forwardRef(({ group }, ref) => {
       </p>
 
       <div className="flex flex-col items-end mt-4">
-        <button className="uppercase text-red-500 p-1 rounded-md transition-all hover:bg-red-50 cursor-pointer" onClick={handleDeleteGroup}>
-          Eliminar grupo
+        <button className="uppercase flex items-center gap-2 text-red-500 p-1 rounded-md transition-all hover:bg-red-50 cursor-pointer" onClick={handleDeleteGroup}>
+          <span>Eliminar grupo</span>
+          {loader ? <ClipLoader size={10} /> : null}
         </button>
         <button
           className="uppercase text-blue-500 p-1 rounded-md transition-all hover:bg-blue-50 cursor-pointer"

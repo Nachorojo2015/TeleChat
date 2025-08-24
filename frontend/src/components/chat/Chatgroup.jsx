@@ -14,6 +14,7 @@ import { useMenuStore } from "../../store/menuStore";
 import EditGroupForm from "../EditGroupForm";
 import InfoGroup from "../InfoGroup";
 import DeleteGroupModal from "../DeleteGroupModal";
+import { CiCircleInfo } from "react-icons/ci";
 
 const socket = io("http://localhost:3000", { withCredentials: true });
 
@@ -100,7 +101,6 @@ const Chatgroup = () => {
             src={group?.picture}
             alt="picture-of-group"
             className="w-12 h-12 rounded-full object-cover cursor-pointer"
-            onClick={openInfoGroup}
           />
 
           <div>
@@ -118,6 +118,15 @@ const Chatgroup = () => {
               <ul className="absolute right-0 top-12 bg-white shadow-md rounded-md w-48 z-10">
                 {group?.role === "owner" && (
                   <>
+                  <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
+                      <button
+                        className="flex items-center gap-6 cursor-pointer"
+                        onClick={openInfoGroup}
+                      >
+                        <CiCircleInfo size={20} />
+                        <span>Info.</span>
+                      </button>
+                    </li>
                     <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
                       <button
                         className="flex items-center gap-6 cursor-pointer"
@@ -176,7 +185,7 @@ const Chatgroup = () => {
         <></>
       )}
 
-      <DeleteGroupModal ref={deleteGroupModal} group={group} />
+      <DeleteGroupModal ref={deleteGroupModal} group={group} id={id} />
     </>
   );
 };

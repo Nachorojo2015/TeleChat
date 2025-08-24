@@ -105,7 +105,7 @@ const EditGroupForm = ({ group, id }) => {
               />
               <CiCamera
                 size={60}
-                className="absolute top-20 right-1/2 left-1/2 transform -translate-x-1/2 group-hover:scale-110 transition"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:scale-110 transition"
                 color="white"
               />
             </picture>

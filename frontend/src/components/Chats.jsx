@@ -52,8 +52,16 @@ const Chats = () => {
       });
     });
 
+    socket.on("group-deleted", (groupId) => {
+      setChats((prevChats) => {
+        return prevChats.filter((chat) => chat.id !== groupId);
+      });
+    });
+
     return () => {
       socket.off("send-message", handleNewMessage);
+      socket.off("group-deleted");
+      socket.off("group-edited");
     };
   }, []);
 
@@ -104,7 +112,7 @@ const Chats = () => {
                   {formatLastMessageChatTime(chat?.sent_at)}
                 </time>
               </div>
-              <p>{chat.content}</p>
+              <p className="break-words truncate max-w-[200px]">{chat.content}</p>
             </div>
           </Link>
         ))

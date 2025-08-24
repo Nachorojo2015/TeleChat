@@ -51,6 +51,11 @@ io.on("connection", (socket) => {
       io.emit('group-edited', { groupId, groupData });
     });
 
+    socket.on('delete-group', (groupId) => {
+      console.log("Grupo eliminado:", groupId);
+      io.emit('group-deleted', groupId);
+    });
+
     socket.on('disconnect', () => {
         console.log('Usuario desconectado')
     })
