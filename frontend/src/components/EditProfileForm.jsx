@@ -110,24 +110,49 @@ const EditProfileForm = () => {
           />
         </label>
 
-        <input
-          type="text"
-          name="fullname"
-          className="w-full bg-transparent mt-4 placeholder:text-slate-400 text-slate-700 text-lg border border-slate-200 rounded-xl px-3 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300"
-          placeholder="Nombre completo"
-          defaultValue={fullname}
-          onChange={handleFullnameChange}
-          required
-        />
+        <div className="bg-white rounded-lg w-full mt-4">
+          <div className="relative bg-inherit">
+            <input
+              type="text"
+              id="fullname"
+              name="fullname"
+              className="w-full peer bg-transparent h-10 text-xl rounded-lg placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
+              placeholder="Nombre completo"
+              onChange={handleFullnameChange}
+              defaultValue={fullname}
+              autoComplete="off"
+              required
+            />
+            <label
+              htmlFor="fullname"
+              className="absolute cursor-text left-0 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all"
+            >
+              Nombre completo
+            </label>
+          </div>
+        </div>
 
-        <input
-          type="text"
-          name="bio"
-          defaultValue={bio}
-          placeholder="Biografía"
-          onChange={handleBioChange}
-          className="w-full bg-transparent mt-2 placeholder:text-slate-400 text-slate-700 text-lg border border-slate-200 rounded-xl px-3 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300"
-        />
+        <div className="bg-white rounded-lg w-full mt-4">
+          <div className="relative bg-inherit">
+            <input
+              type="text"
+              id="bio"
+              name="bio"
+              className="w-full peer bg-transparent h-10 text-xl rounded-lg placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
+              placeholder="Biografía"
+              onChange={handleBioChange}
+              defaultValue={bio}
+              autoComplete="off"
+              required
+            />
+            <label
+              htmlFor="bio"
+              className="absolute cursor-text left-0 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all"
+            >
+              Biografía
+            </label>
+          </div>
+        </div>
 
         <p className="text-slate-400 text-center">
           Datos como la edad, ocupación o ciudad. Ejemplo: Diseñador de Chicago.

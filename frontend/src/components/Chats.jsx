@@ -113,7 +113,7 @@ const Chats = () => {
             />
             <div className="w-full">
               <div className="flex justify-between items-center">
-                <b>{chat.title}</b>
+                <b className="break-words truncate max-w-[200px]">{chat.title}</b>
                 <time className="text-sm">
                   {formatLastMessageChatTime(chat?.sent_at)}
                 </time>

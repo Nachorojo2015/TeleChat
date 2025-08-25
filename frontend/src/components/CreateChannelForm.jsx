@@ -99,22 +99,47 @@ const CreateChannelForm = () => {
           />
         </label>
 
-        <input
-          type="text"
-          name="title"
-          className="w-full bg-transparent mt-4 placeholder:text-slate-400 text-slate-700 text-lg border border-slate-200 rounded-xl px-3 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300"
-          placeholder="Nombre del grupo"
-          onChange={handleNameChange}
-          required
-        />
+        <div className="bg-white rounded-lg w-full mt-4">
+          <div className="relative bg-inherit">
+            <input
+              type="text"
+              id="title"
+              name="title"
+              className="w-full peer bg-transparent h-10 text-xl rounded-lg placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
+              placeholder="Nombre del canal"
+              onChange={handleNameChange}
+              autoComplete="off"
+              required
+            />
+            <label
+              htmlFor="title"
+              className="absolute cursor-text left-0 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all"
+            >
+              Nombre del canal
+            </label>
+          </div>
+        </div>
 
-        <input
-          type="text"
-          name="description"
-          placeholder="Descripcion (Opcional)"
-          onChange={handleDescriptionChange}
-          className="w-full bg-transparent mt-2 placeholder:text-slate-400 text-slate-700 text-lg border border-slate-200 rounded-xl px-3 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300"
-        />
+        <div className="bg-white rounded-lg w-full mt-4">
+          <div className="relative bg-inherit">
+            <input
+              type="text"
+              id="description"
+              name="description"
+              className="w-full peer bg-transparent h-10 text-xl rounded-lg placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
+              placeholder="Descripcion (Opcional)"
+              onChange={handleDescriptionChange}
+              autoComplete="off"
+              required
+            />
+            <label
+              htmlFor="description"
+              className="absolute cursor-text left-0 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all"
+            >
+              Descripcion (Opcional)
+            </label>
+          </div>
+        </div>
 
         <p className="text-slate-400">
           Puedes poner una descripción para tu canal.

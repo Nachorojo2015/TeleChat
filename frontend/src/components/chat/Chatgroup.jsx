@@ -120,7 +120,7 @@ const Chatgroup = () => {
                   <>
                   <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
                       <button
-                        className="flex items-center gap-6 cursor-pointer"
+                        className="flex w-full items-center gap-6 cursor-pointer"
                         onClick={openInfoGroup}
                       >
                         <CiCircleInfo size={20} />
@@ -129,7 +129,7 @@ const Chatgroup = () => {
                     </li>
                     <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
                       <button
-                        className="flex items-center gap-6 cursor-pointer"
+                        className="flex w-full items-center gap-6 cursor-pointer"
                         onClick={openEditGroupForm}
                       >
                         <LuPencil size={20} />
@@ -138,7 +138,7 @@ const Chatgroup = () => {
                     </li>
                     <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
                       <button
-                        className="flex items-center gap-6 cursor-pointer"
+                        className="flex w-full items-center gap-6 cursor-pointer"
                         onClick={openDeleteGroupModal}
                       >
                         <FaTrash color="red" size={20} />

@@ -52,7 +52,7 @@ const CreateGroupForm = () => {
     <aside className="relative border-r border-slate-50 w-[25%] px-3">
       <nav className="flex items-center gap-6 p-5">
         <button onClick={closeCreateGroupForm} className="cursor-pointer">
-          <FaArrowLeft size={24}/>
+          <FaArrowLeft size={24} />
         </button>
         <h2 className="text-xl font-semibold">Nuevo Grupo</h2>
       </nav>
@@ -95,13 +95,26 @@ const CreateGroupForm = () => {
           />
         </label>
 
-        <input
-          name="title"
-          className="w-full bg-transparent mt-4 placeholder:text-slate-400 text-slate-700 text-lg border border-slate-200 rounded-xl px-3 py-3 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300"
-          placeholder="Nombre del grupo"
-          onChange={handleNameChange}
-          required
-        />
+        <div className="bg-white rounded-lg w-full mt-4">
+          <div className="relative bg-inherit">
+            <input
+              type="text"
+              id="title"
+              name="title"
+              className="w-full peer bg-transparent h-10 text-xl rounded-lg placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
+              placeholder="Nombre del grupo"
+              onChange={handleNameChange}
+              autoComplete="off"
+              required
+            />
+            <label
+              htmlFor="title"
+              className="absolute cursor-text left-0 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all"
+            >
+              Nombre del grupo
+            </label>
+          </div>
+        </div>
 
         {name ? (
           <button
@@ -109,13 +122,15 @@ const CreateGroupForm = () => {
             disabled={loader}
             className="absolute bottom-4 right-4 bg-blue-500 text-white p-4 shadow-lg hover:bg-blue-600 transition-colors rounded-full"
           >
-            {
-              loader ? (
-                <ClipLoader size={25} color="white" cssOverride={{display: "flex"}}/>
-              ) : (
-                <FaArrowRight size={25} />
-              )
-            }
+            {loader ? (
+              <ClipLoader
+                size={25}
+                color="white"
+                cssOverride={{ display: "flex" }}
+              />
+            ) : (
+              <FaArrowRight size={25} />
+            )}
           </button>
         ) : (
           <></>
