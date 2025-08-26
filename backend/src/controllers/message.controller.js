@@ -15,10 +15,10 @@ export const createMessage = async (req, res) => {
   const file = req.file;
   const { chatId } = req.params;
   const { userId } = req.user;
-  const { replyId, content, type, forwardedId } = req.body;
+  const { content, type } = req.body;
 
   try {
-    const message = await MessagesRepository.createMessage({ userId, chatId, replyId, content, type, fileUrl: file, forwardedId })
+    const message = await MessagesRepository.createMessage({ userId, chatId, content, type, fileUrl: file })
     res.send({ message });
   } catch (error) {
     res.status(500).send({ error: error.message });

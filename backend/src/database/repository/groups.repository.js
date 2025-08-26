@@ -194,6 +194,12 @@ export class GroupsRepository {
     return groups.rows[0];
   }
 
+  /**
+   * Obtiene los miembros de un grupo
+   * @param groupId - Id del grupo
+   * @returns {Array} - Lista de miembros del grupo
+   * @throws {Error} - Si no se encuentran miembros
+   */
   static async getMembers({ groupId }) {
     const members = await pool.query(
       `

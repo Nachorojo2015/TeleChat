@@ -72,10 +72,8 @@ const Chatgroup = () => {
 
     const messageData = {
       chatId: id,
-      replyId: "",
       content: message,
       type: "text",
-      forwardedId: "",
     };
 
     try {

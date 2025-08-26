@@ -37,18 +37,14 @@ export const getMessages = async (chatId) => {
 
 export const sendMessage = async ({
   chatId,
-  replyId,
   content,
   type,
-  forwardedId,
   file,
 }) => {
   
   const formData = new FormData();
-  formData.append("replyId", replyId);
   formData.append("content", content);
   formData.append("type", type);
-  formData.append("forwardedId", forwardedId);
 
   if (file) {
     formData.append("file", file);

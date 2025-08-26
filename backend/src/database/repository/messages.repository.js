@@ -5,29 +5,31 @@ import path from "path";
 import sharp from "sharp";
 
 export class MessagesRepository {
+  /**
+   * Crea un nuevo mensaje en la base de datos.
+   * Si hay archivo adjunto, lo sube a Firebase y guarda la info en media_files.
+   * @param {Object} params - Datos del mensaje
+   * @returns {Promise<Object>} - El mensaje creado
+   */
   static async createMessage({
     userId,
     chatId,
-    replyId,
     content,
     type,
     fileUrl,
-    forwardedId,
   }) {
     const result = await pool.query(
       `
-    INSERT INTO messages (chat_id, sender_id, reply_to_id, content, type, file_url, forwarded_from_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    INSERT INTO messages (chat_id, sender_id, content, type, file_url)
+    VALUES ($1, $2, $3, $4, $5)
     RETURNING id
     `,
       [
         chatId,
         userId,
-        replyId || null,
         content,
         type,
         fileUrl,
-        forwardedId || null,
       ]
     );
 
@@ -37,6 +39,7 @@ export class MessagesRepository {
 
     const messageId = result.rows[0].id;
 
+    // Si hay archivo adjunto, lo sube y guarda la info
     if (fileUrl) {
       const { url, fileName, fileSize, width, height } =
         await this.uploadFileMessage({ messageId, fileUrl });
@@ -45,6 +48,7 @@ export class MessagesRepository {
         throw new Error("No se pudo subir el archivo del mensaje");
       }
 
+      // Actualiza la URL del archivo en el mensaje
       const response = await pool.query(
         `UPDATE messages
       SET file_url = $1
@@ -57,6 +61,7 @@ export class MessagesRepository {
         throw new Error("No se pudo subir el archivo del mensaje");
       }
 
+      // Guarda la información del archivo en media_files
       const r = await pool.query(
         `INSERT INTO media_files (message_id, file_size, width, height, file_name)
         VALUES ($1, $2, $3, $4, $5)`,
@@ -68,9 +73,15 @@ export class MessagesRepository {
       }
     }
 
+    // Retorna el mensaje creado
     return this.getMessage({ messageId });
   }
 
+  /**
+   * Obtiene un mensaje por su ID, incluyendo datos del usuario que lo envió.
+   * @param {Object} params - { messageId }
+   * @returns {Promise<Object>} - El mensaje encontrado
+   */
   static async getMessage({ messageId }) {
     const result = await pool.query(
       `
@@ -80,7 +91,6 @@ export class MessagesRepository {
   m.type,
   m.file_url,
   m.sent_at,
-  m.edited_at,
 
   -- Usuario que envió el mensaje
   u.id AS sender_id,
@@ -106,6 +116,11 @@ ORDER BY m.sent_at ASC;
     return result.rows[0];
   }
 
+  /**
+   * Obtiene todos los mensajes de un chat, incluyendo datos del usuario que los envió.
+   * @param {Object} params - { chatId }
+   * @returns {Promise<Array>} - Lista de mensajes
+   */
   static async getMessages({ chatId }) {
     const result = await pool.query(
       `
@@ -115,7 +130,6 @@ ORDER BY m.sent_at ASC;
   m.type,
   m.file_url,
   m.sent_at,
-  m.edited_at,
 
   -- Usuario que envió el mensaje
   u.id AS sender_id,
@@ -138,6 +152,11 @@ ORDER BY m.sent_at ASC;
     return result.rows;
   }
 
+  /**
+   * Elimina un mensaje por su ID.
+   * @param {Object} params - { messageId }
+   * @returns {Promise<void>}
+   */
   static async deleteMessage({ messageId }) {
     const result = await pool.query(
       `
@@ -151,6 +170,12 @@ ORDER BY m.sent_at ASC;
     }
   }
 
+  /**
+   * Sube un archivo adjunto de mensaje a Firebase, obtiene su URL y dimensiones si es imagen.
+   * Borra el archivo local después de subirlo.
+   * @param {Object} params - { messageId, fileUrl }
+   * @returns {Promise<Object>} - Información del archivo subido
+   */
   static async uploadFileMessage({ messageId, fileUrl }) {
     try {
       const { path: filePath, originalname, mimetype } = fileUrl;
