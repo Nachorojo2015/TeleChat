@@ -15,38 +15,6 @@ export class UsersRepository {
     return result.rows[0];
   }
 
-  static async blockUser({ userId, blockedId }) {
-    if (userId === blockedId) {
-      throw new Error("Error de identificador");
-    }
-
-    const result = await pool.query(
-      `
-    INSERT INTO blocked_users (blocker_id, blocked_id)
-    VALUES ($1, $2)`,
-      [userId, blockedId]
-    );
-
-    if (result.rowCount === 0) {
-      throw new Error("No se pudo bloquear al usuario");
-    }
-  }
-
-  static async unlockUser({ userId, blockedId }) {
-    if (userId === blockedId) {
-      throw new Error("Error de identificador");
-    }
-
-    const result = await pool.query(
-      `DELETE FROM blocked_users WHERE blocker_id = $1 AND blocked_id = $2`,
-      [userId, blockedId]
-    );
-
-    if (result.rowCount === 0) {
-      throw new Error("No se pudo desbloquear al usuario");
-    }
-  }
-
   static async getUsersByUsername({ username, userId }) {
     const result = await pool.query(
       `
