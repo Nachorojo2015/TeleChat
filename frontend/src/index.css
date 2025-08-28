@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+/* Estilos personalizados para la barra de scroll del chat */
+.scrollbar-transparent::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+.scrollbar-transparent::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2); /* o transparent si quieres sin color */
+  border-radius: 8px;
+}
+.scrollbar-transparent::-webkit-scrollbar-track {
+  background: transparent;
+}

@@ -3,8 +3,6 @@ import { useState } from "react";
 import { getMessages } from "../services/messagesService";
 import TextMessage from "./messages/TextMessage";
 import ImageMessage from "./messages/ImageMessage";
-import AudioMessage from "./messages/AudioMessage";
-import FileMessage from "./messages/FileMessage";
 import VideoMessage from "./messages/VideoMessage";
 
 import { io } from "socket.io-client";
@@ -45,13 +43,9 @@ const Messages = ({ chatId }) => {
           <TextMessage key={message.message_id} messageData={message} />
         ) : message.type === "image" ? (
           <ImageMessage key={message.message_id} messageData={message} />
-        ) : message.type === "file" ? (
-          <FileMessage key={message.message_id} messageData={message} />
         ) : message.type === "video" ? (
           <VideoMessage key={message.message_id} messageData={message} />
-        ) : (
-          <AudioMessage key={message.message_id} messageData={message} />
-        )
+        ) : null
       )}
     </ul>
   );
