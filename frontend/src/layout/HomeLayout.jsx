@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Menu from "../components/Menu";
 import { useEffect } from "react";
 import { getMyUser } from "../services/userService";
@@ -8,6 +8,9 @@ const HomeLayout = () => {
   const { setUser } = useUserStore();
 
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const chatId = location.pathname.split('/').pop();
 
   useEffect(() => {
     const fetchMyUserData = async () => {
@@ -27,7 +30,7 @@ const HomeLayout = () => {
     <section className="flex h-[100dvh] overflow-hidden">
       <Menu />
 
-      <section className="flex w-[75%] bg-contain bg-[url(/background-chat.png)]">
+      <section className={`xl:flex xl:w-[75%] w-full ${chatId ? 'flex' : 'hidden'} bg-contain bg-[url(/background-chat.png)]`}>
         <Outlet />
       </section>
     </section>

@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getChannel } from "../../services/channelsService";
 import { useState } from "react";
 import { SlOptionsVertical } from "react-icons/sl";
 import Messages from "../Messages";
-import { FaArrowUp, FaPaperclip } from "react-icons/fa6";
+import { FaArrowLeft, FaArrowUp, FaPaperclip } from "react-icons/fa6";
 import { useUserStore } from "../../store/userStore";
 
 const ChatChannel = () => {
@@ -28,7 +28,11 @@ const ChatChannel = () => {
   return (
     <>
       <div className="flex flex-col w-full">
-        <header className="flex items-center gap-4 p-1 px-6 bg-white shadow">
+        <header className="flex items-center gap-4 p-1 px-3 bg-white shadow">
+          <Link to={'/'}>
+            <FaArrowLeft />
+          </Link>
+
           <img
             src={channel?.picture}
             alt="picture-of-group"

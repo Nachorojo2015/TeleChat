@@ -49,7 +49,7 @@ const CreateGroupForm = () => {
   };
 
   return (
-    <aside className="relative border-r border-slate-50 w-[25%] px-3">
+    <aside className="relative border-r border-slate-50 xl:w-[25%] w-full px-3">
       <nav className="flex items-center gap-6 p-5">
         <button onClick={closeCreateGroupForm} className="cursor-pointer">
           <FaArrowLeft size={24} />

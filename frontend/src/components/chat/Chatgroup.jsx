@@ -1,7 +1,7 @@
-import { FaPaperclip, FaTrash } from "react-icons/fa6";
+import { FaArrowLeft, FaPaperclip, FaTrash } from "react-icons/fa6";
 import { FaArrowUp } from "react-icons/fa6";
 import Messages from "../Messages";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { SlOptionsVertical, SlPicture } from "react-icons/sl";
 import { useEffect } from "react";
 import { getGroup } from "../../services/groupsService";
@@ -88,8 +88,12 @@ const Chatgroup = () => {
   return (
     <>
       {/* Chat */}
-      <div className="flex flex-col w-full">
-        <header className="flex items-center gap-4 p-1 px-6 bg-white shadow">
+      <div className={`xl:flex flex-col w-full ${isOpenInfoGroup || isOpenEditGroupForm ? 'hidden' : 'flex'}`}>
+        <header className="flex items-center gap-4 p-1 px-3 bg-white shadow">
+          <Link to={'/'}>
+            <FaArrowLeft />
+          </Link>
+
           <img
             src={group?.picture}
             alt="picture-of-group"

@@ -9,7 +9,7 @@ const InfoGroup = ({ group, id }) => {
   const { closeInfoGroup, openEditGroupForm } = useMenuStore();
 
   return (
-    <aside className="shadow flex flex-col h-screen w-[40%] bg-white">
+    <aside className="shadow flex flex-col h-screen xl:w-[40%] w-full bg-white">
       <header className="flex items-center gap-4 p-4">
         <button onClick={closeInfoGroup} className="cursor-pointer">
           <IoMdClose size={24} />

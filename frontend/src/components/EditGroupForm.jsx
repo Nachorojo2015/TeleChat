@@ -83,7 +83,7 @@ const EditGroupForm = ({ group, id }) => {
   };
 
   return (
-    <div className="shadow flex flex-col h-screen w-[40%] relative bg-white">
+    <div className="shadow flex flex-col h-screen xl:w-[40%] w-full relative bg-white">
       <header className="flex items-center gap-4 p-4">
         <FaArrowLeft
           size={24}

@@ -8,7 +8,7 @@ import { CiSearch } from "react-icons/ci";
 import { useState } from "react";
 import { CiLogout } from "react-icons/ci";
 import { logout } from "../services/auth/authService";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import EditProfileForm from "./EditProfileForm";
 import { useUserStore } from "../store/userStore";
 
@@ -17,6 +17,11 @@ const Menu = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user } = useUserStore();
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const chatId = location.pathname.split('/').pop();
+
+  console.log(chatId)
 
   const handleLogout = async () => {
     try {
@@ -40,7 +45,7 @@ const Menu = () => {
   }
 
   return (
-    <aside className="relative border-r flex flex-col border-slate-50 w-[25%] group">
+    <aside className={`relative border-r flex flex-col border-slate-50 xl:w-[25%] xl:flex w-full ${chatId ? 'hidden' : 'flex'} group`}>
       <nav className="flex items-center gap-4 px-4 py-1">
         <div className="relative">
           <button
