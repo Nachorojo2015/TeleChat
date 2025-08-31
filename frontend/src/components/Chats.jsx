@@ -6,6 +6,7 @@ import HashLoader from "react-spinners/HashLoader";
 import { IoChatbubbleEllipses } from "react-icons/io5";
 
 import { io } from "socket.io-client";
+import { FaImage, FaVideo } from "react-icons/fa6";
 
 const socket = io("http://localhost:3000", { withCredentials: true });
 
@@ -34,7 +35,7 @@ const Chats = () => {
       setChats((prevChats) => {
         return prevChats.map((chat) => {
           if (chat.id === chatId) {
-            return { ...chat, content: message.content }; // Actualiza el contenido del chat
+            return { ...chat, content: message.content, message_type: message.type }; // Actualiza el contenido del chat
           }
           return chat;
         });
@@ -91,6 +92,8 @@ const Chats = () => {
     );
   }
 
+  console.log("Chats data:", chats);
+
   return (
     <ul className="overflow-y-auto p-3 overflow-x-hidden absolute h-full w-full">
       {
@@ -99,8 +102,6 @@ const Chats = () => {
             to={
               chat.type === "group"
                 ? `/g/${chat.id}`
-                : chat.type === "channel"
-                ? `/c/${chat.id}`
                 : `/p/${chat.id}`
             }
             key={chat.id}
@@ -118,7 +119,21 @@ const Chats = () => {
                   {formatLastMessageChatTime(chat?.sent_at)}
                 </time>
               </div>
-              <p className="break-words truncate max-w-[200px]">{chat.content}</p>
+              {
+                chat.message_type === "image" ?
+                <div className="flex items-center gap-2">
+                  <FaImage />
+                  <p className="break-words truncate max-w-[200px]">{chat.content || "Imagen"}</p>
+                </div>
+                :
+                chat.message_type === 'video' ? 
+                <div className="flex items-center gap-2">
+                  <FaVideo />
+                  <p className="break-words truncate max-w-[200px]">{chat.content || "Video"}</p>
+                </div>
+                :
+                <p className="break-words truncate max-w-[200px]">{chat.content}</p>
+              }
             </div>
           </Link>
         ))

@@ -18,6 +18,7 @@ export class MessagesRepository {
     type,
     fileUrl,
   }) {
+
     const result = await pool.query(
       `
     INSERT INTO messages (chat_id, sender_id, content, type, file_url)
@@ -86,33 +87,41 @@ export class MessagesRepository {
     const result = await pool.query(
       `
       SELECT
-  m.id AS message_id,
-  m.content,
-  m.type,
-  m.file_url,
-  m.sent_at,
+      m.id AS message_id,
+      m.content,
+      m.type,
+      m.file_url,
+      m.sent_at,
 
-  -- Usuario que envió el mensaje
-  u.id AS sender_id,
-  u.display_name AS sender_name,
-  u.profile_picture AS sender_avatar,
-  u.username AS sender_username
+      -- Usuario que envió el mensaje
+      u.id AS sender_id,
+      u.display_name AS sender_name,
+      u.profile_picture AS sender_avatar,
+      u.username AS sender_username,
 
-FROM messages m
-JOIN users u ON m.sender_id = u.id
+      -- Datos de la imagen
+      md.width,
+      md.height
 
-WHERE m.id = $1
-GROUP BY
-  m.id,
-  u.id
-ORDER BY m.sent_at ASC;
-`,
+    FROM messages m
+    JOIN users u ON m.sender_id = u.id
+    LEFT JOIN media_files md ON m.id = md.message_id
+
+    WHERE m.id = $1
+    GROUP BY
+      m.id,
+      u.id,
+      md.width,
+      md.height
+    ORDER BY m.sent_at ASC;
+    `,
       [messageId]
     );
 
     if (result.rowCount === 0) {
       throw new Error("Mensaje no encontrado");
     }
+
     return result.rows[0];
   }
 
@@ -124,28 +133,35 @@ ORDER BY m.sent_at ASC;
   static async getMessages({ chatId }) {
     const result = await pool.query(
       `
-    SELECT
-  m.id AS message_id,
-  m.content,
-  m.type,
-  m.file_url,
-  m.sent_at,
+      SELECT
+      m.id AS message_id,
+      m.content,
+      m.type,
+      m.file_url,
+      m.sent_at,
 
-  -- Usuario que envió el mensaje
-  u.id AS sender_id,
-  u.display_name AS sender_name,
-  u.profile_picture AS sender_avatar,
-  u.username AS sender_username
+      -- Usuario que envió el mensaje
+      u.id AS sender_id,
+      u.display_name AS sender_name,
+      u.profile_picture AS sender_avatar,
+      u.username AS sender_username,
 
-FROM messages m
-JOIN users u ON m.sender_id = u.id
+      -- Datos de la imagen
+      md.width,
+      md.height
 
-WHERE m.chat_id = $1
-GROUP BY
-  m.id,
-  u.id
-ORDER BY m.sent_at ASC;
-`,
+    FROM messages m
+    JOIN users u ON m.sender_id = u.id
+    LEFT JOIN media_files md ON m.id = md.message_id
+
+    WHERE m.chat_id = $1
+    GROUP BY
+      m.id,
+      u.id,
+      md.width,
+      md.height
+    ORDER BY m.sent_at ASC;
+    `,
       [chatId]
     );
 

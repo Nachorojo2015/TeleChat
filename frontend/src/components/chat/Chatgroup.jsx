@@ -15,6 +15,7 @@ import EditGroupForm from "../EditGroupForm";
 import InfoGroup from "../InfoGroup";
 import DeleteGroupModal from "../DeleteGroupModal";
 import { CiCircleInfo } from "react-icons/ci";
+import MediaModal from "../MediaModal";
 
 const socket = io("http://localhost:3000", { withCredentials: true });
 
@@ -27,7 +28,12 @@ const Chatgroup = () => {
 
   const [isDropUpOpen, setIsDropUpOpen] = useState(false);
 
+  const [file, setFile] = useState(null);
+  const [filePreview, setFilePreview] = useState(null);
+
   const deleteGroupModal = useRef(null);
+
+  const mediaModal = useRef(null);
 
   const {
     isOpenEditGroupForm,
@@ -85,12 +91,36 @@ const Chatgroup = () => {
     deleteGroupModal.current.showModal();
   };
 
+
+  const handleShowMedia = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFile(file);
+      // Si es imagen o video, genera la preview
+      if (file.type.startsWith("image/") || file.type.startsWith("video/")) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setFilePreview(reader.result);
+          mediaModal.current.showModal();
+        };
+        reader.readAsDataURL(file);
+      } else {
+        setFilePreview(null);
+      }
+    }
+  };
+
+
   return (
     <>
       {/* Chat */}
-      <div className={`xl:flex flex-col w-full ${isOpenInfoGroup || isOpenEditGroupForm ? 'hidden' : 'flex'}`}>
+      <div
+        className={`xl:flex flex-col w-full ${
+          isOpenInfoGroup || isOpenEditGroupForm ? "hidden" : "flex"
+        }`}
+      >
         <header className="flex items-center gap-4 p-1 px-3 bg-white shadow">
-          <Link to={'/'}>
+          <Link to={"/"}>
             <FaArrowLeft />
           </Link>
 
@@ -173,6 +203,7 @@ const Chatgroup = () => {
                     type="file"
                     hidden
                     accept=".jpg, .jpeg, .png, .gif, .webp, .mp4"
+                    onChange={handleShowMedia}
                   />
                 </label>
               </div>
@@ -209,6 +240,9 @@ const Chatgroup = () => {
 
       {/* Modal para borrar un grupo */}
       <DeleteGroupModal ref={deleteGroupModal} group={group} id={id} />
+
+      {/* Modal para mostrar archivos multimedia */}
+      <MediaModal ref={mediaModal} file={file} filePreview={filePreview} id={id} />
     </>
   );
 };

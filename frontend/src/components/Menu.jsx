@@ -3,7 +3,6 @@ import Chats from "./Chats";
 import CreateChatButton from "./CreateChatButton";
 import { useMenuStore } from "../store/menuStore";
 import CreateGroupForm from "./CreateGroupForm";
-import CreateChannelForm from "./CreateChannelForm";
 import { CiSearch } from "react-icons/ci";
 import { useState } from "react";
 import { CiLogout } from "react-icons/ci";
@@ -13,7 +12,7 @@ import EditProfileForm from "./EditProfileForm";
 import { useUserStore } from "../store/userStore";
 
 const Menu = () => {
-  const { isOpenCreateGroupForm, isOpenCreateChannelForm, isOpenEditProfileForm, openEditProfileForm } = useMenuStore();
+  const { isOpenCreateGroupForm, isOpenEditProfileForm, openEditProfileForm } = useMenuStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user } = useUserStore();
   const navigate = useNavigate();
@@ -34,10 +33,6 @@ const Menu = () => {
 
   if (isOpenCreateGroupForm) {
     return <CreateGroupForm />; // Si el formulario de creación de grupo está abierto, no mostrar el menú
-  }
-
-  if (isOpenCreateChannelForm) {
-    return <CreateChannelForm />; // Si el formulario de creación de canal está abierto, no mostrar el menú
   }
 
   if (isOpenEditProfileForm) {

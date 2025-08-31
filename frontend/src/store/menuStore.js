@@ -6,11 +6,6 @@ export const useMenuStore = create((set) => ({
   closeCreateGroupForm: () => set({ isOpenCreateGroupForm: false }),
   openCreateGroupForm: () => set({ isOpenCreateGroupForm: true }),
 
-  // Menu de creación de canales
-  isOpenCreateChannelForm: false,
-  closeCreateChannelForm: () => set({ isOpenCreateChannelForm: false }),
-  openCreateChannelForm: () => set({ isOpenCreateChannelForm: true }),
-
   // Menu para ver información del grupo
   isOpenInfoGroup: false,
   closeInfoGroup: () => set({ isOpenInfoGroup: false }),

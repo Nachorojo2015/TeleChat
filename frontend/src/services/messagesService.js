@@ -41,7 +41,6 @@ export const sendMessage = async ({
   type,
   file,
 }) => {
-  
   const formData = new FormData();
   formData.append("content", content);
   formData.append("type", type);

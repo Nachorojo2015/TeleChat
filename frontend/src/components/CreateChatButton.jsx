@@ -6,7 +6,7 @@ import { IoMdClose } from "react-icons/io";
 const CreateChatButton = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const { openCreateGroupForm, openCreateChannelForm } = useMenuStore();
+  const { openCreateGroupForm } = useMenuStore();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -14,11 +14,6 @@ const CreateChatButton = () => {
 
   const handleCreateGroup = () => {
     openCreateGroupForm();
-    setIsMenuOpen(false);
-  };
-
-  const handleCreateChannel = () => {
-    openCreateChannelForm();
     setIsMenuOpen(false);
   };
 
@@ -33,14 +28,6 @@ const CreateChatButton = () => {
           >
             <LuUsers className="text-blue-500" />
             <span>Crear Grupo</span>
-          </button>
-          
-          <button
-            onClick={handleCreateChannel}
-            className="w-full cursor-pointer px-4 py-3 text-left hover:bg-gray-100 flex items-center gap-3 text-gray-700"
-          >
-            <LuMegaphone className="text-green-500" />
-            <span>Crear Canal</span>
           </button>
         </div>
       )}
