@@ -42,7 +42,7 @@ io.on("connection", (socket) => {
     // Mensajes
     socket.on('receive-message', ({ message, chatId }) => {
       console.log("Mensaje recibido en el servidor:", message, chatId);
-      socket.broadcast.emit('send-message', { message, chatId });
+      io.emit('send-message', { message, chatId });
     });
 
     // Grupos
@@ -57,7 +57,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('Usuario desconectado')
+      console.log('Usuario desconectado')
     })
 });
 

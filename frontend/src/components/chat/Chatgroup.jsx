@@ -1,20 +1,19 @@
-import { FaArrowLeft, FaTrash } from "react-icons/fa6";
+import { FaArrowLeft } from "react-icons/fa6";
 import Messages from "../Messages";
 import { Link, useParams } from "react-router-dom";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useEffect } from "react";
 import { getGroup } from "../../services/groupsService";
 import { useState } from "react";
-import { useRef } from "react";
 import { LuPencil } from "react-icons/lu";
 import { useMenuStore } from "../../store/menuStore";
 import EditGroupForm from "../EditGroupForm";
 import InfoGroup from "../InfoGroup";
-import DeleteGroupModal from "../DeleteGroupModal";
 import { CiCircleInfo } from "react-icons/ci";
 import MediaUploadButton from "../MediaUploadButton";
 import MessageInput from "../MessageInput";
 import { socket } from "../../socket/socket";
+import DeleteGroupButton from "../DeleteGroupButton";
 
 const Chatgroup = () => {
   const { id } = useParams();
@@ -22,8 +21,6 @@ const Chatgroup = () => {
   const [group, setGroup] = useState(null);
 
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
-
-  const deleteGroupModal = useRef(null);
 
 
   const {
@@ -60,9 +57,7 @@ const Chatgroup = () => {
     setIsDropDownOpen(!isDropDownOpen);
   };
 
-  const openDeleteGroupModal = () => {
-    deleteGroupModal.current.showModal();
-  };
+ 
 
   return (
     <>
@@ -117,13 +112,7 @@ const Chatgroup = () => {
                       </button>
                     </li>
                     <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
-                      <button
-                        className="flex w-full items-center gap-6 cursor-pointer"
-                        onClick={openDeleteGroupModal}
-                      >
-                        <FaTrash color="red" size={20} />
-                        <span>Eliminar grupo</span>
-                      </button>
+                      <DeleteGroupButton group={group} id={id} />
                     </li>
                   </>
                 )}
@@ -152,9 +141,6 @@ const Chatgroup = () => {
       ) : (
         <></>
       )}
-
-      {/* Modal para borrar un grupo */}
-      <DeleteGroupModal ref={deleteGroupModal} group={group} id={id} />
     </>
   );
 };
