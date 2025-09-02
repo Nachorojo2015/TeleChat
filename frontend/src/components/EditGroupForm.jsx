@@ -6,10 +6,7 @@ import { editGroup } from "../services/groupsService";
 import { MdPublic } from "react-icons/md";
 import { RiGitRepositoryPrivateFill } from "react-icons/ri";
 import ClipLoader from "react-spinners/ClipLoader";
-
-import { io } from "socket.io-client";
-
-const socket = io("http://localhost:3000", { withCredentials: true });
+import { socket } from "../socket/socket";
 
 const EditGroupForm = ({ group, id }) => {
   const { closeEditGroupForm } = useMenuStore();

@@ -1,23 +1,20 @@
-import { FaArrowLeft, FaPaperclip, FaTrash } from "react-icons/fa6";
-import { FaArrowUp } from "react-icons/fa6";
+import { FaArrowLeft, FaTrash } from "react-icons/fa6";
 import Messages from "../Messages";
 import { Link, useParams } from "react-router-dom";
-import { SlOptionsVertical, SlPicture } from "react-icons/sl";
+import { SlOptionsVertical } from "react-icons/sl";
 import { useEffect } from "react";
 import { getGroup } from "../../services/groupsService";
 import { useState } from "react";
-import { sendMessage } from "../../services/messagesService";
 import { useRef } from "react";
 import { LuPencil } from "react-icons/lu";
-import { io } from "socket.io-client";
 import { useMenuStore } from "../../store/menuStore";
 import EditGroupForm from "../EditGroupForm";
 import InfoGroup from "../InfoGroup";
 import DeleteGroupModal from "../DeleteGroupModal";
 import { CiCircleInfo } from "react-icons/ci";
-import MediaModal from "../MediaModal";
-
-const socket = io("http://localhost:3000", { withCredentials: true });
+import MediaUploadButton from "../MediaUploadButton";
+import MessageInput from "../MessageInput";
+import { socket } from "../../socket/socket";
 
 const Chatgroup = () => {
   const { id } = useParams();
@@ -26,14 +23,8 @@ const Chatgroup = () => {
 
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
-  const [isDropUpOpen, setIsDropUpOpen] = useState(false);
-
-  const [file, setFile] = useState(null);
-  const [filePreview, setFilePreview] = useState(null);
-
   const deleteGroupModal = useRef(null);
 
-  const mediaModal = useRef(null);
 
   const {
     isOpenEditGroupForm,
@@ -42,7 +33,7 @@ const Chatgroup = () => {
     openInfoGroup,
   } = useMenuStore();
 
-  const inputMessage = useRef(null);
+
 
   useEffect(() => {
     const fetchGroup = async () => {
@@ -69,47 +60,9 @@ const Chatgroup = () => {
     setIsDropDownOpen(!isDropDownOpen);
   };
 
-  const handleSendMessage = async () => {
-    if (!inputMessage.current.value) return;
-
-    const messageData = {
-      chatId: id,
-      content: inputMessage.current.value,
-      type: "text",
-    };
-
-    try {
-      const messageCreated = await sendMessage(messageData);
-      inputMessage.current.value = "";
-      socket.emit("receive-message", { message: messageCreated, chatId: id });
-    } catch (error) {
-      console.error("Error al enviar el mensaje:", error);
-    }
-  };
-
   const openDeleteGroupModal = () => {
     deleteGroupModal.current.showModal();
   };
-
-
-  const handleShowMedia = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFile(file);
-      // Si es imagen o video, genera la preview
-      if (file.type.startsWith("image/") || file.type.startsWith("video/")) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setFilePreview(reader.result);
-          mediaModal.current.showModal();
-        };
-        reader.readAsDataURL(file);
-      } else {
-        setFilePreview(null);
-      }
-    }
-  };
-
 
   return (
     <>
@@ -186,46 +139,8 @@ const Chatgroup = () => {
         </div>
 
         <footer className="flex items-center justify-center gap-2 p-2 shadow bg-white">
-          <div className="relative">
-            <button
-              className="cursor-pointer"
-              onClick={() => setIsDropUpOpen((prev) => !prev)}
-            >
-              <FaPaperclip size={20} />
-            </button>
-            {isDropUpOpen && (
-              <div className="absolute bottom-12 left-0 mb-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-40 z-20">
-                <label className="w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-left hover:bg-gray-100 text-gray-700">
-                  <SlPicture />
-                  <span>Foto o video</span>
-
-                  <input
-                    type="file"
-                    hidden
-                    accept=".jpg, .jpeg, .png, .gif, .webp, .mp4"
-                    onChange={handleShowMedia}
-                  />
-                </label>
-              </div>
-            )}
-          </div>
-          <textarea
-            placeholder="Escribe un mensaje..."
-            className="w-full p-1 outline-none [field-sizing:content] max-h-16 resize-none h-auto"
-            ref={inputMessage}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSendMessage();
-              }
-            }}
-          />
-          <button
-            className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors"
-            onClick={handleSendMessage}
-          >
-            <FaArrowUp />
-          </button>
+          <MediaUploadButton id={id} />
+          <MessageInput id={id} />
         </footer>
       </div>
 
@@ -240,9 +155,6 @@ const Chatgroup = () => {
 
       {/* Modal para borrar un grupo */}
       <DeleteGroupModal ref={deleteGroupModal} group={group} id={id} />
-
-      {/* Modal para mostrar archivos multimedia */}
-      <MediaModal ref={mediaModal} file={file} filePreview={filePreview} id={id} />
     </>
   );
 };

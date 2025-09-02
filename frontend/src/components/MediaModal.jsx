@@ -1,10 +1,8 @@
 import { forwardRef, useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { sendMessage } from "../services/messagesService";
-import { io } from "socket.io-client";
 import ClipLoader from "react-spinners/ClipLoader";
-
-const socket = io("http://localhost:3000", { withCredentials: true });
+import { socket } from "../socket/socket";
 
 const MediaModal = forwardRef(({ file, filePreview, id }, ref) => {
   const inputMessage = useRef(null);

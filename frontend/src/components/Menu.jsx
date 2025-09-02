@@ -10,17 +10,16 @@ import { logout } from "../services/auth/authService";
 import { useLocation, useNavigate } from "react-router-dom";
 import EditProfileForm from "./EditProfileForm";
 import { useUserStore } from "../store/userStore";
+import SearchChatsForm from "./SearchChatsForm";
 
 const Menu = () => {
-  const { isOpenCreateGroupForm, isOpenEditProfileForm, openEditProfileForm } = useMenuStore();
+  const { isOpenCreateGroupForm, isOpenEditProfileForm, openEditProfileForm, isOpenSearchChats, openSearchChats } = useMenuStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user } = useUserStore();
   const navigate = useNavigate();
 
   const location = useLocation();
   const chatId = location.pathname.split('/').pop();
-
-  console.log(chatId)
 
   const handleLogout = async () => {
     try {
@@ -39,6 +38,10 @@ const Menu = () => {
     return <EditProfileForm />; // Si el formulario de edición de perfil está abierto, no mostrar el menú
   }
 
+  if (isOpenSearchChats) {
+    return <SearchChatsForm />;
+  }
+
   return (
     <aside className={`relative border-r flex flex-col border-slate-50 xl:w-[25%] xl:flex w-full ${chatId ? 'hidden' : 'flex'} group`}>
       <nav className="flex items-center gap-4 px-4 py-1">
@@ -47,7 +50,7 @@ const Menu = () => {
             className="cursor-pointer"
             onClick={() => setIsDropdownOpen((prev) => !prev)}
           >
-            <GiHamburgerMenu size={24} />
+            <GiHamburgerMenu size={25} />
           </button>
           {isDropdownOpen && (
             <div className="absolute left-0 top-full mt-5 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-72 z-20">
@@ -68,6 +71,7 @@ const Menu = () => {
             type="text"
             placeholder="Buscar"
             className="w-full p-3 rounded-full indent-8 bg-slate-50"
+            onClick={openSearchChats}
           />
           <CiSearch
             color="black"

@@ -4,10 +4,7 @@ import { getMessages } from "../services/messagesService";
 import TextMessage from "./messages/TextMessage";
 import ImageMessage from "./messages/ImageMessage";
 import VideoMessage from "./messages/VideoMessage";
-
-import { io } from "socket.io-client";
-
-const socket = io("http://localhost:3000", { withCredentials: true });
+import { socket } from "../socket/socket";
 
 const Messages = ({ chatId }) => {
   const [messages, setMessages] = useState([]);

@@ -20,4 +20,9 @@ export const useMenuStore = create((set) => ({
   isOpenEditProfileForm: false,
   closeEditProfileForm: () => set({ isOpenEditProfileForm: false }),
   openEditProfileForm: () => set({ isOpenEditProfileForm: true }),
+
+  // Menu para buscar chats
+  isOpenSearchChats: false,
+  closeSearchChats: () => set({ isOpenSearchChats: false }),
+  openSearchChats: () => set({ isOpenSearchChats: true }),
 }));

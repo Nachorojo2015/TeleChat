@@ -1,9 +1,7 @@
 import { forwardRef, useState } from "react";
 import { deleteGroup } from "../services/groupsService";
 import ClipLoader from "react-spinners/ClipLoader";
-import { io } from "socket.io-client";
-
-const socket = io("http://localhost:3000", { withCredentials: true });
+import { socket } from "../socket/socket";
 
 const DeleteGroupModal = forwardRef(({ group, id }, ref) => {
   const [loader, setLoader] = useState(false);

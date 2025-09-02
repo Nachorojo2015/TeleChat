@@ -4,11 +4,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { formatLastMessageChatTime } from "../utils/formatLastMessageChatTime";
 import HashLoader from "react-spinners/HashLoader";
 import { IoChatbubbleEllipses } from "react-icons/io5";
-
-import { io } from "socket.io-client";
 import { FaImage, FaVideo } from "react-icons/fa6";
-
-const socket = io("http://localhost:3000", { withCredentials: true });
+import { socket } from "../socket/socket";
 
 const Chats = () => {
   const [chats, setChats] = useState(null);
