@@ -23,10 +23,6 @@ export class UsersRepository {
       [`%${username}%`, userId]
     );
 
-    if (result.rowCount === 0) {
-      throw new Error("No se encontro ningun usuario");
-    }
-
     return result.rows;
   }
 

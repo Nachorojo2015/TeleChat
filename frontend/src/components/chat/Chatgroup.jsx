@@ -14,6 +14,7 @@ import MediaUploadButton from "../MediaUploadButton";
 import MessageInput from "../MessageInput";
 import { socket } from "../../socket/socket";
 import DeleteGroupButton from "../DeleteGroupButton";
+import { IoCaretBackOutline } from "react-icons/io5";
 
 const Chatgroup = () => {
   const { id } = useParams();
@@ -22,15 +23,12 @@ const Chatgroup = () => {
 
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
-
   const {
     isOpenEditGroupForm,
     openEditGroupForm,
     isOpenInfoGroup,
     openInfoGroup,
   } = useMenuStore();
-
-
 
   useEffect(() => {
     const fetchGroup = async () => {
@@ -57,8 +55,6 @@ const Chatgroup = () => {
     setIsDropDownOpen(!isDropDownOpen);
   };
 
- 
-
   return (
     <>
       {/* Chat */}
@@ -84,24 +80,30 @@ const Chatgroup = () => {
           </div>
 
           <div className="ml-auto relative">
-            <SlOptionsVertical
-              className="cursor-pointer"
-              onClick={toggleDropDown}
-            />
+            {(group?.role === "owner" || group?.role === "member") ? (
+              <SlOptionsVertical
+                className="cursor-pointer"
+                onClick={toggleDropDown}
+              />
+            ) : (
+              <button className="bg-blue-500 text-white px-4 py-1 rounded-md cursor-pointer">
+                Unirse al grupo
+              </button>
+            )}
 
             {isDropDownOpen && (
               <ul className="absolute right-0 top-12 bg-white shadow-md rounded-md w-48 z-10">
-                {group?.role === "owner" && (
+                <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
+                  <button
+                    className="flex w-full items-center gap-6 cursor-pointer"
+                    onClick={openInfoGroup}
+                  >
+                    <CiCircleInfo size={20} />
+                    <span>Info.</span>
+                  </button>
+                </li>
+                {group?.role === "owner" ? (
                   <>
-                    <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
-                      <button
-                        className="flex w-full items-center gap-6 cursor-pointer"
-                        onClick={openInfoGroup}
-                      >
-                        <CiCircleInfo size={20} />
-                        <span>Info.</span>
-                      </button>
-                    </li>
                     <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
                       <button
                         className="flex w-full items-center gap-6 cursor-pointer"
@@ -115,6 +117,18 @@ const Chatgroup = () => {
                       <DeleteGroupButton group={group} id={id} />
                     </li>
                   </>
+                ) : (
+                  group?.role === "member" && (
+                    <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
+                      <button
+                        className="flex w-full items-center gap-6 cursor-pointer"
+                        onClick={openInfoGroup}
+                      >
+                        <IoCaretBackOutline size={20}/>
+                        <span>Salir del grupo</span>
+                      </button>
+                    </li>
+                  )
                 )}
               </ul>
             )}
@@ -127,10 +141,12 @@ const Chatgroup = () => {
           </ul>
         </div>
 
-        <footer className="flex items-center justify-center gap-2 p-2 shadow bg-white">
-          <MediaUploadButton id={id} />
-          <MessageInput id={id} />
-        </footer>
+        {(group?.role === "owner" || group?.role === "member") && (
+          <footer className="flex items-center justify-center gap-2 p-2 shadow bg-white">
+            <MediaUploadButton id={id} />
+            <MessageInput id={id} />
+          </footer>
+        )}
       </div>
 
       {/* Info Group */}

@@ -115,22 +115,19 @@ export const getMembers = async (groupId) => {
 
 export const editGroup = async (groupId, groupData) => {
   const formData = new FormData();
-  formData.append('title', groupData.title);
-  formData.append('description', groupData.description);
-  formData.append('is_public', groupData.is_public);
+  formData.append("title", groupData.title);
+  formData.append("description", groupData.description);
+  formData.append("is_public", groupData.is_public);
   if (groupData.picture) {
-    formData.append('picture', groupData.picture);
+    formData.append("picture", groupData.picture);
   }
 
   try {
-    let response = await fetch(
-      `http://localhost:3000/groups/edit/${groupId}`,
-      {
-        method: "PUT",
-        body: formData,
-        credentials: "include", // si usas cookies para auth
-      }
-    );
+    let response = await fetch(`http://localhost:3000/groups/edit/${groupId}`, {
+      method: "PUT",
+      body: formData,
+      credentials: "include", // si usas cookies para auth
+    });
 
     if (response.status === 401) {
       console.warn("Token expirado, intentando refrescar...");
@@ -146,14 +143,11 @@ export const editGroup = async (groupId, groupData) => {
       }
 
       // Reintentar la petición con el nuevo token
-      response = await fetch(
-        `http://localhost:3000/groups/edit/${groupId}`,
-        {
-          method: "PUT",
-          body: formData,
-          credentials: "include", // si usas cookies para auth
-        }
-      );
+      response = await fetch(`http://localhost:3000/groups/edit/${groupId}`, {
+        method: "PUT",
+        body: formData,
+        credentials: "include", // si usas cookies para auth
+      });
     }
 
     if (!response.ok) {
@@ -166,10 +160,10 @@ export const editGroup = async (groupId, groupData) => {
     console.error("Error editing group:", error);
     throw error;
   }
-}
+};
 
 export const deleteGroup = async (groupId) => {
-    try {
+  try {
     let response = await fetch(
       `http://localhost:3000/groups/delete/${groupId}`,
       {
@@ -192,13 +186,10 @@ export const deleteGroup = async (groupId) => {
       }
 
       // Reintentar la petición con el nuevo token
-      response = await fetch(
-        `http://localhost:3000/groups/delete/${groupId}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      response = await fetch(`http://localhost:3000/groups/delete/${groupId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
     }
 
     if (!response.ok) {
@@ -213,4 +204,44 @@ export const deleteGroup = async (groupId) => {
     console.error("Error fetching members:", error);
     throw error;
   }
-}
+};
+
+export const searchGroupsByName = async (name) => {
+  try {
+    let response = await fetch(`http://localhost:3000/groups/${name}`, {
+      credentials: "include", // si usas cookies
+    });
+
+    if (response.status === 401) {
+      console.warn("Token expirado, intentando refrescar...");
+
+      // Llamar a /refresh
+      const refreshRes = await fetch("http://localhost:3000/auth/refresh", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!refreshRes.ok) {
+        throw new Error("No se pudo refrescar el token");
+      }
+
+      // Reintentar la petición con el nuevo token
+      response = await fetch(`http://localhost:3000/groups/${name}`, {
+        credentials: "include",
+      });
+    }
+
+    if (!response.ok) {
+      const info = await response.text();
+      console.error("Error details:", info);
+      throw new Error("Error al buscar el grupo");
+    }
+
+    const data = await response.json();
+    console.log('Grupos encontrados:', data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching members:", error);
+    throw error;
+  }
+};

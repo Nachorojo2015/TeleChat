@@ -59,11 +59,16 @@ export class GroupsRepository {
   static async getGroup({ groupId, userId }) {
     const group = await pool.query(
       `
-    SELECT c.picture, c.title, c.is_public, c.description, COUNT(ch.user_id) AS quantity_members, ch.role FROM chats c
-    JOIN chat_members ch ON c.id = ch.chat_id
-    WHERE c.id = $1
-	  AND ch.user_id = $2
-    GROUP BY c.picture, c.title, c.is_public, c.description, ch.role
+      SELECT 
+      c.picture, 
+      c.title, 
+      c.is_public, 
+      c.description,
+      (SELECT COUNT(*) FROM chat_members WHERE chat_id = c.id) AS quantity_members,
+      ch.role
+      FROM chats c
+      LEFT JOIN chat_members ch ON c.id = ch.chat_id AND ch.user_id = $2
+      WHERE c.id = $1;
     `,
       [groupId, userId]
     );
@@ -181,17 +186,15 @@ export class GroupsRepository {
   static async getGroupsByName({ name }) {
     const groups = await pool.query(
       `
-      SELECT title, picture, type, COUNT(ch.user_id) AS quantity_members FROM chats c
+      SELECT c.id, title, picture, COUNT(ch.user_id) AS quantity_members FROM chats c
       JOIN chat_members ch ON ch.chat_id = c.id
       WHERE title ILIKE $1
-      GROUP BY c.title, c.picture, c.type
+      GROUP BY c.title, c.picture, c.id
       `,
       [`%${name}%`]
     );
 
-    if (!groups.rowCount) throw new Error("Grupo no encontrado");
-
-    return groups.rows[0];
+    return groups.rows;
   }
 
   /**

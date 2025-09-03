@@ -28,7 +28,6 @@ export const getChats = async () => {
     }
 
     const data = await response.json();
-    console.log("Chats data:", data);
     return data;
   } catch (error) {
     console.error("Error fetching chats:", error);

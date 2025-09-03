@@ -20,7 +20,7 @@ const Chats = () => {
     const fetchChats = async () => {
       setLoader(true);
       const data = await getChats();
-      console.log("Chats data:", data);
+      console.log(data);
       setChats(data);
       setLoader(false);
     };
@@ -83,13 +83,11 @@ const Chats = () => {
         <div className="flex flex-col items-center justify-center gap-3">
           <IoChatbubbleEllipses size={50}/>
           <p>No tienes chats</p>
-          <p className="text-sm text-center font-semibold">Busca usuarios para chatear, unete a grupos o canales de difusión</p>
+          <p className="text-sm text-center font-semibold px-1">Busca usuarios para chatear o unete a grupos creados por la comunidad</p>
         </div>
       </ul>
     );
   }
-
-  console.log("Chats data:", chats);
 
   return (
     <ul className="overflow-y-auto p-3 overflow-x-hidden absolute h-full w-full">
@@ -105,15 +103,15 @@ const Chats = () => {
             className={`flex p-2 mt-1 items-center gap-2 transition-colors rounded-lg ${chat.id === chatId ? "bg-blue-500 text-white" : "hover:bg-slate-100"}`}
           >
             <img
-              src={chat.picture}
+              src={chat.picture || chat.other_profile_picture}
               alt={chat.name}
               className="w-16 h-16 rounded-full object-cover"
             />
             <div className="w-full">
               <div className="flex justify-between items-center">
-                <b className="break-words truncate max-w-[200px]">{chat.title}</b>
+                <b className="break-words truncate max-w-[200px]">{chat.title || chat.other_display_name}</b>
                 <time className="text-sm">
-                  {formatLastMessageChatTime(chat?.sent_at)}
+                  {chat.sent_at && formatLastMessageChatTime(chat?.sent_at)}
                 </time>
               </div>
               {

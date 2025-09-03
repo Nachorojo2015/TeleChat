@@ -6,7 +6,7 @@ import ImageMessage from "./messages/ImageMessage";
 import VideoMessage from "./messages/VideoMessage";
 import { socket } from "../socket/socket";
 
-const Messages = ({ chatId }) => {
+const Messages = ({ chatId, typeChat }) => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -37,11 +37,11 @@ const Messages = ({ chatId }) => {
     <ul className="flex flex-col gap-2">
       {messages.map((message) =>
         message.type === "text" ? (
-          <TextMessage key={message.message_id} messageData={message} />
+          <TextMessage key={message.message_id} messageData={message} typeChat={typeChat} />
         ) : message.type === "image" ? (
-          <ImageMessage key={message.message_id} messageData={message} />
+          <ImageMessage key={message.message_id} messageData={message} typeChat={typeChat}/>
         ) : message.type === "video" ? (
-          <VideoMessage key={message.message_id} messageData={message} />
+          <VideoMessage key={message.message_id} messageData={message} typeChat={typeChat}/>
         ) : null
       )}
     </ul>

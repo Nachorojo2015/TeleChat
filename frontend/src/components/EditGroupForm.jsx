@@ -151,7 +151,6 @@ const EditGroupForm = ({ group, id }) => {
                 onChange={handleDescription}
                 defaultValue={description}
                 autoComplete="off"
-                required
               />
               <label
                 htmlFor="description"

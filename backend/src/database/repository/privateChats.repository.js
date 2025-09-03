@@ -74,8 +74,6 @@ export class PrivateChatsRepository {
         GROUP BY c.id
         HAVING COUNT(*) = 2;`, [userId, privateUser])
 
-        console.log(result.rows)
-
         return result.rows[0]?.id
     }
 }
