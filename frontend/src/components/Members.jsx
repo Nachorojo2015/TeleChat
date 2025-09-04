@@ -17,7 +17,7 @@ const Members = ({ groupId }) => {
   }, [groupId]);
 
   return (
-    <div className="flex flex-col gap-3 mt-2">
+    <div className="flex flex-col gap-3 mt-2 mb-3">
       {members.map((member) => (
         <article key={member.id} className="flex items-center">
           <img

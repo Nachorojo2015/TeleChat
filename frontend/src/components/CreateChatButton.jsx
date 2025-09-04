@@ -18,7 +18,7 @@ const CreateChatButton = () => {
   };
 
   return (
-    <div className="absolute bottom-4 right-4">
+    <div className={`absolute bottom-4 right-4 group-hover:block ${isMenuOpen ? "block" : "xl:hidden"}`}>
       {/* Menú desplegable */}
       {isMenuOpen && (
         <div className="absolute bottom-16 right-0 bg-white rounded-lg shadow-lg border border-gray-200 py-2 w-48 mb-2">

@@ -15,6 +15,8 @@ import MessageInput from "../MessageInput";
 import { socket } from "../../socket/socket";
 import DeleteGroupButton from "../DeleteGroupButton";
 import { IoCaretBackOutline } from "react-icons/io5";
+import JoinGroupButton from "../JoinGroupButton";
+import LeaveGroupButton from "../LeaveGroupButton";
 
 const Chatgroup = () => {
   const { id } = useParams();
@@ -86,9 +88,7 @@ const Chatgroup = () => {
                 onClick={toggleDropDown}
               />
             ) : (
-              <button className="bg-blue-500 text-white px-4 py-1 rounded-md cursor-pointer">
-                Unirse al grupo
-              </button>
+              <JoinGroupButton id={id} />
             )}
 
             {isDropDownOpen && (
@@ -119,15 +119,7 @@ const Chatgroup = () => {
                   </>
                 ) : (
                   group?.role === "member" && (
-                    <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
-                      <button
-                        className="flex w-full items-center gap-6 cursor-pointer"
-                        onClick={openInfoGroup}
-                      >
-                        <IoCaretBackOutline size={20}/>
-                        <span>Salir del grupo</span>
-                      </button>
-                    </li>
+                    <LeaveGroupButton id={id} />
                   )
                 )}
               </ul>

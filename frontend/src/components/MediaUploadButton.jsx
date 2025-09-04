@@ -34,7 +34,7 @@ const MediaUploadButton = ({ id }) => {
           className="cursor-pointer"
           onClick={() => setIsDropUpOpen((prev) => !prev)}
         >
-          <FaPaperclip size={20} />
+          <FaPaperclip size={20} className="mt-1"/>
         </button>
         {isDropUpOpen && (
           <div className="absolute bottom-12 left-0 mb-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-40 z-20">

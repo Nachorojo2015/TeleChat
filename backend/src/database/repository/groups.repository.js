@@ -188,7 +188,7 @@ export class GroupsRepository {
       `
       SELECT c.id, title, picture, COUNT(ch.user_id) AS quantity_members FROM chats c
       JOIN chat_members ch ON ch.chat_id = c.id
-      WHERE title ILIKE $1
+      WHERE title ILIKE $1 AND is_public
       GROUP BY c.title, c.picture, c.id
       `,
       [`%${name}%`]
@@ -211,14 +211,13 @@ export class GroupsRepository {
     u.username, 
     u.display_name, 
     u.profile_picture, 
-    cm.role, 
-    cm.is_muted, 
+    cm.role,  
     MAX(us.last_active) AS last_active
     FROM chat_members cm
     JOIN users u ON cm.user_id = u.id
     JOIN user_sessions us ON us.user_id = u.id
     WHERE cm.chat_id = $1
-    GROUP BY u.id, u.username, u.display_name, u.profile_picture, cm.role, cm.is_muted;
+    GROUP BY u.id, u.username, u.display_name, u.profile_picture, cm.role;
       `,
       [groupId]
     );
