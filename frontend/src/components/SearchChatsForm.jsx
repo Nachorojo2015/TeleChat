@@ -89,7 +89,7 @@ const SearchChatsForm = () => {
               type="text"
               placeholder={`${
                 valueSelected === "groups"
-                  ? "Buscar grupos..."
+                  ? "Buscar grupos públicos..."
                   : "Buscar usuarios..."
               }`}
               onChange={(e) => setSearchTerm(e.target.value)}

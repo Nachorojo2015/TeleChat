@@ -25,4 +25,9 @@ export const useMenuStore = create((set) => ({
   isOpenSearchChats: false,
   closeSearchChats: () => set({ isOpenSearchChats: false }),
   openSearchChats: () => set({ isOpenSearchChats: true }),
+
+  // Menu para ver información del chat privado
+  isOpenInfoPrivateChat: false,
+  closeInfoPrivateChat: () => set({ isOpenInfoPrivateChat: false }),
+  openInfoPrivateChat: () => set({ isOpenInfoPrivateChat: true }),
 }));

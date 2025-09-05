@@ -35,6 +35,20 @@ const TextMessage = ({ messageData, typeChat }) => {
       </li>
     );
   }
+
+  // Verifica si el chat es privado
+  if (typeChat === "private") {
+    return (
+      <li className="flex items-center gap-2">
+        <div className="bg-blue-500 p-2 rounded-b-xl break-words whitespace-pre-line max-w-xs text-white  rounded-r-xl">
+          <p>{messageData.content}</p>
+          <time className="text-[10px] ml-auto">
+            {formatTimestampToHHMM(messageData.sent_at)}
+          </time>
+        </div>
+      </li>
+    );
+  }
 };
 
 export default TextMessage;

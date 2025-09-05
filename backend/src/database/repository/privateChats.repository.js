@@ -42,6 +42,8 @@ export class PrivateChatsRepository {
         SELECT 
         u.profile_picture, 
         u.display_name, 
+        u.username,
+        u.bio,
         us.last_active
         FROM chat_members ch
         JOIN users u ON ch.user_id = u.id

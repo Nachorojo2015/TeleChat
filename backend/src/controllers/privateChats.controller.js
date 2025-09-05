@@ -17,10 +17,7 @@ export const getPrivateChat = async (req, res) => {
   const { userId } = req.user;
 
   try {
-    const privateChat = await PrivateChatsRepository.getPrivateChat({
-      privateChatId: id,
-      userId,
-    });
+    const privateChat = await PrivateChatsRepository.getPrivateChat({ privateChatId: id, userId });
     res.send(privateChat);
   } catch (error) {
     res.status(400).send(error.message);

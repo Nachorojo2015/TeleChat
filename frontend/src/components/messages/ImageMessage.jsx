@@ -61,6 +61,33 @@ const ImageMessage = ({ messageData, typeChat }) => {
       </li>
     );
   }
+
+  // Verifica si el chat es privado
+  if (typeChat === "private") {
+    return (
+      <li className="flex gap-2 p-2 text-white max-w-xs">
+        <div>
+          <div className="relative">
+            <img
+              src={messageData.file_url}
+              alt="picture-of-chat"
+              className="object-cover"
+              width={messageData.width}
+              height={messageData.height}
+            />
+            <time className="text-sm ml-auto mt-2 absolute bottom-1 right-3 bg-black/60 rounded-md p-0.5">
+              {formatTimestampToHHMM(messageData.sent_at)}
+            </time>
+          </div>
+          {messageData.content && (
+            <p className="bg-blue-500 p-2 break-words whitespace-pre-line rounded-b-md">
+              {messageData.content}
+            </p>
+          )}
+        </div>
+      </li>
+    );
+  }
 };
 
 export default ImageMessage;
