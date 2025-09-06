@@ -68,6 +68,7 @@ const SearchChatsForm = () => {
     try {
       const privateChatId = await createPrivateChat(privateUserId);
       navigate(`/p/${privateChatId}`);
+      closeSearchChats();
     } catch (error) {
       console.log(error);
     }

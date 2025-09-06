@@ -38,4 +38,14 @@ export class ChatsRepository {
 
     return result.rows;
   }
+
+  static async deleteChat({ chatId }) {
+    await pool.query(
+      `
+      DELETE FROM chats
+      WHERE id = $1;
+    `,
+      [chatId]
+    );
+  }
 }

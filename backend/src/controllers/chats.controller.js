@@ -10,3 +10,14 @@ export const getChats = async (req, res) => {
     res.status(400).send(error.message);
   }
 };
+
+export const deleteChat = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await ChatsRepository.deleteChat({ chatId: id });
+    res.json({ message: "Chat deleted successfully" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}

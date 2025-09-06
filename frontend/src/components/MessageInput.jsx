@@ -7,7 +7,7 @@ const MessageInput = ({ id }) => {
   const inputMessage = useRef(null);
 
   const handleSendMessage = async () => {
-    if (!inputMessage.current.value) return;
+    if (!inputMessage.current.value.trim()) return;
 
     const messageData = {
       chatId: id,

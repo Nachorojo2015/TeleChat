@@ -1,6 +1,6 @@
 import { FaArrowLeft } from "react-icons/fa6";
 import Messages from "../Messages";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useEffect } from "react";
 import { getGroup } from "../../services/groupsService";
@@ -13,11 +13,10 @@ import { CiCircleInfo } from "react-icons/ci";
 import MediaUploadButton from "../MediaUploadButton";
 import MessageInput from "../MessageInput";
 import { socket } from "../../socket/socket";
-import DeleteGroupButton from "../DeleteGroupButton";
 import JoinGroupButton from "../JoinGroupButton";
 import LeaveGroupButton from "../LeaveGroupButton";
-import Zoom from "react-medium-image-zoom";
-import "react-medium-image-zoom/dist/styles.css";
+import DeleteChatButton from "../DeleteChatButton";
+import ImageZoom from "../ImageZoom";
 
 const Chatgroup = () => {
   const { id } = useParams();
@@ -25,6 +24,8 @@ const Chatgroup = () => {
   const [group, setGroup] = useState(null);
 
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const {
     isOpenEditGroupForm,
@@ -35,9 +36,14 @@ const Chatgroup = () => {
 
   useEffect(() => {
     const fetchGroup = async () => {
-      const data = await getGroup(id);
-      console.log("Group data:", data);
-      setGroup(data);
+      try {
+        const data = await getGroup(id);
+        console.log("Group data:", data);
+        setGroup(data);
+      } catch (error) {
+        console.log(error);
+        navigate("/");
+      }
     };
 
     fetchGroup();
@@ -52,7 +58,7 @@ const Chatgroup = () => {
     return () => {
       socket.off("group-edited");
     };
-  }, [id]);
+  }, [id, navigate]);
 
   const toggleDropDown = () => {
     setIsDropDownOpen(!isDropDownOpen);
@@ -66,18 +72,13 @@ const Chatgroup = () => {
           isOpenInfoGroup || isOpenEditGroupForm ? "hidden" : "flex"
         }`}
       >
+        {/* Header */}
         <header className="flex items-center gap-4 p-1 px-3 bg-white shadow">
           <Link to={"/"}>
             <FaArrowLeft />
           </Link>
 
-          <Zoom>
-            <img
-              src={group?.picture}
-              alt="picture-of-group"
-              className="w-12 h-12 rounded-full object-cover cursor-pointer"
-            />
-          </Zoom>
+          <ImageZoom width={50} height={50} url={group?.picture} alt="picture-of-group" styles={'rounded-full object-cover'} />
 
           <div>
             <b>{group?.title}</b>
@@ -85,7 +86,7 @@ const Chatgroup = () => {
           </div>
 
           <div className="ml-auto relative">
-            {(group?.role === "owner" || group?.role === "member") ? (
+            {group?.role === "owner" || group?.role === "member" ? (
               <SlOptionsVertical
                 className="cursor-pointer"
                 onClick={toggleDropDown}
@@ -117,25 +118,30 @@ const Chatgroup = () => {
                       </button>
                     </li>
                     <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
-                      <DeleteGroupButton group={group} id={id} />
+                      <DeleteChatButton
+                        title={group?.title}
+                        picture={group?.picture}
+                        type="group"
+                        id={id}
+                      />
                     </li>
                   </>
                 ) : (
-                  group?.role === "member" && (
-                    <LeaveGroupButton id={id} />
-                  )
+                  group?.role === "member" && <LeaveGroupButton id={id} />
                 )}
               </ul>
             )}
           </div>
         </header>
 
+        
         <div className="relative flex flex-1">
           <ul className="overflow-y-auto overflow-x-hidden absolute h-full w-full px-4 py-2 scrollbar-transparent">
             <Messages chatId={id} typeChat="group" />
           </ul>
         </div>
 
+        {/* Footer */}
         {(group?.role === "owner" || group?.role === "member") && (
           <footer className="flex items-center justify-center gap-2 p-2 shadow bg-white">
             <MediaUploadButton id={id} />

@@ -6,7 +6,6 @@ import { chatsRouter } from "./routes/chats.routes.js";
 import cookieParser from "cookie-parser";
 import { authenticateToken } from "./middlewares/authenticateToken.middleware.js";
 import { groupRouter } from "./routes/groups.routes.js";
-import { channelRouter } from "./routes/channels.routes.js";
 import { privateChatRouter } from "./routes/privateChats.routes.js";
 import { messagesRouter } from "./routes/messages.routes.js";
 import http from "http";
@@ -22,7 +21,6 @@ app.use("/auth", authRouter);
 app.use("/users", authenticateToken, usersRouter);
 app.use("/chats", authenticateToken, chatsRouter);
 app.use("/groups", authenticateToken, groupRouter);
-app.use("/channels", authenticateToken, channelRouter);
 app.use("/privates", authenticateToken, privateChatRouter);
 app.use("/messages", authenticateToken, messagesRouter);
 
@@ -51,15 +49,10 @@ io.on("connection", (socket) => {
       io.emit('group-edited', { groupId, groupData });
     });
 
-    socket.on('delete-group', (groupId) => {
-      console.log("Grupo eliminado:", groupId);
-      io.emit('group-deleted', groupId);
-    });
-
-    // Privados
-    socket.on('delete-private-chat', (privateChatId) => {
-      console.log("Chat privado eliminado:", privateChatId);
-      io.emit('private-chat-deleted', privateChatId);
+    // Chats (Grupos y Privados)
+    socket.on('delete-chat', ({ chatId }) => {
+      console.log("Chat eliminado:", chatId);
+      io.emit('chat-deleted', { chatId });
     });
 
     socket.on('disconnect', () => {

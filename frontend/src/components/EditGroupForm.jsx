@@ -87,7 +87,7 @@ const EditGroupForm = ({ group, id }) => {
           onClick={closeEditGroupForm}
           className="cursor-pointer"
         />
-        <b>Editar</b>
+        <b className="text-xl">Editar</b>
       </header>
 
       <div className="flex-1 overflow-y-auto">

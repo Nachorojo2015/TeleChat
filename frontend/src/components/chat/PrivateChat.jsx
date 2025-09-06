@@ -10,9 +10,9 @@ import MediaUploadButton from "../MediaUploadButton";
 import MessageInput from "../MessageInput";
 import { useMenuStore } from "../../store/menuStore";
 import InfoPrivateChat from "../InfoPrivateChat";
-import DeletePrivateChatButton from "../DeletePrivateChatButton";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+import DeleteChatButton from "../DeleteChatButton";
 
 const PrivateChat = () => {
   const { id } = useParams();
@@ -78,8 +78,8 @@ const PrivateChat = () => {
                     <span>Ver info</span>
                   </button>
                 </li>
-                <li className="px-4 py-2 hover:bg-gray-100 rounded-md text-red-500">
-                  <DeletePrivateChatButton privateChat={privateChat} id={id} />
+                <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
+                  <DeleteChatButton title={privateChat?.display_name} picture={privateChat?.profile_picture} type="private" id={id} />
                 </li>
               </ul>
             )}

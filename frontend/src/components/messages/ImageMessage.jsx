@@ -1,7 +1,6 @@
 import { useUserStore } from "../../store/userStore";
 import { formatTimestampToHHMM } from "../../utils/formatTimestampToHHMM";
-import Zoom from "react-medium-image-zoom";
-import "react-medium-image-zoom/dist/styles.css";
+import ImageZoom from "../ImageZoom";
 
 const ImageMessage = ({ messageData, typeChat }) => {
   const { user } = useUserStore();
@@ -11,15 +10,7 @@ const ImageMessage = ({ messageData, typeChat }) => {
       <li className="flex flex-col p-2 text-white max-w-xs ml-auto">
         <div>
           <div className="relative">
-            <Zoom>
-              <img
-                src={messageData.file_url}
-                alt="picture-of-chat"
-                className="object-cover"
-                width={messageData.width}
-                height={messageData.height}
-              />
-            </Zoom>
+            <ImageZoom width={messageData.width} height={messageData.height} url={messageData.file_url} alt="picture-of-chat" styles={'object-cover'} />
             <time className="text-sm ml-auto mt-2 absolute bottom-1 right-3 bg-black/60 rounded-md p-0.5">
               {formatTimestampToHHMM(messageData.sent_at)}
             </time>
@@ -45,15 +36,7 @@ const ImageMessage = ({ messageData, typeChat }) => {
         />
         <div>
           <div className="relative">
-            <Zoom>
-              <img
-                src={messageData.file_url}
-                alt="picture-of-chat"
-                className="object-cover"
-                width={messageData.width}
-                height={messageData.height}
-              />
-            </Zoom>
+            <ImageZoom width={messageData.width} height={messageData.height} url={messageData.file_url} alt="picture-of-chat" styles={'object-cover'} />
             <time className="text-sm ml-auto mt-2 absolute bottom-1 right-3 bg-black/60 rounded-md p-0.5">
               {formatTimestampToHHMM(messageData.sent_at)}
             </time>
@@ -74,15 +57,7 @@ const ImageMessage = ({ messageData, typeChat }) => {
       <li className="flex gap-2 p-2 text-white max-w-xs">
         <div>
           <div className="relative">
-            <Zoom>
-              <img
-                src={messageData.file_url}
-                alt="picture-of-chat"
-                className="object-cover"
-                width={messageData.width}
-                height={messageData.height}
-              />
-            </Zoom>
+            <ImageZoom width={messageData.width} height={messageData.height} url={messageData.file_url} alt="picture-of-chat" styles={'object-cover'} />
             <time className="text-sm ml-auto mt-2 absolute bottom-1 right-3 bg-black/60 rounded-md p-0.5">
               {formatTimestampToHHMM(messageData.sent_at)}
             </time>

@@ -1,22 +1,23 @@
-import { forwardRef, useState } from "react";
+import { useState } from "react";
+import { forwardRef } from "react"
 import { socket } from "../socket/socket";
-import ClipLoader from "react-spinners/ClipLoader";
-import { deletePrivateChat } from "../services/privateChatService";
+import { deleteChat } from "../services/chatsService";
+import { ClipLoader } from "react-spinners";
 
-const DeletePrivateChatModal = forwardRef(({ privateChat, id }, ref) => {
+const DeleteChatModal = forwardRef(({ title, picture, type, id }, ref) => {
   const [loader, setLoader] = useState(false);
 
-  const closeDeletePrivateChatModal = () => {
+  const closeDeleteGroupModal = () => {
     ref.current.close();
   };
 
-  const handleDeletePrivateChat = async () => {
+  const handleDeleteGroup = async () => {
     try {
       setLoader(true);
-      await deletePrivateChat(id);
-      closeDeletePrivateChatModal();
+      await deleteChat(id);
+      closeDeleteGroupModal();
 
-      socket.emit('delete-private-chat', id);
+      socket.emit('delete-chat', id);
     } catch (error) {
       console.log(error);
     } finally {
@@ -32,31 +33,31 @@ const DeletePrivateChatModal = forwardRef(({ privateChat, id }, ref) => {
     >
       <div className="flex items-center gap-3">
         <img
-          src={privateChat?.profile_picture}
+          src={picture}
           alt="picture-of-group"
           className="w-10 h-10 rounded-full object-cover"
         />
-        <p className="text-xl font-bold">Eliminar chat privado</p>
+        <p className="text-xl font-bold">Eliminar {type === "group" ? "grupo" : "chat"}</p>
       </div>
 
       <p className="mt-4">
-        ¿Quieres eliminar tu chat con <b>{privateChat?.display_name}</b>?
+        ¿Quieres eliminar <b>{title}</b>?
       </p>
 
       <div className="flex flex-col items-end mt-4">
-        <button className="uppercase flex items-center gap-2 text-red-500 p-1 rounded-md transition-all hover:bg-red-50 cursor-pointer" onClick={handleDeletePrivateChat}>
-          <span>Eliminar chat privado</span>
+        <button className="uppercase flex items-center gap-2 text-red-500 p-1 rounded-md transition-all hover:bg-red-50 cursor-pointer" onClick={handleDeleteGroup}>
+          <span>Eliminar {type === "group" ? "grupo" : "chat"}</span>
           {loader ? <ClipLoader size={10} /> : null}
         </button>
         <button
           className="uppercase text-blue-500 p-1 rounded-md transition-all hover:bg-blue-50 cursor-pointer"
-          onClick={closeDeletePrivateChatModal}
+          onClick={closeDeleteGroupModal}
         >
           Cancelar
         </button>
       </div>
     </dialog>
   );
-});
+})
 
-export default DeletePrivateChatModal
+export default DeleteChatModal

@@ -52,23 +52,14 @@ const Chats = () => {
       });
     });
 
-    socket.on("group-deleted", (groupId) => {
-      if (groupId === chatId) {
+    socket.on("chat-deleted", ({ chatId }) => {
+      if (chatId === chatId) {
         navigate("/");
       }
 
       setChats((prevChats) => {
-        return prevChats.filter((chat) => chat.id !== groupId);
-      });
-    });
-
-    socket.on("private-chat-deleted", (privateChatId) => {
-      if (privateChatId === chatId) {
-        navigate("/");
-      }
-
-      setChats((prevChats) => {
-        return prevChats.filter((chat) => chat.id !== privateChatId);
+        const updatedChats = prevChats.filter((chat) => chat.id !== chatId);
+        return updatedChats;
       });
     });
 
