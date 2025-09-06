@@ -3,6 +3,8 @@ import { useMenuStore } from "../store/menuStore";
 import { formatLastSessionTime } from "../utils/formatLastSessionTime";
 import { PiUserCircleBold } from "react-icons/pi";
 import { FiBook } from "react-icons/fi";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 
 const InfoPrivateChat = ({ privateChat }) => {
   console.log(privateChat)
@@ -19,12 +21,14 @@ const InfoPrivateChat = ({ privateChat }) => {
 
       <div className="flex-1 overflow-y-auto">
         <picture className="relative">
-          <img
-            src={privateChat?.profile_picture}
-            alt="private-chat"
-            className="w-full max-h-96 object-cover"
-            style={{ filter: "brightness(90%)" }}
-          />
+          <Zoom>
+            <img
+              src={privateChat?.profile_picture}
+              alt="private-chat"
+              className="w-full max-h-96 object-cover"
+              style={{ filter: "brightness(90%)" }}
+            />
+          </Zoom>
 
           <div className="absolute bottom-2 left-2 text-white">
             <b>{privateChat?.display_name}</b>
@@ -47,7 +51,7 @@ const InfoPrivateChat = ({ privateChat }) => {
               <p className="truncate max-w-52">
                 {privateChat?.bio}
               </p>
-              <span className="text-sm">Bio.</span>
+              <span className="text-sm">Biografía</span>
             </div>
           </div>
         </article>

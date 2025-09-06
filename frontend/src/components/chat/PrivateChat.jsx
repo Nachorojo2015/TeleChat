@@ -11,6 +11,8 @@ import MessageInput from "../MessageInput";
 import { useMenuStore } from "../../store/menuStore";
 import InfoPrivateChat from "../InfoPrivateChat";
 import DeletePrivateChatButton from "../DeletePrivateChatButton";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 
 const PrivateChat = () => {
   const { id } = useParams();
@@ -49,11 +51,13 @@ const PrivateChat = () => {
             <FaArrowLeft />
           </Link>
 
-          <img
-            src={privateChat?.profile_picture}
-            alt="picture-of-group"
-            className="w-12 h-12 rounded-full object-cover cursor-pointer"
-          />
+          <Zoom>
+            <img
+              src={privateChat?.profile_picture}
+              alt="picture-of-group"
+              className="w-12 h-12 rounded-full object-cover cursor-pointer"
+            />
+          </Zoom>
 
           <div>
             <b>{privateChat?.display_name}</b>

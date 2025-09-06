@@ -14,9 +14,10 @@ import MediaUploadButton from "../MediaUploadButton";
 import MessageInput from "../MessageInput";
 import { socket } from "../../socket/socket";
 import DeleteGroupButton from "../DeleteGroupButton";
-import { IoCaretBackOutline } from "react-icons/io5";
 import JoinGroupButton from "../JoinGroupButton";
 import LeaveGroupButton from "../LeaveGroupButton";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 
 const Chatgroup = () => {
   const { id } = useParams();
@@ -70,11 +71,13 @@ const Chatgroup = () => {
             <FaArrowLeft />
           </Link>
 
-          <img
-            src={group?.picture}
-            alt="picture-of-group"
-            className="w-12 h-12 rounded-full object-cover cursor-pointer"
-          />
+          <Zoom>
+            <img
+              src={group?.picture}
+              alt="picture-of-group"
+              className="w-12 h-12 rounded-full object-cover cursor-pointer"
+            />
+          </Zoom>
 
           <div>
             <b>{group?.title}</b>

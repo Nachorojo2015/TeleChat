@@ -4,6 +4,8 @@ import { GoPaperclip } from "react-icons/go";
 import { useMenuStore } from "../store/menuStore";
 import Members from "./Members";
 import { LuPencil } from "react-icons/lu";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 
 const InfoGroup = ({ group, id }) => {
   const { closeInfoGroup, openEditGroupForm } = useMenuStore();
@@ -25,12 +27,14 @@ const InfoGroup = ({ group, id }) => {
 
       <div className="flex-1 overflow-y-auto">
         <picture className="relative">
-          <img
-            src={group?.picture}
-            alt="Group"
-            className="w-full max-h-96 object-cover"
-            style={{ filter: "brightness(90%)" }}
-          />
+          <Zoom>
+            <img
+              src={group?.picture}
+              alt="Group"
+              className="w-full max-h-96 object-cover"
+              style={{ filter: "brightness(90%)" }}
+            />
+          </Zoom>
 
           <div className="absolute bottom-2 left-2 text-white">
             <b>{group?.title}</b>
