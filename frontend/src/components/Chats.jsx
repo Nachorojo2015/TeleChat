@@ -62,6 +62,16 @@ const Chats = () => {
       });
     });
 
+    socket.on("private-chat-deleted", (privateChatId) => {
+      if (privateChatId === chatId) {
+        navigate("/");
+      }
+
+      setChats((prevChats) => {
+        return prevChats.filter((chat) => chat.id !== privateChatId);
+      });
+    });
+
     return () => {
       socket.off("send-message", handleNewMessage);
       socket.off("group-deleted");

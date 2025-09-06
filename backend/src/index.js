@@ -56,6 +56,12 @@ io.on("connection", (socket) => {
       io.emit('group-deleted', groupId);
     });
 
+    // Privados
+    socket.on('delete-private-chat', (privateChatId) => {
+      console.log("Chat privado eliminado:", privateChatId);
+      io.emit('private-chat-deleted', privateChatId);
+    });
+
     socket.on('disconnect', () => {
       console.log('Usuario desconectado')
     })

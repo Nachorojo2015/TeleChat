@@ -10,6 +10,7 @@ import MediaUploadButton from "../MediaUploadButton";
 import MessageInput from "../MessageInput";
 import { useMenuStore } from "../../store/menuStore";
 import InfoPrivateChat from "../InfoPrivateChat";
+import DeletePrivateChatButton from "../DeletePrivateChatButton";
 
 const PrivateChat = () => {
   const { id } = useParams();
@@ -74,10 +75,7 @@ const PrivateChat = () => {
                   </button>
                 </li>
                 <li className="px-4 py-2 hover:bg-gray-100 rounded-md text-red-500">
-                  <button className="flex w-full items-center gap-6 cursor-pointer">
-                    <FaTrash size={20} />
-                    <span>Eliminar chat</span>
-                  </button>
+                  <DeletePrivateChatButton privateChat={privateChat} id={id} />
                 </li>
               </ul>
             )}
