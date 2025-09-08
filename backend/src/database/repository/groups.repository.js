@@ -96,20 +96,6 @@ export class GroupsRepository {
   }
 
   /**
-   * Elimina un grupo
-   * @param groupId - Id del grupo a eliminar
-   */
-  static async deleteGroup({ groupId }) {
-    const deletedGroup = await pool.query(`DELETE FROM chats WHERE id = $1`, [
-      groupId,
-    ]);
-
-    if (!deletedGroup.rowCount) {
-      throw new Error("No se pudo borrar el grupo");
-    }
-  }
-
-  /**
    * Edita un grupo
    * @param groupId - Id del grupo a editar
    * @param title - Nuevo título del grupo

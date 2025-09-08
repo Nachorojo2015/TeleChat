@@ -23,14 +23,3 @@ export const getPrivateChat = async (req, res) => {
     res.status(400).send(error.message);
   }
 };
-
-export const deletePrivateChat = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    await PrivateChatsRepository.deletePrivateChat({ privateChat: id });
-    res.send("Chat eliminado");
-  } catch (error) {
-    res.status(201).send(error.message);
-  }
-};

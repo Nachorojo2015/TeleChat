@@ -5,6 +5,6 @@ const chatsRouter = Router();
 
 chatsRouter.get("/", getChats)
 
-chatsRouter.delete('/delete/:id', deleteChat)
+chatsRouter.delete("/:id", deleteChat)
 
 export { chatsRouter } 

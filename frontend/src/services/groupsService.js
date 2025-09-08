@@ -1,116 +1,28 @@
+import api from "../api/api";
+
 export const createGroup = async (groupData) => {
-  try {
-    // Crear el formulario
-    const formData = new FormData();
-    Object.entries(groupData).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
+  const formData = new FormData();
+  Object.entries(groupData).forEach(([key, value]) => {
+    formData.append(key, value);
+  });
 
-    // Primera petición
-    let response = await fetch("http://localhost:3000/groups/create", {
-      method: "POST",
-      body: formData,
-      credentials: "include", // si usas cookies para auth
-    });
+  const { data } = await api.post("/groups/create", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data", // axios lo infiere, pero es buena práctica
+    },
+  });
 
-    // Si el token expiró
-    if (response.status === 401) {
-      console.warn("Token expirado, intentando refrescar...");
-
-      // Llamar a /refresh
-      const refreshRes = await fetch("http://localhost:3000/auth/refresh", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (!refreshRes.ok) {
-        throw new Error("No se pudo refrescar el token");
-      }
-
-      // Reintentar la petición con el nuevo token
-      response = await fetch("http://localhost:3000/groups/create", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
-    }
-
-    if (!response.ok) {
-      throw new Error("Error al crear el grupo");
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error creating group:", error);
-    throw error;
-  }
+  return data;
 };
 
 export const getGroup = async (groupId) => {
-  try {
-    const response = await fetch(
-      `http://localhost:3000/groups/group/${groupId}`,
-      {
-        credentials: "include", // si usas cookies
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Error al obtener el grupo");
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching group:", error);
-    throw error;
-  }
+  const { data } = await api.get(`/groups/group/${groupId}`);
+  return data;
 };
 
 export const getMembers = async (groupId) => {
-  try {
-    let response = await fetch(
-      `http://localhost:3000/groups/members/${groupId}`,
-      {
-        credentials: "include", // si usas cookies
-      }
-    );
-
-    if (response.status === 401) {
-      console.warn("Token expirado, intentando refrescar...");
-
-      // Llamar a /refresh
-      const refreshRes = await fetch("http://localhost:3000/auth/refresh", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (!refreshRes.ok) {
-        throw new Error("No se pudo refrescar el token");
-      }
-
-      // Reintentar la petición con el nuevo token
-      response = await fetch(
-        `http://localhost:3000/groups/members/${groupId}`,
-        {
-          credentials: "include",
-        }
-      );
-    }
-
-    if (!response.ok) {
-      const info = await response.json();
-      console.error("Error details:", info);
-      throw new Error("Error al obtener los miembros del grupo");
-    }
-
-    const data = await response.json();
-    return data.members;
-  } catch (error) {
-    console.error("Error fetching members:", error);
-    throw error;
-  }
+  const { data } = await api.get(`/groups/members/${groupId}`);
+  return data.members;
 };
 
 export const editGroup = async (groupId, groupData) => {
@@ -122,208 +34,26 @@ export const editGroup = async (groupId, groupData) => {
     formData.append("picture", groupData.picture);
   }
 
-  try {
-    let response = await fetch(`http://localhost:3000/groups/edit/${groupId}`, {
-      method: "PUT",
-      body: formData,
-      credentials: "include", // si usas cookies para auth
-    });
+  const { data } = await api.put(`/groups/edit/${groupId}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
-    if (response.status === 401) {
-      console.warn("Token expirado, intentando refrescar...");
-
-      // Llamar a /refresh
-      const refreshRes = await fetch("http://localhost:3000/auth/refresh", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (!refreshRes.ok) {
-        throw new Error("No se pudo refrescar el token");
-      }
-
-      // Reintentar la petición con el nuevo token
-      response = await fetch(`http://localhost:3000/groups/edit/${groupId}`, {
-        method: "PUT",
-        body: formData,
-        credentials: "include", // si usas cookies para auth
-      });
-    }
-
-    if (!response.ok) {
-      throw new Error("Error al editar el grupo");
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error editing group:", error);
-    throw error;
-  }
-};
-
-export const deleteGroup = async (groupId) => {
-  try {
-    let response = await fetch(
-      `http://localhost:3000/groups/delete/${groupId}`,
-      {
-        method: "DELETE",
-        credentials: "include", // si usas cookies
-      }
-    );
-
-    if (response.status === 401) {
-      console.warn("Token expirado, intentando refrescar...");
-
-      // Llamar a /refresh
-      const refreshRes = await fetch("http://localhost:3000/auth/refresh", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (!refreshRes.ok) {
-        throw new Error("No se pudo refrescar el token");
-      }
-
-      // Reintentar la petición con el nuevo token
-      response = await fetch(`http://localhost:3000/groups/delete/${groupId}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-    }
-
-    if (!response.ok) {
-      const info = await response.json();
-      console.error("Error details:", info);
-      throw new Error("Error al eliminar el grupo");
-    }
-
-    const data = await response.text();
-    return data;
-  } catch (error) {
-    console.error("Error fetching members:", error);
-    throw error;
-  }
+  return data;
 };
 
 export const searchGroupsByName = async (name) => {
-  try {
-    let response = await fetch(`http://localhost:3000/groups/${name}`, {
-      credentials: "include", // si usas cookies
-    });
-
-    if (response.status === 401) {
-      console.warn("Token expirado, intentando refrescar...");
-
-      // Llamar a /refresh
-      const refreshRes = await fetch("http://localhost:3000/auth/refresh", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (!refreshRes.ok) {
-        throw new Error("No se pudo refrescar el token");
-      }
-
-      // Reintentar la petición con el nuevo token
-      response = await fetch(`http://localhost:3000/groups/${name}`, {
-        credentials: "include",
-      });
-    }
-
-    if (!response.ok) {
-      const info = await response.text();
-      console.error("Error details:", info);
-      throw new Error("Error al buscar el grupo");
-    }
-
-    const data = await response.json();
-    console.log('Grupos encontrados:', data);
-    return data;
-  } catch (error) {
-    console.error("Error fetching members:", error);
-    throw error;
-  }
+  const { data } = await api.get(`/groups/${name}`);
+  return data;
 };
 
 export const joinGroup = async (groupId) => {
-  try {
-    let response = await fetch(`http://localhost:3000/groups/join/${groupId}`, {
-      method: "POST",
-      credentials: "include", // si usas cookies
-    });
-
-    if (response.status === 401) {
-      console.warn("Token expirado, intentando refrescar...");
-
-      // Llamar a /refresh
-      const refreshRes = await fetch("http://localhost:3000/auth/refresh", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (!refreshRes.ok) {
-        throw new Error("No se pudo refrescar el token");
-      }
-
-      // Reintentar la petición con el nuevo token
-      response = await fetch(`http://localhost:3000/groups/join/${groupId}`, {
-        method: "POST",
-        credentials: "include",
-      });
-    }
-
-    if (!response.ok) {
-      const info = await response.text();
-      console.error("Error details:", info);
-      throw new Error("Error al unirte al grupo");
-    }
-
-    const data = await response.text();
-    return data;
-  } catch (error) {
-    console.error("Error fetching members:", error);
-    throw error;
-  }
-}
+  const { data } = await api.post(`/groups/join/${groupId}`);
+  return data;
+};
 
 export const leaveGroup = async (groupId) => {
-  try {
-    let response = await fetch(`http://localhost:3000/groups/out/${groupId}`, {
-      method: "DELETE",
-      credentials: "include", // si usas cookies
-    });
-
-    if (response.status === 401) {
-      console.warn("Token expirado, intentando refrescar...");
-
-      // Llamar a /refresh
-      const refreshRes = await fetch("http://localhost:3000/auth/refresh", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (!refreshRes.ok) {
-        throw new Error("No se pudo refrescar el token");
-      }
-
-      // Reintentar la petición con el nuevo token
-      response = await fetch(`http://localhost:3000/groups/out/${groupId}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-    }
-
-    if (!response.ok) {
-      const info = await response.text();
-      console.error("Error details:", info);
-      throw new Error("Error al salir del grupo");
-    }
-
-    const data = await response.text();
-    return data;
-  } catch (error) {
-    console.error("Error fetching members:", error);
-    throw error;
-  }
-}
+  const { data } = await api.delete(`/groups/out/${groupId}`);
+  return data;
+};

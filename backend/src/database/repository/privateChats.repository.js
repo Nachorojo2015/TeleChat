@@ -58,14 +58,6 @@ export class PrivateChatsRepository {
         return result.rows[0]
     }
 
-    static async deletePrivateChat({ privateChat }) {
-        const result = await pool.query(`DELETE FROM chats WHERE id = $1`, [privateChat])
-
-        if (result.rowCount === 0) {
-            throw new Error('No se pudo eliminar el chat privado')
-        }
-    }
-
     static async hasBeenCreatedChatBefore({ userId, privateUser }) {
         const result = await pool.query(`
         SELECT c.id

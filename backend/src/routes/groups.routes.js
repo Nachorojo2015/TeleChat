@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createGroup, deleteGroup, editGroup, getGroup, getGroupsByName, getMembers, getOut, joinGroup } from "../controllers/group.controller.js";
+import { createGroup, editGroup, getGroup, getGroupsByName, getMembers, getOut, joinGroup } from "../controllers/group.controller.js";
 import multer from "multer";
 import { storage } from "../config/multerConfig.js";
 
@@ -12,8 +12,6 @@ groupRouter.post('/create', upload.single('picture'), createGroup)
 groupRouter.get('/group/:id', getGroup)
 
 groupRouter.delete('/out/:id', getOut)
-
-groupRouter.delete('/delete/:id', deleteGroup)
 
 groupRouter.put('/edit/:id', upload.single('picture'), editGroup)
 

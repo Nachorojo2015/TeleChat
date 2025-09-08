@@ -37,17 +37,6 @@ export const getOut = async (req, res) => {
   }
 }
 
-export const deleteGroup = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    await GroupsRepository.deleteGroup({ groupId: id })
-    res.send('Grupo eliminado')
-  } catch (error) {
-    res.status(201).send(error.message)
-  }
-}
-
 export const editGroup = async (req, res) => {
   const file = req.file;
   const { id } = req.params;

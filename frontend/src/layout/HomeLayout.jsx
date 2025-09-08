@@ -18,8 +18,7 @@ const HomeLayout = () => {
         const data = await getMyUser();
         setUser(data);
       } catch (error) {
-        console.error("Error fetching user data:", error);
-        navigate("/login"); // Redirigir a login si hay un error
+        console.log("Error fetching user data:", error);
       }
     };
 
