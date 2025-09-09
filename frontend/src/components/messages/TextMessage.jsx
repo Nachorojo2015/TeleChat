@@ -8,7 +8,13 @@ const TextMessage = ({ messageData, typeChat }) => {
   if (user?.username === messageData.sender_username) {
     return (
       <li className="bg-blue-500 rounded-l-xl flex flex-col rounded-b-xl p-2 text-white max-w-xs ml-auto break-words whitespace-pre-line">
-        <p>{messageData.content}</p>
+        {messageData.content.startsWith("http") ? (
+          <a href={messageData.content} className="underline" rel="noopener noreferrer">
+            {messageData.content}
+          </a>
+        ) : (
+          <p>{messageData.content}</p>
+        )}
         <time className="text-[10px] ml-auto">
           {formatTimestampToHHMM(messageData.sent_at)}
         </time>

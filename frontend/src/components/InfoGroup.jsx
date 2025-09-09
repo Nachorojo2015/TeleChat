@@ -9,6 +9,12 @@ import ImageZoom from "./ImageZoom";
 const InfoGroup = ({ group, id }) => {
   const { closeInfoGroup, openEditGroupForm } = useMenuStore();
 
+  const copyLinkGroup = () => {
+    const link = `${window.location.origin}/g/${id}`;
+    navigator.clipboard.writeText(link);
+    alert("Link copiado al portapapeles");
+  }
+
   return (
     <aside className="shadow flex flex-col h-screen xl:w-[40%] w-full bg-white">
       <header className="flex items-center gap-4 p-4">
@@ -46,9 +52,9 @@ const InfoGroup = ({ group, id }) => {
           <div className="flex items-center gap-2">
             <GoPaperclip size={30} />
             <div>
-              <p className="truncate max-w-52 text-blue-500 cursor-pointer">
+              <button onClick={copyLinkGroup} className="truncate max-w-52 block text-blue-500 cursor-pointer">
                 Copiar Link
-              </p>
+              </button>
               <span className="text-sm">Link del grupo</span>
             </div>
           </div>

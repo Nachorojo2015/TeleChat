@@ -82,7 +82,7 @@ const SearchChatsForm = () => {
     >
       <nav className="flex flex-col px-4">
         <div className="flex items-center gap-5 py-1">
-          <button className="cursor-pointer" onClick={closeSearchChats}>
+          <button className="cursor-pointer transition-colors duration-300 hover:bg-slate-200 p-2 rounded-full" onClick={closeSearchChats}>
             <FaArrowLeft size={25} />
           </button>
           <div className="relative w-full">
@@ -166,7 +166,9 @@ const SearchChatsForm = () => {
                       {group.title}
                     </b>
                     <span className="text-sm text-slate-700">
-                      {group.quantity_members} miembros
+                      {group.quantity_members > 1
+                        ? `${group.quantity_members} miembros`
+                        : `${group.quantity_members} miembro`}
                     </span>
                   </div>
                 </div>

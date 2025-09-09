@@ -2,11 +2,13 @@ import { useState } from "react";
 import { LuPencil, LuUsers, LuMegaphone } from "react-icons/lu";
 import { useMenuStore } from "../store/menuStore.js";
 import { IoMdClose } from "react-icons/io";
+import { useUserStore } from "../store/userStore.js";
 
 const CreateChatButton = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { openCreateGroupForm } = useMenuStore();
+  const { user } = useUserStore();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -34,6 +36,7 @@ const CreateChatButton = () => {
 
       {/* Botón principal */}
       <button
+        disabled={!user}
         onClick={toggleMenu}
         className="rounded-full cursor-pointer bg-blue-500 text-white p-4 shadow-lg hover:bg-blue-600 transition-colors group-hover:block"
       >

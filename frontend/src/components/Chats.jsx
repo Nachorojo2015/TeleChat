@@ -19,6 +19,8 @@ const Chats = () => {
 
   const navigate = useNavigate();
 
+  console.log(loader);
+
   useEffect(() => {
     const fetchChats = async () => {
       setLoader(true);
@@ -98,8 +100,8 @@ const Chats = () => {
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center h-full w-full absolute gap-3">
-        <p>No estás autenticado</p>
-        <Link to="/login" className="text-blue-500">Iniciar sesión</Link>
+        <p>No estás autenticado.</p>
+        <Link to="/login" className="text-blue-500">Iniciar sesión para comenzar a chatear</Link>
       </div>
     )
   }

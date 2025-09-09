@@ -47,12 +47,12 @@ const Menu = () => {
       <nav className="flex items-center gap-4 px-4 py-1">
         <div className="relative">
           <button
-            className="cursor-pointer"
+            className="cursor-pointer transition-colors duration-300 hover:bg-slate-200 p-2 rounded-full"
             onClick={() => setIsDropdownOpen((prev) => !prev)}
           >
             <GiHamburgerMenu size={25} />
           </button>
-          {isDropdownOpen && (
+          {isDropdownOpen && user && (
             <div className="absolute left-0 top-full mt-5 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-72 z-20">
               <button className="w-full flex items-center gap-4 px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={openEditProfileForm}>
                 <img src={user?.profile_picture} className="w-8 h-8 rounded-full object-cover" alt="profile-picture" />
@@ -68,6 +68,7 @@ const Menu = () => {
 
         <div className="relative w-full">
           <input
+            disabled={!user}
             type="text"
             placeholder="Buscar"
             className="w-full p-3 rounded-full indent-8 bg-slate-50"

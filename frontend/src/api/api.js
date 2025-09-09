@@ -2,10 +2,9 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "http://localhost:3000",
-  withCredentials: true, // para enviar cookies automáticamente
+  withCredentials: true, // si usás cookies
 });
 
-// Flag para evitar múltiples refresh en paralelo
 let isRefreshing = false;
 let failedQueue = [];
 
@@ -21,16 +20,20 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-// Interceptor de respuesta
 api.interceptors.response.use(
-  (response) => response, // caso normal
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Si fue un 401 y no estamos intentando refrescar
+    // 👇 Si el endpoint que falla es /auth/refresh, no volver a intentar
+    if (originalRequest.url.includes("/auth/refresh")) {
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
       if (isRefreshing) {
-        // Esperar a que termine otro refresh
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -38,15 +41,16 @@ api.interceptors.response.use(
           .catch((err) => Promise.reject(err));
       }
 
-      originalRequest._retry = true;
       isRefreshing = true;
 
       try {
-        await api.post("/auth/refresh"); // refrescar cookies/token
+        await api.post("/auth/refresh"); // 👈 Pedimos nuevo token
         processQueue(null);
-        return api(originalRequest); // reintentar petición original
+        return api(originalRequest); // 👈 Reintentamos el request original
       } catch (err) {
         processQueue(err, null);
+        // 👇 Acá deberías redirigir al login
+        console.error("Refresh token inválido. Redirigiendo al login...");
         return Promise.reject(err);
       } finally {
         isRefreshing = false;

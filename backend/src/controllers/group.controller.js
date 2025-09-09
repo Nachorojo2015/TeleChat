@@ -65,8 +65,6 @@ export const joinGroup = async (req, res) => {
 export const getGroupsByName = async (req, res) => {
   const { name } = req.params;
 
-  console.log('Buscando grupos por nombre:', name);
-
   try {
     const groups = await GroupsRepository.getGroupsByName({ name });
     res.send(groups);
@@ -77,8 +75,6 @@ export const getGroupsByName = async (req, res) => {
 
 export const getMembers = async (req, res) => {
   const { id } = req.params;
-
-  console.log("Fetching members for group ID:", id);
 
   try {
     const members = await GroupsRepository.getMembers({ groupId: id });
