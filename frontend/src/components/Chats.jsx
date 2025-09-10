@@ -19,8 +19,6 @@ const Chats = () => {
 
   const navigate = useNavigate();
 
-  console.log(loader);
-
   useEffect(() => {
     const fetchChats = async () => {
       setLoader(true);
@@ -36,10 +34,11 @@ const Chats = () => {
     };
 
     fetchChats();
+  }, [chatId, navigate]);
 
-    // Sockets
+  // Sockets
+  useEffect(() => {
     const handleNewMessage = ({ message, chatId }) => {
-      console.log("New message received:", message, chatId);
       setChats((prevChats) => {
         return prevChats.map((chat) => {
           if (chat.id === chatId) {
@@ -55,21 +54,6 @@ const Chats = () => {
     };
 
     socket.on("send-message", handleNewMessage);
-
-    socket.on("group-edited", ({ groupId, groupData }) => {
-      setChats((prevChats) => {
-        return prevChats.map((chat) => {
-          if (chat.id === groupId) {
-            return {
-              ...chat,
-              picture: groupData.picture ?? chat.picture,
-              title: groupData.title || chat.title,
-            }; // Actualiza los datos del grupo
-          }
-          return chat;
-        });
-      });
-    });
 
     socket.on("chat-deleted", ({ chatId }) => {
       if (chatId === chatId) {
@@ -87,7 +71,7 @@ const Chats = () => {
       socket.off("group-deleted");
       socket.off("group-edited");
     };
-  }, [chatId, navigate]);
+  }, [navigate]);
 
   if (loader) {
     return (
@@ -101,9 +85,11 @@ const Chats = () => {
     return (
       <div className="flex flex-col items-center justify-center h-full w-full absolute gap-3">
         <p>No estás autenticado.</p>
-        <Link to="/login" className="text-blue-500">Iniciar sesión para comenzar a chatear</Link>
+        <Link to="/login" className="text-blue-500">
+          Iniciar sesión para comenzar a chatear
+        </Link>
       </div>
-    )
+    );
   }
 
   if (chats?.length === 0) {

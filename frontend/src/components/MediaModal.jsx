@@ -50,6 +50,7 @@ const MediaModal = forwardRef(({ file, filePreview, id }, ref) => {
           <h2 className="font-bold text-xl">Enviar Video</h2>
         ) : null}
       </header>
+      <p className="text-center text-sm text-gray-500 antialiased mb-2">Evita compartir datos como: <b>Tarjetas de crédito</b>, <b>Documentos</b> o <b>Contraseñas</b>.</p>
       {file?.type.startsWith("image/") ? (
         <img
           src={filePreview}

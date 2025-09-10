@@ -3,6 +3,7 @@ import Menu from "../components/Menu";
 import { useEffect } from "react";
 import { getMyUser } from "../services/userService";
 import { useUserStore } from "../store/userStore";
+import { Toaster } from "react-hot-toast";
 
 const HomeLayout = () => {
   const { setUser } = useUserStore();
@@ -27,7 +28,11 @@ const HomeLayout = () => {
 
   return (
     <section className="flex h-[100dvh] overflow-hidden">
+      {/* Alertas */}
+      <Toaster />
+      {/* Menu lateral */}
       <Menu />
+
 
       <section className={`xl:flex xl:w-[75%] w-full ${chatId ? 'flex' : 'hidden'} bg-contain bg-[url(/background-chat.png)]`}>
         <Outlet />

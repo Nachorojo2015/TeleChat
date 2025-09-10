@@ -5,6 +5,7 @@ import { useMenuStore } from "../store/menuStore";
 import Members from "./Members";
 import { LuPencil } from "react-icons/lu";
 import ImageZoom from "./ImageZoom";
+import toast from 'react-hot-toast';
 
 const InfoGroup = ({ group, id }) => {
   const { closeInfoGroup, openEditGroupForm } = useMenuStore();
@@ -12,7 +13,7 @@ const InfoGroup = ({ group, id }) => {
   const copyLinkGroup = () => {
     const link = `${window.location.origin}/g/${id}`;
     navigator.clipboard.writeText(link);
-    alert("Link copiado al portapapeles");
+    toast.success("Link copiado al portapapeles");
   }
 
   return (
