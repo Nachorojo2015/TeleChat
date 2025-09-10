@@ -50,7 +50,7 @@ const Menu = () => {
             className="cursor-pointer transition-colors duration-300 hover:bg-slate-200 p-2 rounded-full"
             onClick={() => setIsDropdownOpen((prev) => !prev)}
           >
-            <GiHamburgerMenu size={25} />
+            <GiHamburgerMenu size={25}/>
           </button>
           {isDropdownOpen && user && (
             <div className="absolute left-0 top-full mt-5 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-72 z-20">

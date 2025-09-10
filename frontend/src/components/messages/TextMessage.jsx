@@ -1,5 +1,7 @@
 import { useUserStore } from "../../store/userStore";
 import { formatTimestampToHHMM } from "../../utils/formatTimestampToHHMM";
+import { isValidUrl } from "../../utils/isValidUrl";
+import { Link } from "react-router-dom";
 
 const TextMessage = ({ messageData, typeChat }) => {
   const { user } = useUserStore();
@@ -8,10 +10,14 @@ const TextMessage = ({ messageData, typeChat }) => {
   if (user?.username === messageData.sender_username) {
     return (
       <li className="bg-blue-500 rounded-l-xl flex flex-col rounded-b-xl p-2 text-white max-w-xs ml-auto break-words whitespace-pre-line">
-        {messageData.content.startsWith("http") ? (
-          <a href={messageData.content} className="underline" rel="noopener noreferrer">
+        {isValidUrl(messageData.content) ? (
+          <Link
+            to={messageData.content}
+            className="underline transition hover:text-blue-200"
+            rel="noopener noreferrer"
+          >
             {messageData.content}
-          </a>
+          </Link>
         ) : (
           <p>{messageData.content}</p>
         )}
@@ -22,7 +28,6 @@ const TextMessage = ({ messageData, typeChat }) => {
     );
   }
 
-
   // Verifica si el chat es grupal
   if (typeChat === "group") {
     return (
@@ -32,8 +37,18 @@ const TextMessage = ({ messageData, typeChat }) => {
           alt="picture-of-chat"
           className="object-cover w-8 h-8 rounded-full"
         />
-        <div className="bg-blue-500 p-2 rounded-b-xl break-words whitespace-pre-line max-w-xs text-white  rounded-r-xl">
-          <p>{messageData.content}</p>
+        <div className="bg-blue-500 p-2 rounded-b-xl break-words whitespace-pre-line max-w-xs text-white rounded-r-xl">
+          {isValidUrl(messageData.content) ? (
+            <Link
+              to={messageData.content}
+              className="underline transition hover:text-blue-200"
+              rel="noopener noreferrer"
+            >
+              {messageData.content}
+            </Link>
+          ) : (
+            <p>{messageData.content}</p>
+          )}
           <time className="text-[10px] ml-auto">
             {formatTimestampToHHMM(messageData.sent_at)}
           </time>
@@ -46,8 +61,18 @@ const TextMessage = ({ messageData, typeChat }) => {
   if (typeChat === "private") {
     return (
       <li className="flex items-center gap-2">
-        <div className="bg-blue-500 p-2 rounded-b-xl break-words whitespace-pre-line max-w-xs text-white  rounded-r-xl">
-          <p>{messageData.content}</p>
+        <div className="bg-blue-500 p-2 rounded-b-xl break-words whitespace-pre-line max-w-xs text-white rounded-r-xl">
+          {isValidUrl(messageData.content) ? (
+            <Link
+              to={messageData.content}
+              className="underline transition hover:text-blue-200"
+              rel="noopener noreferrer"
+            >
+              {messageData.content}
+            </Link>
+          ) : (
+            <p>{messageData.content}</p>
+          )}
           <time className="text-[10px] ml-auto">
             {formatTimestampToHHMM(messageData.sent_at)}
           </time>
