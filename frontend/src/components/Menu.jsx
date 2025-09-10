@@ -47,7 +47,7 @@ const Menu = () => {
       <nav className="flex items-center gap-4 px-4 py-1">
         <div className="relative">
           <button
-            className="cursor-pointer transition-colors duration-300 hover:bg-slate-200 p-2 rounded-full"
+            className={`cursor-pointer transition-colors duration-300 hover:bg-slate-200 ${isDropdownOpen ? 'bg-slate-200' : ''} p-2 rounded-full`}
             onClick={() => setIsDropdownOpen((prev) => !prev)}
           >
             <GiHamburgerMenu size={25}/>

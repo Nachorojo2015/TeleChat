@@ -97,10 +97,12 @@ const Chatgroup = () => {
 
           <div className="ml-auto relative">
             {group?.role === "owner" || group?.role === "member" ? (
-              <SlOptionsVertical
-                className="cursor-pointer"
-                onClick={toggleDropDown}
-              />
+              <button className={`p-2 rounded-full hover:bg-slate-200 ${isDropDownOpen ? 'bg-slate-200' : ''} transition-colors duration-300`}>
+                <SlOptionsVertical
+                  className="cursor-pointer"
+                  onClick={toggleDropDown}
+                />
+              </button>
             ) : (
               <JoinGroupButton id={id} />
             )}

@@ -30,7 +30,7 @@ const InfoGroup = ({ group, id }) => {
         )}
       </header>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto scrollbar-transparent">
         <picture className="relative">
           <ImageZoom width={100} height={100} url={group?.picture} alt="Group" styles={'w-full max-h-96 object-cover'} />
 

@@ -90,7 +90,7 @@ const EditGroupForm = ({ group, id }) => {
         <b className="text-xl">Editar</b>
       </header>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto scrollbar-transparent">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 px-4 py-3">
           {/* Editar imagen */}
           <label>

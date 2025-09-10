@@ -38,7 +38,7 @@ const MediaModal = forwardRef(({ file, filePreview, id }, ref) => {
   return (
     <dialog
       ref={ref}
-      className="p-3 rounded-md max-w-[400px] backdrop:bg-black/50 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+      className="p-3 rounded-md xl:max-w-[400px] w-full backdrop:bg-black/50 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
     >
       <header className="flex items-center gap-5 mb-4">
         <button className="cursor-pointer" onClick={closeMediaModal}>

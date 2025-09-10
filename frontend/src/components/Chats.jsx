@@ -122,7 +122,7 @@ const Chats = () => {
   }
 
   return (
-    <ul className="overflow-y-auto p-3 overflow-x-hidden absolute h-full w-full">
+    <ul className="overflow-y-auto scrollbar-transparent p-3 overflow-x-hidden absolute h-full w-full">
       {chats?.map((chat) => (
         <Link
           to={chat.type === "group" ? `/g/${chat.id}` : `/p/${chat.id}`}
