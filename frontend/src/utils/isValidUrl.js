@@ -3,7 +3,7 @@ export const isValidUrl = (string) => {
     new URL(string);
     return true;
   } catch (error) {
-    console.error("Invalid URL:", error);
+    // console.error("Invalid URL:", error);
     return false;
   }
 }

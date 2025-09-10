@@ -22,3 +22,8 @@ export const sendMessage = async ({ chatId, content, type, file }) => {
 
   return data.message;
 };
+
+export const deleteMessage = async (messageId) => {
+  const { data } = await api.delete(`/messages/delete/${messageId}`);
+  return data;
+}

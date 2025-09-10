@@ -1,16 +1,60 @@
+import { useState } from "react";
 import { useUserStore } from "../../store/userStore";
 import { formatTimestampToHHMM } from "../../utils/formatTimestampToHHMM";
 import ImageZoom from "../ImageZoom";
+import { FiTrash } from "react-icons/fi";
+import { IoMdClose } from "react-icons/io";
+import { socket } from "../../socket/socket";
+import { deleteMessage } from "../../services/messagesService";
+
+const onDeleteMessage = async (messageId) => {
+  try {
+    const data = await deleteMessage(messageId);
+    console.log("Message deleted:", data);
+    socket.emit('delete-message', { messageId });
+  } catch (error) {
+    console.error("Error deleting message:", error);
+  }
+}
 
 const ImageMessage = ({ messageData, typeChat }) => {
   const { user } = useUserStore();
+
+  const [showMenu, setShowMenu] = useState(false);
+  let pressTimer;
+
+  const handleContextMenu = (e) => {
+    e.preventDefault(); // evita el menú del navegador
+    setShowMenu(true);
+    console.log("Menú contextual activado");
+  };
+
+  const handleTouchStart = () => {
+    pressTimer = setTimeout(() => setShowMenu(true), 500); // 0.5s presionado
+  };
+
+  const handleTouchEnd = () => {
+    clearTimeout(pressTimer);
+  };
+
   // Verifica si el usuario actual es el remitente del mensaje
   if (user?.username === messageData.sender_username) {
     return (
-      <li className="flex flex-col p-2 text-white max-w-xs ml-auto">
+      <li
+        onContextMenu={handleContextMenu}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        className="flex flex-col p-2 text-white max-w-xs ml-auto relative"
+      >
         <div>
           <div className="relative">
-            <ImageZoom width={messageData.width} height={messageData.height} url={messageData.file_url} alt="picture-of-chat" styles={'object-cover'} />
+            <ImageZoom
+              width={messageData.width}
+              height={messageData.height}
+              url={messageData.file_url}
+              alt="picture-of-chat"
+              styles={"object-cover"}
+            />
             <time className="text-sm ml-auto mt-2 absolute bottom-1 right-3 bg-black/60 rounded-md p-0.5">
               {formatTimestampToHHMM(messageData.sent_at)}
             </time>
@@ -21,6 +65,27 @@ const ImageMessage = ({ messageData, typeChat }) => {
             </p>
           )}
         </div>
+        {showMenu && (
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white text-black rounded shadow-lg z-50 min-w-[120px]">
+            <button
+              className="flex gap-2 items-center w-full px-4 py-2 text-left hover:bg-gray-100"
+              onClick={() => {
+                setShowMenu(false);
+                onDeleteMessage(messageData.message_id);
+              }}
+            >
+              <FiTrash size={20} />
+              Eliminar
+            </button>
+            <button
+              className="flex gap-2 items-center w-full px-4 py-2 text-left hover:bg-gray-100 text-red-500"
+              onClick={() => setShowMenu(false)}
+            >
+              <IoMdClose size={20} />
+              Cancelar
+            </button>
+          </div>
+        )}
       </li>
     );
   }
@@ -36,7 +101,13 @@ const ImageMessage = ({ messageData, typeChat }) => {
         />
         <div>
           <div className="relative">
-            <ImageZoom width={messageData.width} height={messageData.height} url={messageData.file_url} alt="picture-of-chat" styles={'object-cover'} />
+            <ImageZoom
+              width={messageData.width}
+              height={messageData.height}
+              url={messageData.file_url}
+              alt="picture-of-chat"
+              styles={"object-cover"}
+            />
             <time className="text-sm ml-auto mt-2 absolute bottom-1 right-3 bg-black/60 rounded-md p-0.5">
               {formatTimestampToHHMM(messageData.sent_at)}
             </time>
@@ -57,7 +128,13 @@ const ImageMessage = ({ messageData, typeChat }) => {
       <li className="flex gap-2 p-2 text-white max-w-xs">
         <div>
           <div className="relative">
-            <ImageZoom width={messageData.width} height={messageData.height} url={messageData.file_url} alt="picture-of-chat" styles={'object-cover'} />
+            <ImageZoom
+              width={messageData.width}
+              height={messageData.height}
+              url={messageData.file_url}
+              alt="picture-of-chat"
+              styles={"object-cover"}
+            />
             <time className="text-sm ml-auto mt-2 absolute bottom-1 right-3 bg-black/60 rounded-md p-0.5">
               {formatTimestampToHHMM(messageData.sent_at)}
             </time>

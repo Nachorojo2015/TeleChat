@@ -25,11 +25,19 @@ const Messages = ({ chatId, typeChat }) => {
       }
     };
 
+    const handleDeletedMessage = ({ messageId }) => {
+      setMessages((prevMessages) =>
+        prevMessages.filter((msg) => msg.message_id !== messageId)
+      );
+    };
+
     // Listen for new messages from the socket
     socket.on("send-message", handleNewMessage);
+    socket.on("message-deleted", handleDeletedMessage);
 
     return () => {
       socket.off("send-message", handleNewMessage); // Limpieza
+      socket.off("message-deleted", handleDeletedMessage);
     };
   }, [chatId]);
 

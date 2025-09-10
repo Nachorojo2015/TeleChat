@@ -39,13 +39,15 @@ io.on("connection", (socket) => {
 
     // Mensajes
     socket.on('receive-message', ({ message, chatId }) => {
-      console.log("Mensaje recibido en el servidor:", message, chatId);
       io.emit('send-message', { message, chatId });
+    });
+
+    socket.on('delete-message', ({ messageId }) => {
+      io.emit('message-deleted', { messageId });
     });
 
     // Grupos
     socket.on('edit-group', ({ groupId, groupData }) => {
-      console.log("Grupo editado:", groupId, groupData);
       io.emit('group-edited', { groupId, groupData });
     });
 
