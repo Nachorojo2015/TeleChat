@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import MediaModal from "./MediaModal";
 import { SlPicture } from "react-icons/sl";
 import { FaPaperclip } from "react-icons/fa6";
+import { motion, AnimatePresence } from "framer-motion";
 
 const MediaUploadButton = ({ id }) => {
   const mediaModal = useRef(null);
@@ -31,26 +32,36 @@ const MediaUploadButton = ({ id }) => {
     <>
       <div className="relative">
         <button
-          className="cursor-pointer"
+          className={`cursor-pointer transition-colors duration-200 text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-200 ${
+            isDropUpOpen ? "bg-gray-200" : ""
+          }`}
           onClick={() => setIsDropUpOpen((prev) => !prev)}
         >
-          <FaPaperclip size={20} className="mt-1"/>
+          <FaPaperclip size={20} />
         </button>
-        {isDropUpOpen && (
-          <div className="absolute bottom-12 left-0 mb-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-40 z-20">
-            <label className="w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-left hover:bg-gray-100 text-gray-700">
-              <SlPicture />
-              <span>Foto o video</span>
 
-              <input
-                type="file"
-                hidden
-                accept=".jpg, .jpeg, .png, .gif, .webp, .mp4"
-                onChange={handleShowMedia}
-              />
-            </label>
-          </div>
-        )}
+        <AnimatePresence>
+          {isDropUpOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.2 }}
+              className="absolute bottom-12 left-0 mb-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-40 z-20"
+            >
+              <label className="w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-left hover:bg-gray-100 text-gray-700">
+                <SlPicture />
+                <span>Foto o video</span>
+                <input
+                  type="file"
+                  hidden
+                  accept=".jpg, .jpeg, .png, .gif, .webp, .mp4"
+                  onChange={handleShowMedia}
+                />
+              </label>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Modal para mostrar archivos multimedia */}

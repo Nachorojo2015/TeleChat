@@ -13,6 +13,7 @@ import InfoPrivateChat from "../InfoPrivateChat";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import DeleteChatButton from "../DeleteChatButton";
+import { motion, AnimatePresence } from "framer-motion";
 
 const PrivateChat = () => {
   const { id } = useParams();
@@ -43,9 +44,11 @@ const PrivateChat = () => {
 
   return (
     <>
-      <div className={`xl:flex flex-col w-full ${
+      <div
+        className={`xl:flex flex-col w-full ${
           isOpenInfoPrivateChat ? "hidden" : "flex"
-        }`}>
+        }`}
+      >
         <header className="flex items-center gap-4 p-1 px-3 bg-white shadow">
           <Link to={"/"}>
             <FaArrowLeft />
@@ -65,24 +68,41 @@ const PrivateChat = () => {
           </div>
 
           <div className="ml-auto relative">
-            <SlOptionsVertical
-              className="cursor-pointer"
-              onClick={toggleDropDown}
-            />
+            <button className={`cursor-pointer transition-colors duration-300 hover:bg-slate-200 p-2 rounded-full ${isDropDownOpen ? "bg-slate-200" : ""}`}>
+              <SlOptionsVertical
+                onClick={toggleDropDown}
+              />
+            </button>
 
-            {isDropDownOpen && (
-              <ul className="absolute right-0 top-12 bg-white shadow-md rounded-md w-48 z-10">
-                <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
-                  <button className="flex w-full items-center gap-6 cursor-pointer" onClick={openInfoPrivateChat}>
-                    <CiCircleInfo size={20} />
-                    <span>Ver info</span>
-                  </button>
-                </li>
-                <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
-                  <DeleteChatButton title={privateChat?.display_name} picture={privateChat?.profile_picture} type="private" id={id} />
-                </li>
-              </ul>
-            )}
+            <AnimatePresence>
+              {isDropDownOpen && (
+                <motion.ul
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute right-0 top-12 bg-white shadow-md rounded-md w-48 z-10 origin-top-right"
+                >
+                  <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
+                    <button
+                      className="flex w-full items-center gap-6 cursor-pointer"
+                      onClick={openInfoPrivateChat}
+                    >
+                      <CiCircleInfo size={20} />
+                      <span>Ver info</span>
+                    </button>
+                  </li>
+                  <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
+                    <DeleteChatButton
+                      title={privateChat?.display_name}
+                      picture={privateChat?.profile_picture}
+                      type="private"
+                      id={id}
+                    />
+                  </li>
+                </motion.ul>
+              )}
+            </AnimatePresence>
           </div>
         </header>
 
@@ -98,8 +118,8 @@ const PrivateChat = () => {
         </footer>
       </div>
 
-       {/* Info Private chat */}
-       {isOpenInfoPrivateChat && <InfoPrivateChat privateChat={privateChat} />}
+      {/* Info Private chat */}
+      {isOpenInfoPrivateChat && <InfoPrivateChat privateChat={privateChat} />}
     </>
   );
 };

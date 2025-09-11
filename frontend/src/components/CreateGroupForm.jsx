@@ -50,8 +50,8 @@ const CreateGroupForm = () => {
 
   return (
     <aside className="relative border-r border-slate-50 xl:w-[25%] w-full px-3">
-      <nav className="flex items-center gap-6 p-5">
-        <button onClick={closeCreateGroupForm} className="cursor-pointer">
+      <nav className="flex items-center gap-6 p-2">
+        <button onClick={closeCreateGroupForm} className="cursor-pointer transition-colors duration-300 hover:bg-slate-200 p-2 rounded-full">
           <FaArrowLeft size={24} />
         </button>
         <h2 className="text-xl font-semibold">Nuevo Grupo</h2>

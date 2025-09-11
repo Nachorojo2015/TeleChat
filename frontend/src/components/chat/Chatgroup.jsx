@@ -1,6 +1,5 @@
-import { FaArrowLeft } from "react-icons/fa6";
 import Messages from "../Messages";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useEffect } from "react";
 import { getGroup } from "../../services/groupsService";
@@ -17,6 +16,9 @@ import JoinGroupButton from "../JoinGroupButton";
 import LeaveGroupButton from "../LeaveGroupButton";
 import DeleteChatButton from "../DeleteChatButton";
 import ImageZoom from "../ImageZoom";
+import BackHomeButton from "../BackHomeButton";
+import { motion, AnimatePresence } from "framer-motion";
+
 
 const Chatgroup = () => {
   const { id } = useParams();
@@ -74,9 +76,7 @@ const Chatgroup = () => {
       >
         {/* Header */}
         <header className="flex items-center gap-4 p-1 px-3 bg-white shadow">
-          <Link to={"/"}>
-            <FaArrowLeft />
-          </Link>
+          <BackHomeButton />
 
           <ImageZoom
             width={50}
@@ -97,7 +97,11 @@ const Chatgroup = () => {
 
           <div className="ml-auto relative">
             {group?.role === "owner" || group?.role === "member" ? (
-              <button className={`p-2 rounded-full hover:bg-slate-200 ${isDropDownOpen ? 'bg-slate-200' : ''} transition-colors duration-300`}>
+              <button
+                className={`p-2 rounded-full hover:bg-slate-200 ${
+                  isDropDownOpen ? "bg-slate-200" : ""
+                } transition-colors duration-300`}
+              >
                 <SlOptionsVertical
                   className="cursor-pointer"
                   onClick={toggleDropDown}
@@ -107,42 +111,51 @@ const Chatgroup = () => {
               <JoinGroupButton id={id} />
             )}
 
-            {isDropDownOpen && (
-              <ul className="absolute right-0 top-12 bg-white shadow-md rounded-md w-48 z-10">
-                <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
-                  <button
-                    className="flex w-full items-center gap-6 cursor-pointer"
-                    onClick={openInfoGroup}
-                  >
-                    <CiCircleInfo size={20} />
-                    <span>Info.</span>
-                  </button>
-                </li>
-                {group?.role === "owner" ? (
-                  <>
-                    <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
-                      <button
-                        className="flex w-full items-center gap-6 cursor-pointer"
-                        onClick={openEditGroupForm}
-                      >
-                        <LuPencil size={20} />
-                        <span>Editar</span>
-                      </button>
-                    </li>
-                    <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
-                      <DeleteChatButton
-                        title={group?.title}
-                        picture={group?.picture}
-                        type="group"
-                        id={id}
-                      />
-                    </li>
-                  </>
-                ) : (
-                  group?.role === "member" && <LeaveGroupButton id={id} />
-                )}
-              </ul>
-            )}
+            <AnimatePresence>
+              {isDropDownOpen && (
+                <motion.ul
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute right-0 top-12 bg-white shadow-md rounded-md w-48 z-10"
+                >
+                  <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
+                    <button
+                      className="flex w-full items-center gap-6 cursor-pointer"
+                      onClick={openInfoGroup}
+                    >
+                      <CiCircleInfo size={20} />
+                      <span>Info.</span>
+                    </button>
+                  </li>
+
+                  {group?.role === "owner" ? (
+                    <>
+                      <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
+                        <button
+                          className="flex w-full items-center gap-6 cursor-pointer"
+                          onClick={openEditGroupForm}
+                        >
+                          <LuPencil size={20} />
+                          <span>Editar</span>
+                        </button>
+                      </li>
+                      <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
+                        <DeleteChatButton
+                          title={group?.title}
+                          picture={group?.picture}
+                          type="group"
+                          id={id}
+                        />
+                      </li>
+                    </>
+                  ) : (
+                    group?.role === "member" && <LeaveGroupButton id={id} />
+                  )}
+                </motion.ul>
+              )}
+            </AnimatePresence>
           </div>
         </header>
 

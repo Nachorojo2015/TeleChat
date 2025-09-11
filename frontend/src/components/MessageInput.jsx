@@ -38,7 +38,7 @@ const MessageInput = ({ id }) => {
         }}
       />
       <button
-        className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors"
+        className="cursor-pointer bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors"
         onClick={handleSendMessage}
       >
         <FaArrowUp />

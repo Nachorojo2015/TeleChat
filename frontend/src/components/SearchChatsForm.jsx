@@ -108,7 +108,7 @@ const SearchChatsForm = () => {
         <div className="flex items-center justify-around mt-5">
           <button
             onClick={() => setValueSelected("groups")}
-            className={`cursor-pointer w-full ${
+            className={`cursor-pointer w-full transition hover:text-blue-500 ${
               valueSelected === "groups"
                 ? "border-b border-blue-500 text-blue-500 font-bold"
                 : ""
@@ -118,7 +118,7 @@ const SearchChatsForm = () => {
           </button>
           <button
             onClick={() => setValueSelected("users")}
-            className={`cursor-pointer w-full ${
+            className={`cursor-pointer w-full transition hover:text-blue-500 ${
               valueSelected === "users"
                 ? "border-b border-blue-500 text-blue-500 font-bold"
                 : ""
