@@ -3,6 +3,7 @@ import { useLoginForm } from "../../hooks/auth/useLoginForm";
 import { login } from "../../services/auth/authService";
 import { useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
+import toast from "react-hot-toast";
 
 const LoginForm = () => {
   const { formData, handleChange } = useLoginForm();
@@ -19,7 +20,7 @@ const LoginForm = () => {
       await login(formData.username, formData.password);
       navigate("/"); // Redirect to home or dashboard
     } catch (error) {
-      console.error("Login error:", error);
+      toast.error(error.response?.data || "Login fallido. Inténtalo de nuevo.");
       setLoader(false);
     }
   };

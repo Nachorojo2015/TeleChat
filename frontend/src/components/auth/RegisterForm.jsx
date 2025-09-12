@@ -4,6 +4,7 @@ import { register } from "../../services/auth/authService";
 import { isValidPassword } from "../../utils/isValidPassword";
 import { useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
+import toast from "react-hot-toast";
 
 const RegisterhtmlForm = () => {
   const { formData, handleChange } = useRegisterForm();
@@ -15,16 +16,14 @@ const RegisterhtmlForm = () => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
     const isValid = isValidPassword(formData.password);
 
     if (!isValid) {
-      alert(
-        "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
-      );
+      toast.error("Las contraseñas deben tener al menos 8 caracteres, incluyendo una letra mayúscula, una letra minúscula, un número y un carácter especial.");
       return;
     }
 
@@ -37,10 +36,11 @@ const RegisterhtmlForm = () => {
         formData.password,
         formData.fullname
       );
-      alert("User registered successfully!");
+      toast.success("Registro exitoso! Por favor, inicia sesión.");
       navigate("/login");
     } catch (error) {
-      console.error("Error registering user:", error);
+      toast.error(error.response?.data || "Registro fallido. Inténtalo de nuevo.");
+    } finally {
       setLoader(false);
     }
   };

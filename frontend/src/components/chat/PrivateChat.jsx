@@ -14,6 +14,7 @@ import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import DeleteChatButton from "../DeleteChatButton";
 import { motion, AnimatePresence } from "framer-motion";
+import BackHomeButton from "../BackHomeButton";
 
 const PrivateChat = () => {
   const { id } = useParams();
@@ -50,9 +51,7 @@ const PrivateChat = () => {
         }`}
       >
         <header className="flex items-center gap-4 p-1 px-3 bg-white shadow">
-          <Link to={"/"}>
-            <FaArrowLeft />
-          </Link>
+          <BackHomeButton />
 
           <Zoom>
             <img

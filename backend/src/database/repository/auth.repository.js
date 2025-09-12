@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { pool } from "../connection/db.js";
 import bcrypt from "bcrypt";
-import { dbErrorHandler } from "../../utils/dbErrorHandler.utils.js";
 import { getDefaultPicture } from "../../utils/getDefaultPicture.js";
 
 export class AuthRepository {
@@ -27,51 +26,42 @@ export class AuthRepository {
 
     const validatedData = parsed.data;
 
+    const user = await pool.query(
+      `SELECT id FROM users WHERE email = $1 OR username = $2`,
+      [validatedData.email, validatedData.username]
+    );
+
+    if (user.rowCount > 0) {
+      throw new Error("El email o el nombre de usuario ya están en uso");
+    }
+
     const passwordHash = await bcrypt.hash(password, 12);
 
     const defaultPicture = getDefaultPicture(validatedData.display_name);
 
-    try {
-      const result = await pool.query(
-        `INSERT INTO users (email, password_hash, username, display_name, profile_picture)
+    const result = await pool.query(
+      `INSERT INTO users (email, password_hash, username, display_name, profile_picture)
        VALUES ($1, $2, $3, $4, $5)
        RETURNING id`,
-        [
-          validatedData.email,
-          passwordHash,
-          validatedData.username,
-          validatedData.display_name,
-          defaultPicture,
-        ]
-      );
+      [
+        validatedData.email,
+        passwordHash,
+        validatedData.username,
+        validatedData.display_name,
+        defaultPicture,
+      ]
+    );
 
-      if (result.rowCount === 0) {
-        throw new Error("No se pudo crear el usuario");
-      }
-
-      const userId = result.rows[0].id;
-
-      return userId;
-    } catch (error) {
-      dbErrorHandler(error);
+    if (result.rowCount === 0) {
+      throw new Error("No se pudo crear el usuario");
     }
+
+    const userId = result.rows[0].id;
+
+    return userId;
   }
 
   static async login({ username, password }) {
-    const userSchema = z.object({
-      username: z.string().min(3),
-      password: z.string().min(8),
-    });
-
-    const parsed = userSchema.safeParse({
-      username,
-      password,
-    });
-
-    if (!parsed.success) {
-      throw new Error("Datos inválidos");
-    }
-
     const result = await pool.query(
       `SELECT id, username, password_hash FROM users WHERE username = $1`,
       [username]
@@ -102,10 +92,13 @@ export class AuthRepository {
   }
 
   static async searchRefreshToken({ userId, refreshToken }) {
-    const result = await pool.query(`SELECT id FROM user_sessions WHERE user_id = $1 AND token = $2`, [userId, refreshToken])
+    const result = await pool.query(
+      `SELECT id FROM user_sessions WHERE user_id = $1 AND token = $2`,
+      [userId, refreshToken]
+    );
 
     if (result.rowCount === 0) {
-      throw new Error("Refresh token inválido o expirado")
+      throw new Error("Refresh token inválido o expirado");
     }
   }
 
@@ -119,10 +112,13 @@ export class AuthRepository {
   }
 
   static async deleteSessionUser({ token }) {
-    const result = await pool.query(`DELETE FROM user_sessions WHERE token = $1`, [token])
+    const result = await pool.query(
+      `DELETE FROM user_sessions WHERE token = $1`,
+      [token]
+    );
 
     if (result.rowCount === 0) {
-      throw new Error('No se encontró sesión activa para el usuario')
+      throw new Error("No se encontró sesión activa para el usuario");
     }
   }
 }

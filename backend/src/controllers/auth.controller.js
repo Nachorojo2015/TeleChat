@@ -7,9 +7,9 @@ export const register = async (req, res) => {
 
   try {
     await AuthRepository.register({ email, password, username, display_name });
-    res.send("User register!");
+    res.send("User registered successfully!");
   } catch (error) {
-    res.status(201).send(error.message);
+    res.status(400).send(error.message);
   }
 };
 
