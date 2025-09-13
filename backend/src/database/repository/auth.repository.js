@@ -20,7 +20,6 @@ export class AuthRepository {
     });
 
     if (!parsed.success) {
-      console.error("Errores de validación:", parsed.error.issues);
       throw new Error("Datos inválidos");
     }
 

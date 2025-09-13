@@ -1,3 +1,4 @@
 node_modules
 .env
 firebase.json
+/src/database/model/teleChat-structure.sql

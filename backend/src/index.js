@@ -35,8 +35,6 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-    console.log('Usuario conectado')
-
     // Mensajes
     socket.on('receive-message', ({ message, chatId }) => {
       io.emit('send-message', { message, chatId });
@@ -53,15 +51,14 @@ io.on("connection", (socket) => {
 
     // Chats (Grupos y Privados)
     socket.on('delete-chat', ({ chatId }) => {
-      console.log("Chat eliminado:", chatId);
       io.emit('chat-deleted', { chatId });
     });
 
     socket.on('disconnect', () => {
-      console.log('Usuario desconectado')
+      // console.log('Usuario desconectado')
     })
 });
 
 server.listen(PORT, () => {
-  console.log(`App running on port ${PORT}`);
+  // console.log(`App running on port ${PORT}`);
 });

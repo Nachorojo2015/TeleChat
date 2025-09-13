@@ -3,6 +3,7 @@ import { forwardRef } from "react"
 import { socket } from "../socket/socket";
 import { deleteChat } from "../services/chatsService";
 import { ClipLoader } from "react-spinners";
+import toast from "react-hot-toast";
 
 const DeleteChatModal = forwardRef(({ title, picture, type, id }, ref) => {
   const [loader, setLoader] = useState(false);
@@ -12,14 +13,13 @@ const DeleteChatModal = forwardRef(({ title, picture, type, id }, ref) => {
   };
 
   const handleDeleteGroup = async () => {
+    setLoader(true);
     try {
-      setLoader(true);
       await deleteChat(id);
       closeDeleteGroupModal();
-
       socket.emit('delete-chat', id);
-    } catch (error) {
-      console.log(error);
+    } catch {
+      toast.error("Error al eliminar el chat. Inténtalo de nuevo.");
     } finally {
       setLoader(false);
     }

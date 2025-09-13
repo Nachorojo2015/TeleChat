@@ -11,7 +11,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import EditProfileForm from "./EditProfileForm";
 import { useUserStore } from "../store/userStore";
 import SearchChatsForm from "./SearchChatsForm";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
 
 const Menu = () => {
   const {
@@ -32,8 +33,8 @@ const Menu = () => {
     try {
       await logout();
       navigate("/login");
-    } catch (error) {
-      console.error("Logout error:", error);
+    } catch {
+      toast.error("Error al cerrar sesión. Inténtalo de nuevo.");
     }
   };
 
@@ -68,7 +69,7 @@ const Menu = () => {
 
           <AnimatePresence>
             {isDropdownOpen && user && (
-              <motion.div
+              <Motion.div
                 key="dropdown"
                 initial={{ opacity: 0, y: -10 }} // estado inicial
                 animate={{ opacity: 1, y: 0 }} // animación de entrada
@@ -94,7 +95,7 @@ const Menu = () => {
                   <CiLogout size={20} />
                   <span>Cerrar sesión</span>
                 </button>
-              </motion.div>
+              </Motion.div>
             )}
           </AnimatePresence>
         </div>

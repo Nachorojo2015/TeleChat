@@ -6,7 +6,6 @@ import { FiBook } from "react-icons/fi";
 import ImageZoom from "./ImageZoom";
 
 const InfoPrivateChat = ({ privateChat }) => {
-  console.log(privateChat)
   const { closeInfoPrivateChat } = useMenuStore();
 
   return (

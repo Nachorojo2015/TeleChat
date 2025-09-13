@@ -44,13 +44,11 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await api.post("/auth/refresh"); // 👈 Pedimos nuevo token
+        await api.post("/auth/refresh");
         processQueue(null);
-        return api(originalRequest); // 👈 Reintentamos el request original
+        return api(originalRequest);
       } catch (err) {
         processQueue(err, null);
-        // 👇 Acá deberías redirigir al login
-        console.error("Refresh token inválido. Redirigiendo al login...");
         return Promise.reject(err);
       } finally {
         isRefreshing = false;

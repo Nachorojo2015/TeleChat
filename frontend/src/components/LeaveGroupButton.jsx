@@ -1,6 +1,7 @@
 import { IoCaretBackOutline } from "react-icons/io5";
 import { leaveGroup } from "../services/groupsService";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const LeaveGroupButton = ({ id }) => {
 
@@ -8,14 +9,10 @@ const LeaveGroupButton = ({ id }) => {
 
   const onLeaveGroup = async () => {
     try {
-      const data = await leaveGroup(id);
-      console.log("Leave group response:", data);
-      alert("Has salido del grupo");
+      await leaveGroup(id);
       navigate("/");
-      // Aquí podrías redirigir al usuario a otra página si es necesario
-    } catch (error) {
-      console.error("Error leaving group:", error);
-      alert("Error al salir del grupo");
+    } catch {
+      toast.error("Error al salir del grupo. Inténtalo de nuevo.");
     }
   };
 

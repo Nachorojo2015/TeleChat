@@ -7,6 +7,7 @@ import { IoChatbubbleEllipses } from "react-icons/io5";
 import { FaImage, FaVideo } from "react-icons/fa6";
 import { socket } from "../socket/socket";
 import { useUserStore } from "../store/userStore";
+import toast from "react-hot-toast";
 
 const Chats = () => {
   const [chats, setChats] = useState([]);
@@ -26,8 +27,8 @@ const Chats = () => {
       try {
         const chats = await getChats();
         setChats(chats);
-      } catch (error) {
-        console.log(error);
+      } catch {
+        toast.error("Error al cargar los chats. Inténtalo de nuevo.");
       } finally {
         setLoader(false);
       }

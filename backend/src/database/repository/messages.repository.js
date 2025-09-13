@@ -213,7 +213,7 @@ export class MessagesRepository {
           width = metadata.width;
           height = metadata.height;
         } catch (err) {
-          console.error("Error al obtener dimensiones de imagen:", err);
+          throw new Error("No se pudo procesar la imagen", err);
         }
       }
 
@@ -221,19 +221,15 @@ export class MessagesRepository {
       const extension = path.extname(originalname);
       const destination = `messages/file/${messageId}${extension}`;
 
-      console.log("Subiendo archivo a Firebase:", destination);
       await uploadFile(filePath, destination);
 
-      console.log("Obteniendo URL del archivo...");
       const url = await getFileUrl(destination);
-      console.log("URL obtenida:", url);
 
       // 5. Borrar el archivo local
       try {
         await fs.unlink(filePath);
-        console.log("Archivo local eliminado:", filePath);
       } catch (err) {
-        console.error("Error al borrar el archivo:", err);
+        throw new Error("No se pudo borrar el archivo temporal", err);
       }
 
       // 6. Retornar lo necesario
@@ -245,7 +241,6 @@ export class MessagesRepository {
         height,
       };
     } catch (error) {
-      console.error("Error en uploadFileMessage:", error);
       throw new Error(`Error al subir archivo: ${error.message}`);
     }
   }

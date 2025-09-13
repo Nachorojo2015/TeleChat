@@ -10,7 +10,6 @@ const Members = ({ groupId }) => {
   useEffect(() => {
     const fetchMembers = async () => {
       const data = await getMembers(groupId);
-      console.log(data);
       setMembers(data);
     };
 

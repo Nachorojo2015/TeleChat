@@ -7,6 +7,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { searchUsersByUsername } from "../services/userService";
 import { createPrivateChat } from "../services/privateChatService";
+import toast from "react-hot-toast";
 
 const SearchChatsForm = () => {
   const { closeSearchChats } = useMenuStore();
@@ -42,10 +43,9 @@ const SearchChatsForm = () => {
     if (type === "groups") {
       try {
         const groups = await searchGroupsByName(term);
-        console.log(groups);
         setGroups(groups);
-      } catch (error) {
-        console.log(error);
+      } catch {
+        toast.error("Error al buscar grupos. Inténtalo de nuevo.");
       } finally {
         setLoader(false);
       }
@@ -54,10 +54,9 @@ const SearchChatsForm = () => {
     if (type === "users") {
       try {
         const users = await searchUsersByUsername(term);
-        console.log(users);
         setUsers(users);
-      } catch (error) {
-        console.log(error);
+      } catch {
+        toast.error("Error al buscar usuarios. Inténtalo de nuevo.");
       } finally {
         setLoader(false);
       }
@@ -69,8 +68,8 @@ const SearchChatsForm = () => {
       const privateChatId = await createPrivateChat(privateUserId);
       navigate(`/p/${privateChatId}`);
       closeSearchChats();
-    } catch (error) {
-      console.log(error);
+    } catch {
+      toast.error("Error al crear el chat privado");
     }
   }
 

@@ -5,6 +5,7 @@ import { FaArrowRight } from "react-icons/fa6";
 import { createGroup } from "../services/groupsService";
 import { TbCameraPlus } from "react-icons/tb";
 import ClipLoader from "react-spinners/ClipLoader";
+import toast from "react-hot-toast";
 
 const CreateGroupForm = () => {
   const closeCreateGroupForm = useMenuStore(
@@ -43,8 +44,8 @@ const CreateGroupForm = () => {
     try {
       await createGroup({ title: name, picture });
       closeCreateGroupForm();
-    } catch (error) {
-      console.error("Error creating group:", error);
+    } catch {
+      toast.error("Error al crear el grupo. Inténtalo de nuevo.");
     }
   };
 

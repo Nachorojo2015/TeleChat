@@ -7,6 +7,7 @@ import { MdPublic } from "react-icons/md";
 import { RiGitRepositoryPrivateFill } from "react-icons/ri";
 import ClipLoader from "react-spinners/ClipLoader";
 import { socket } from "../socket/socket";
+import toast from "react-hot-toast";
 
 const EditGroupForm = ({ group, id }) => {
   const { closeEditGroupForm } = useMenuStore();
@@ -66,14 +67,12 @@ const EditGroupForm = ({ group, id }) => {
 
     try {
       const updatedGroup = await editGroup(id, groupData);
-      console.log("Grupo editado:", updatedGroup);
-
       socket.emit("edit-group", {
         groupId: id,
         groupData: updatedGroup.groupData,
       });
-    } catch (error) {
-      console.error("Error al editar el grupo:", error);
+    } catch {
+      toast.error("Error al editar el grupo. Inténtalo de nuevo.");
     } finally {
       setLoader(false);
     }

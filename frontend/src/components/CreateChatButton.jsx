@@ -3,7 +3,7 @@ import { LuPencil, LuUsers, LuMegaphone } from "react-icons/lu";
 import { useMenuStore } from "../store/menuStore.js";
 import { IoMdClose } from "react-icons/io";
 import { useUserStore } from "../store/userStore.js";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 
 const CreateChatButton = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,7 +29,7 @@ const CreateChatButton = () => {
       {/* Menú desplegable */}
       <AnimatePresence>
         {isMenuOpen && (
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
@@ -43,7 +43,7 @@ const CreateChatButton = () => {
               <LuUsers className="text-blue-500" />
               <span>Crear Grupo</span>
             </button>
-          </motion.div>
+          </Motion.div>
         )}
       </AnimatePresence>
 

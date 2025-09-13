@@ -5,6 +5,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { TbCameraPlus } from "react-icons/tb";
 import { editProfile } from "../services/userService";
 import { useUserStore } from "../store/userStore";
+import toast from "react-hot-toast";
 
 const EditProfileForm = () => {
   const { user, setUser } = useUserStore();
@@ -56,8 +57,8 @@ const EditProfileForm = () => {
         bio,
         profile_picture: picturePreview || user.profile_picture,
       });
-    } catch (error) {
-      console.error("Error al editar perfil:", error);
+    } catch {
+      toast.error("Error al actualizar el perfil. Inténtalo de nuevo.");
     } finally {
       setLoader(false);
     }

@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { joinGroup } from "../services/groupsService";
 import { useState } from "react";
 import { useMenuStore } from "../store/menuStore";
+import toast from "react-hot-toast";
 
 const JoinGroupButton = ({ id }) => {
   const [joinLoading, setJoinLoading] = useState(false);
@@ -14,12 +15,11 @@ const JoinGroupButton = ({ id }) => {
     setJoinLoading(true);
     try {
       // Llamar al servicio para unirse al grupo
-      const data = await joinGroup(id);
-      console.log(data);
+      await joinGroup(id);
       closeSearchChats();
       navigate('/');
-    } catch (error) {
-      console.error("Error joining group:", error);
+    } catch {
+      toast.error("Error al unirse al grupo. Inténtalo de nuevo.");
     } finally {
       setJoinLoading(false);
     }

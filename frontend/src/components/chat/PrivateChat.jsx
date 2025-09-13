@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getPrivateChat } from "../../services/privateChatService";
 import { FaArrowLeft, FaTrash } from "react-icons/fa6";
 import { formatLastSessionTime } from "../../utils/formatLastSessionTime";
@@ -13,7 +13,7 @@ import InfoPrivateChat from "../InfoPrivateChat";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import DeleteChatButton from "../DeleteChatButton";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import BackHomeButton from "../BackHomeButton";
 
 const PrivateChat = () => {
@@ -25,6 +25,8 @@ const PrivateChat = () => {
 
   const { isOpenInfoPrivateChat, openInfoPrivateChat } = useMenuStore();
 
+  const navigate = useNavigate();
+
   const toggleDropDown = () => {
     setIsDropDownOpen(!isDropDownOpen);
   };
@@ -33,15 +35,14 @@ const PrivateChat = () => {
     const fetchPrivateChat = async () => {
       try {
         const data = await getPrivateChat(id);
-        console.log("Private chat data:", data);
         setPrivateChat(data);
-      } catch (error) {
-        console.log(error);
+      } catch {
+        navigate("/");
       }
     };
 
     fetchPrivateChat();
-  }, [id]);
+  }, [id, navigate]);
 
   return (
     <>
@@ -67,15 +68,17 @@ const PrivateChat = () => {
           </div>
 
           <div className="ml-auto relative">
-            <button className={`cursor-pointer transition-colors duration-300 hover:bg-slate-200 p-2 rounded-full ${isDropDownOpen ? "bg-slate-200" : ""}`}>
-              <SlOptionsVertical
-                onClick={toggleDropDown}
-              />
+            <button
+              className={`cursor-pointer transition-colors duration-300 hover:bg-slate-200 p-2 rounded-full ${
+                isDropDownOpen ? "bg-slate-200" : ""
+              }`}
+            >
+              <SlOptionsVertical onClick={toggleDropDown} />
             </button>
 
             <AnimatePresence>
               {isDropDownOpen && (
-                <motion.ul
+                <Motion.ul
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
@@ -99,7 +102,7 @@ const PrivateChat = () => {
                       id={id}
                     />
                   </li>
-                </motion.ul>
+                </Motion.ul>
               )}
             </AnimatePresence>
           </div>

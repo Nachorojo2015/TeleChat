@@ -10,16 +10,12 @@ const HomeLayout = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const chatId = location.pathname.split('/').pop();
+  const chatId = location.pathname.split("/").pop();
 
   useEffect(() => {
     const fetchMyUserData = async () => {
-      try {
-        const data = await getMyUser();
-        setUser(data);
-      } catch (error) {
-        console.log("Error fetching user data:", error);
-      }
+      const data = await getMyUser();
+      setUser(data);
     };
 
     fetchMyUserData();
@@ -30,7 +26,11 @@ const HomeLayout = () => {
       {/* Menu lateral */}
       <Menu />
       {/* Area de chat */}
-      <section className={`xl:flex xl:w-[75%] w-full ${chatId ? 'flex' : 'hidden'} bg-contain bg-[url(/background-chat.png)]`}>
+      <section
+        className={`xl:flex xl:w-[75%] w-full ${
+          chatId ? "flex" : "hidden"
+        } bg-contain bg-[url(/background-chat.png)]`}
+      >
         <Outlet />
       </section>
     </section>

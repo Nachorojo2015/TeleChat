@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import MediaModal from "./MediaModal";
 import { SlPicture } from "react-icons/sl";
 import { FaPaperclip } from "react-icons/fa6";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 
 const MediaUploadButton = ({ id }) => {
   const mediaModal = useRef(null);
@@ -42,7 +42,7 @@ const MediaUploadButton = ({ id }) => {
 
         <AnimatePresence>
           {isDropUpOpen && (
-            <motion.div
+            <Motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
@@ -59,7 +59,7 @@ const MediaUploadButton = ({ id }) => {
                   onChange={handleShowMedia}
                 />
               </label>
-            </motion.div>
+            </Motion.div>
           )}
         </AnimatePresence>
       </div>

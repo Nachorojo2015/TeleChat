@@ -42,8 +42,7 @@ export const uploadImageToStorage = async (destination, file) => {
   try {
     await fs.access(file.path);
   } catch (error) {
-    console.error("El archivo no existe en el sistema:", error);
-    throw new Error("El archivo no existe en el sistema");
+    throw new Error("El archivo no existe en el sistema", error);
   }
 
   await uploadFile(file.path, destination);
@@ -53,9 +52,8 @@ export const uploadImageToStorage = async (destination, file) => {
   // Eliminar el archivo local después de subirlo exitosamente
   try {
     await fs.unlink(file.path);
-    console.log(`Archivo local eliminado: ${file.path}`);
   } catch (error) {
-    console.warn(`No se pudo eliminar el archivo local: ${error.message}`);
+    throw new Error("No se pudo eliminar el archivo local", error);
   }
 
   return fileUrl;

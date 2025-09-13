@@ -3,6 +3,7 @@ import { IoMdClose } from "react-icons/io";
 import { sendMessage } from "../services/messagesService";
 import ClipLoader from "react-spinners/ClipLoader";
 import { socket } from "../socket/socket";
+import toast from "react-hot-toast";
 
 const MediaModal = forwardRef(({ file, filePreview, id }, ref) => {
   const inputMessage = useRef(null);
@@ -28,8 +29,8 @@ const MediaModal = forwardRef(({ file, filePreview, id }, ref) => {
       inputMessage.current.value = "";
       socket.emit("receive-message", { message: messageCreated, chatId: id });
       closeMediaModal();
-    } catch (error) {
-      console.error("Error al enviar el mensaje:", error);
+    } catch {
+      toast.error("No se pudo enviar el mensaje. Inténtalo de nuevo.");
     } finally {
       setLoader(false);
     }

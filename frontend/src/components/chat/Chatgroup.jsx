@@ -17,8 +17,7 @@ import LeaveGroupButton from "../LeaveGroupButton";
 import DeleteChatButton from "../DeleteChatButton";
 import ImageZoom from "../ImageZoom";
 import BackHomeButton from "../BackHomeButton";
-import { motion, AnimatePresence } from "framer-motion";
-
+import { motion as Motion, AnimatePresence } from "framer-motion";
 
 const Chatgroup = () => {
   const { id } = useParams();
@@ -40,10 +39,8 @@ const Chatgroup = () => {
     const fetchGroup = async () => {
       try {
         const data = await getGroup(id);
-        console.log("Group data:", data);
         setGroup(data);
-      } catch (error) {
-        console.log(error);
+      } catch {
         navigate("/");
       }
     };
@@ -52,7 +49,6 @@ const Chatgroup = () => {
 
     socket.on("group-edited", (data) => {
       if (data.groupId === id) {
-        console.log("Grupo editado desde el socket:", data.groupData);
         setGroup((prevGroup) => ({ ...prevGroup, ...data.groupData }));
       }
     });
@@ -113,7 +109,7 @@ const Chatgroup = () => {
 
             <AnimatePresence>
               {isDropDownOpen && (
-                <motion.ul
+                <Motion.ul
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
@@ -153,7 +149,7 @@ const Chatgroup = () => {
                   ) : (
                     group?.role === "member" && <LeaveGroupButton id={id} />
                   )}
-                </motion.ul>
+                </Motion.ul>
               )}
             </AnimatePresence>
           </div>

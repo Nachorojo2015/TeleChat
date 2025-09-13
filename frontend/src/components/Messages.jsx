@@ -13,7 +13,6 @@ const Messages = ({ chatId, typeChat }) => {
     // Fetch messages for the chatId if needed
     const fetchMessages = async () => {
       const data = await getMessages(chatId);
-      console.log("Messages data:", data);
       setMessages(data);
     };
 

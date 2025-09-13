@@ -6,16 +6,16 @@ import { FiTrash } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
 import { socket } from "../../socket/socket";
 import { deleteMessage } from "../../services/messagesService";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
 
 
 const onDeleteMessage = async (messageId) => {
   try {
-    const data = await deleteMessage(messageId);
-    console.log("Message deleted:", data);
+    await deleteMessage(messageId);
     socket.emit("delete-message", { messageId });
-  } catch (error) {
-    console.error("Error deleting message:", error);
+  } catch {
+    toast.error("Error al eliminar el mensaje. Inténtalo de nuevo.");
   }
 };
 
@@ -28,7 +28,6 @@ const ImageMessage = ({ messageData, typeChat }) => {
   const handleContextMenu = (e) => {
     e.preventDefault(); // evita el menú del navegador
     setShowMenu(true);
-    console.log("Menú contextual activado");
   };
 
   const handleTouchStart = () => {
@@ -69,7 +68,7 @@ const ImageMessage = ({ messageData, typeChat }) => {
         </div>
         <AnimatePresence>
           {showMenu && (
-            <motion.div
+            <Motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
@@ -93,7 +92,7 @@ const ImageMessage = ({ messageData, typeChat }) => {
                 <IoMdClose size={20} />
                 Cancelar
               </button>
-            </motion.div>
+            </Motion.div>
           )}
         </AnimatePresence>
       </li>
