@@ -4,10 +4,7 @@ config();
 
 export const {
   PORT,
-  DB_USER,
-  DB_HOST,
-  DB_PASSWORD,
-  DB_NAME,
+  DATABASE_URL,
   SECRET_JWT_KEY,
   SECRET_JWT_REFRESH_KEY,
   ENCRYPTION_KEY,
