@@ -3,6 +3,7 @@ import { pool } from "../connection/db.js";
 import fs from "fs/promises";
 import path from "path";
 import sharp from "sharp";
+import { decrypt, encrypt } from "../../utils/crypto.js";
 
 export class MessagesRepository {
   /**
@@ -19,6 +20,8 @@ export class MessagesRepository {
     fileUrl,
   }) {
 
+    const encryptedContent = encrypt(content);
+
     const result = await pool.query(
       `
     INSERT INTO messages (chat_id, sender_id, content, type, file_url)
@@ -28,7 +31,7 @@ export class MessagesRepository {
       [
         chatId,
         userId,
-        content,
+        encryptedContent,
         type,
         fileUrl,
       ]
@@ -122,7 +125,10 @@ export class MessagesRepository {
       throw new Error("Mensaje no encontrado");
     }
 
-    return result.rows[0];
+    const message = result.rows[0];
+    message.content = decrypt(message.content);
+
+    return message;
   }
 
   /**
@@ -165,7 +171,12 @@ export class MessagesRepository {
       [chatId]
     );
 
-    return result.rows;
+    const messages = result.rows;
+    for (const message of messages) {
+      message.content = decrypt(message.content);
+    }
+
+    return messages;
   }
 
   /**

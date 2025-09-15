@@ -1,3 +1,4 @@
+import { decrypt } from "../../utils/crypto.js";
 import { pool } from "../connection/db.js";
 
 export class ChatsRepository {
@@ -36,7 +37,19 @@ export class ChatsRepository {
       [userId]
     );
 
-    return result.rows;
+    const chats = result.rows;
+    chats.forEach((chat) => {
+      if (chat.content) {
+        try {
+          chat.content = decrypt(chat.content);
+        } catch {
+          chat.content = null;
+        }
+      } else {
+        chat.content = null;
+      }
+    });
+    return chats;
   }
 
   static async deleteChat({ chatId }) {
