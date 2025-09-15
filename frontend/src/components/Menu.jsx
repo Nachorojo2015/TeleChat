@@ -5,14 +5,12 @@ import { useMenuStore } from "../store/menuStore";
 import CreateGroupForm from "./CreateGroupForm";
 import { CiSearch } from "react-icons/ci";
 import { useState } from "react";
-import { CiLogout } from "react-icons/ci";
-import { logout } from "../services/auth/authService";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import EditProfileForm from "./EditProfileForm";
 import { useUserStore } from "../store/userStore";
 import SearchChatsForm from "./SearchChatsForm";
 import { motion as Motion, AnimatePresence } from "framer-motion";
-import toast from "react-hot-toast";
+import CloseSessionButton from "./CloseSessionButton";
 
 const Menu = () => {
   const {
@@ -24,19 +22,11 @@ const Menu = () => {
   } = useMenuStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user } = useUserStore();
-  const navigate = useNavigate();
 
   const location = useLocation();
   const chatId = location.pathname.split("/").pop();
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate("/login");
-    } catch {
-      toast.error("Error al cerrar sesión. Inténtalo de nuevo.");
-    }
-  };
+ 
 
   if (isOpenCreateGroupForm) {
     return <CreateGroupForm />; // Si el formulario de creación de grupo está abierto, no mostrar el menú
@@ -88,13 +78,7 @@ const Menu = () => {
                   />
                   <span>{user?.display_name}</span>
                 </button>
-                <button
-                  className="w-full flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100 text-red-500"
-                  onClick={handleLogout}
-                >
-                  <CiLogout size={20} />
-                  <span>Cerrar sesión</span>
-                </button>
+                <CloseSessionButton />
               </Motion.div>
             )}
           </AnimatePresence>

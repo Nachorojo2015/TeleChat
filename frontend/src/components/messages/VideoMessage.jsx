@@ -60,7 +60,7 @@ const VideoMessage = ({ messageData, typeChat }) => {
         </div>
         <AnimatePresence>
           {showMenu && (
-            <motion.div
+            <Motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
@@ -84,7 +84,7 @@ const VideoMessage = ({ messageData, typeChat }) => {
                 <IoMdClose size={20} />
                 Cancelar
               </button>
-            </motion.div>
+            </Motion.div>
           )}
         </AnimatePresence>
       </li>
