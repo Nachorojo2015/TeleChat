@@ -4,10 +4,11 @@ import { useMenuStore } from "../store/menuStore";
 import { useEffect, useState } from "react";
 import { searchGroupsByName } from "../services/groupsService";
 import ClipLoader from "react-spinners/ClipLoader";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { searchUsersByUsername } from "../services/userService";
 import { createPrivateChat } from "../services/privateChatService";
 import toast from "react-hot-toast";
+import Aside from "./ui/Aside";
 
 const SearchChatsForm = () => {
   const { closeSearchChats } = useMenuStore();
@@ -20,9 +21,6 @@ const SearchChatsForm = () => {
 
   const [groups, setGroups] = useState([]);
   const [users, setUsers] = useState([]);
-
-  const location = useLocation();
-  const chatId = location.pathname.split("/").pop();
 
   const navigate = useNavigate();
 
@@ -74,11 +72,7 @@ const SearchChatsForm = () => {
   }
 
   return (
-    <aside
-      className={`border-r flex flex-col border-slate-50 xl:w-[25%] xl:flex w-full ${
-        chatId ? "hidden" : "flex"
-      }`}
-    >
+    <Aside>
       <nav className="flex flex-col px-4">
         <div className="flex items-center gap-5 py-1">
           <button className="cursor-pointer transition-colors duration-300 hover:bg-slate-200 p-2 rounded-full" onClick={closeSearchChats}>
@@ -201,7 +195,7 @@ const SearchChatsForm = () => {
             ))}
         </ul>
       </div>
-    </aside>
+    </Aside>
   );
 };
 

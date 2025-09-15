@@ -5,12 +5,12 @@ import { useMenuStore } from "../store/menuStore";
 import CreateGroupForm from "./CreateGroupForm";
 import { CiSearch } from "react-icons/ci";
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
 import EditProfileForm from "./EditProfileForm";
 import { useUserStore } from "../store/userStore";
 import SearchChatsForm from "./SearchChatsForm";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import CloseSessionButton from "./CloseSessionButton";
+import Aside from "./ui/Aside";
 
 const Menu = () => {
   const {
@@ -23,11 +23,6 @@ const Menu = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user } = useUserStore();
 
-  const location = useLocation();
-  const chatId = location.pathname.split("/").pop();
-
- 
-
   if (isOpenCreateGroupForm) {
     return <CreateGroupForm />; // Si el formulario de creación de grupo está abierto, no mostrar el menú
   }
@@ -37,15 +32,11 @@ const Menu = () => {
   }
 
   if (isOpenSearchChats) {
-    return <SearchChatsForm />;
+    return <SearchChatsForm />; // Si el formulario de búsqueda de chats está abierto, no mostrar el menú
   }
 
   return (
-    <aside
-      className={`relative border-r flex flex-col border-slate-50 xl:w-[25%] xl:flex w-full ${
-        chatId ? "hidden" : "flex"
-      } group`}
-    >
+    <Aside>
       <nav className="flex items-center gap-4 px-4 py-1">
         <div className="relative">
           <button
@@ -105,7 +96,7 @@ const Menu = () => {
       </div>
 
       <CreateChatButton />
-    </aside>
+    </Aside>
   );
 };
 

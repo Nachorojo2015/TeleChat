@@ -6,6 +6,7 @@ import { TbCameraPlus } from "react-icons/tb";
 import { editProfile } from "../services/userService";
 import { useUserStore } from "../store/userStore";
 import toast from "react-hot-toast";
+import Aside from "./ui/Aside";
 
 const EditProfileForm = () => {
   const { user, setUser } = useUserStore();
@@ -65,16 +66,16 @@ const EditProfileForm = () => {
   };
 
   return (
-    <aside className="relative border-r border-slate-50 xl:w-[25%] w-full px-3">
-      <nav className="flex items-center gap-6 p-5">
-        <button onClick={closeEditProfileForm} className="cursor-pointer">
+    <Aside>
+      <nav className="flex items-center gap-6 p-2">
+        <button onClick={closeEditProfileForm} className="cursor-pointer transition-colors hover:bg-slate-200 p-2 rounded-full">
           <FaArrowLeft size={24} />
         </button>
         <h2 className="text-xl font-semibold">Editar perfil</h2>
       </nav>
 
       <form
-        className="flex flex-col items-center justify-center gap-4"
+        className="flex flex-col items-center justify-center gap-4 px-3"
         onSubmit={handleEditProfile}
       >
         <label>
@@ -176,7 +177,7 @@ const EditProfileForm = () => {
           )}
         </button>
       </form>
-    </aside>
+    </Aside>
   );
 };
 

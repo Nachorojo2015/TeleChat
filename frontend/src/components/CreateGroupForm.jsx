@@ -6,6 +6,7 @@ import { createGroup } from "../services/groupsService";
 import { TbCameraPlus } from "react-icons/tb";
 import ClipLoader from "react-spinners/ClipLoader";
 import toast from "react-hot-toast";
+import Aside from "./ui/Aside";
 
 const CreateGroupForm = () => {
   const closeCreateGroupForm = useMenuStore(
@@ -50,7 +51,7 @@ const CreateGroupForm = () => {
   };
 
   return (
-    <aside className="relative border-r border-slate-50 xl:w-[25%] w-full px-3">
+    <Aside>
       <nav className="flex items-center gap-6 p-2">
         <button onClick={closeCreateGroupForm} className="cursor-pointer transition-colors duration-300 hover:bg-slate-200 p-2 rounded-full">
           <FaArrowLeft size={24} />
@@ -59,7 +60,7 @@ const CreateGroupForm = () => {
       </nav>
 
       <form
-        className="flex flex-col items-center justify-center gap-4"
+        className="flex flex-col items-center justify-center gap-4 px-3"
         onSubmit={handleSubmit}
       >
         <label>
@@ -137,7 +138,7 @@ const CreateGroupForm = () => {
           <></>
         )}
       </form>
-    </aside>
+    </Aside>
   );
 };
 
