@@ -1,7 +1,6 @@
-import Messages from "../Messages";
 import { useNavigate, useParams } from "react-router-dom";
 import { SlOptionsVertical } from "react-icons/sl";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { getGroup } from "../../services/groupsService";
 import { useState } from "react";
 import { LuPencil } from "react-icons/lu";
@@ -18,6 +17,7 @@ import DeleteChatButton from "../DeleteChatButton";
 import ImageZoom from "../ImageZoom";
 import BackHomeButton from "../BackHomeButton";
 import { motion as Motion, AnimatePresence } from "framer-motion";
+import MessagesContainer from "../MessagesContainer";
 
 const Chatgroup = () => {
   const { id } = useParams();
@@ -61,14 +61,6 @@ const Chatgroup = () => {
   const toggleDropDown = () => {
     setIsDropDownOpen(!isDropDownOpen);
   };
-
-  const messagesEndRef = useRef(null);
-
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
-    }
-  }, [group]);
 
   return (
     <>
@@ -163,17 +155,13 @@ const Chatgroup = () => {
           </div>
         </header>
 
-        <div className="relative flex flex-1">
-          <ul ref={messagesEndRef} className="overflow-y-auto overflow-x-hidden absolute h-full w-full px-4 py-2 scrollbar-transparent">
-            <Messages chatId={id} typeChat="group" />
-          </ul>
-        </div>
+        <MessagesContainer id={id} chat={group} typeChat='group' />
 
         {/* Footer */}
         {(group?.role === "owner" || group?.role === "member") && (
           <footer className="flex items-center justify-center gap-2 p-2 shadow bg-white">
             <MediaUploadButton id={id} />
-            <MessageInput ref={messagesEndRef} id={id} />
+            <MessageInput id={id} />
           </footer>
         )}
       </div>

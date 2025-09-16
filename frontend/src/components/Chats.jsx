@@ -74,8 +74,6 @@ const Chats = () => {
     };
   }, [navigate]);
 
-  console.log(chats);
-
   if (loader) {
     return (
       <ul className="flex items-center justify-center h-full w-full absolute">

@@ -1,11 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { getPrivateChat } from "../../services/privateChatService";
-import { FaArrowLeft, FaTrash } from "react-icons/fa6";
 import { formatLastSessionTime } from "../../utils/formatLastSessionTime";
 import { SlOptionsVertical } from "react-icons/sl";
 import { CiCircleInfo } from "react-icons/ci";
-import Messages from "../Messages";
 import MediaUploadButton from "../MediaUploadButton";
 import MessageInput from "../MessageInput";
 import { useMenuStore } from "../../store/menuStore";
@@ -15,6 +13,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import DeleteChatButton from "../DeleteChatButton";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import BackHomeButton from "../BackHomeButton";
+import MessagesContainer from "../MessagesContainer";
 
 const PrivateChat = () => {
   const { id } = useParams();
@@ -43,14 +42,6 @@ const PrivateChat = () => {
 
     fetchPrivateChat();
   }, [id, navigate]);
-
-  const messagesEndRef = useRef(null);
-
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
-    }
-  }, [privateChat]);
 
   return (
     <>
@@ -116,18 +107,11 @@ const PrivateChat = () => {
           </div>
         </header>
 
-        <div className="relative flex flex-1">
-          <ul
-            ref={messagesEndRef}
-            className="overflow-y-auto overflow-x-hidden absolute h-full w-full px-4 py-2 scrollbar-transparent"
-          >
-            <Messages chatId={id} typeChat="private" />
-          </ul>
-        </div>
+        <MessagesContainer id={id} chat={privateChat} typeChat='private' />
 
         <footer className="flex items-center justify-center gap-2 p-2 shadow bg-white">
           <MediaUploadButton id={id} />
-          <MessageInput ref={messagesEndRef} id={id} />
+          <MessageInput id={id} />
         </footer>
       </div>
 
