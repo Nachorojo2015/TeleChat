@@ -1,10 +1,10 @@
-import { useRef } from "react";
+import { forwardRef, useRef } from "react";
 import { sendMessage } from "../services/messagesService";
 import { FaArrowUp } from "react-icons/fa6";
 import { socket } from "../socket/socket";
 import toast from "react-hot-toast";
 
-const MessageInput = ({ id }) => {
+const MessageInput = forwardRef(({ id }, ref) => {
   const inputMessage = useRef(null);
 
   const handleSendMessage = async () => {
@@ -20,6 +20,10 @@ const MessageInput = ({ id }) => {
       const messageCreated = await sendMessage(messageData);
       inputMessage.current.value = "";
       socket.emit("receive-message", { message: messageCreated, chatId: id });
+
+      setTimeout(() => {
+        ref.current.scrollTop = ref.current.scrollHeight;
+      }, 100);
     } catch {
       toast.error("Error al enviar el mensaje. Inténtalo de nuevo.");
     }
@@ -46,6 +50,6 @@ const MessageInput = ({ id }) => {
       </button>
     </>
   );
-};
+});
 
 export default MessageInput;

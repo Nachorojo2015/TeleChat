@@ -1,7 +1,7 @@
 import Messages from "../Messages";
 import { useNavigate, useParams } from "react-router-dom";
 import { SlOptionsVertical } from "react-icons/sl";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { getGroup } from "../../services/groupsService";
 import { useState } from "react";
 import { LuPencil } from "react-icons/lu";
@@ -61,6 +61,14 @@ const Chatgroup = () => {
   const toggleDropDown = () => {
     setIsDropDownOpen(!isDropDownOpen);
   };
+
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+    }
+  }, [group]);
 
   return (
     <>
@@ -156,7 +164,7 @@ const Chatgroup = () => {
         </header>
 
         <div className="relative flex flex-1">
-          <ul className="overflow-y-auto overflow-x-hidden absolute h-full w-full px-4 py-2 scrollbar-transparent">
+          <ul ref={messagesEndRef} className="overflow-y-auto overflow-x-hidden absolute h-full w-full px-4 py-2 scrollbar-transparent">
             <Messages chatId={id} typeChat="group" />
           </ul>
         </div>
@@ -165,7 +173,7 @@ const Chatgroup = () => {
         {(group?.role === "owner" || group?.role === "member") && (
           <footer className="flex items-center justify-center gap-2 p-2 shadow bg-white">
             <MediaUploadButton id={id} />
-            <MessageInput id={id} />
+            <MessageInput ref={messagesEndRef} id={id} />
           </footer>
         )}
       </div>
