@@ -79,7 +79,7 @@ const Chatgroup = () => {
             height={50}
             url={group?.picture}
             alt="picture-of-group"
-            styles={"rounded-full object-cover"}
+            styles={"w-12 h-12 rounded-full object-cover shrink-0"}
           />
 
           <div>

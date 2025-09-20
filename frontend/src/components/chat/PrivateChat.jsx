@@ -57,7 +57,7 @@ const PrivateChat = () => {
             <img
               src={privateChat?.profile_picture}
               alt="picture-of-group"
-              className="w-12 h-12 rounded-full object-cover cursor-pointer"
+              className="w-12 h-12 rounded-full object-cover cursor-pointer shrink-0"
             />
           </Zoom>
 

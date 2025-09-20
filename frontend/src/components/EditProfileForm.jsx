@@ -58,6 +58,7 @@ const EditProfileForm = () => {
         bio,
         profile_picture: picturePreview || user.profile_picture,
       });
+      toast.success("Perfil actualizado con éxito");
     } catch {
       toast.error("Error al actualizar el perfil. Inténtalo de nuevo.");
     } finally {
@@ -145,7 +146,6 @@ const EditProfileForm = () => {
               onChange={handleBioChange}
               defaultValue={bio}
               autoComplete="off"
-              required
             />
             <label
               htmlFor="bio"

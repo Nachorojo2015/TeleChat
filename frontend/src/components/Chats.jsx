@@ -121,7 +121,7 @@ const Chats = () => {
           <img
             src={chat.picture || chat.other_profile_picture}
             alt={chat.name}
-            className="w-16 h-16 rounded-full object-cover"
+            className="w-16 h-16 rounded-full object-cover shrink-0"
           />
           <div className="w-full">
             <div className="flex justify-between items-center">
