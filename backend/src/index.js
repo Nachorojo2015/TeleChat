@@ -1,5 +1,5 @@
 import express from "express";
-import { PORT } from "./config/variables.js";
+import { FRONTEND_URL, PORT } from "./config/variables.js";
 import { usersRouter } from "./routes/users.routes.js";
 import { authRouter } from "./routes/auth.routes.js";
 import { chatsRouter } from "./routes/chats.routes.js";
@@ -15,7 +15,7 @@ import cors from "cors";
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: ['http://localhost:5173'], credentials: true }));
+app.use(cors({ origin: [FRONTEND_URL], credentials: true }));
 
 app.use("/auth", authRouter);
 app.use("/users", authenticateToken, usersRouter);
@@ -29,7 +29,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: FRONTEND_URL,
     credentials: true,
   },
 });

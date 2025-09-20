@@ -5,6 +5,7 @@ config();
 export const {
   PORT,
   DATABASE_URL,
+  FRONTEND_URL,
   SECRET_JWT_KEY,
   SECRET_JWT_REFRESH_KEY,
   ENCRYPTION_KEY,
