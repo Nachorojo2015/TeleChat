@@ -14,6 +14,7 @@ import DeleteChatButton from "../DeleteChatButton";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import BackHomeButton from "../BackHomeButton";
 import MessagesContainer from "../MessagesContainer";
+import { ClipLoader } from "react-spinners";
 
 const PrivateChat = () => {
   const { id } = useParams();
@@ -23,6 +24,8 @@ const PrivateChat = () => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
   const { isOpenInfoPrivateChat, openInfoPrivateChat } = useMenuStore();
+
+  const [loader, setLoader] = useState(true);
 
   const navigate = useNavigate();
 
@@ -37,11 +40,21 @@ const PrivateChat = () => {
         setPrivateChat(data);
       } catch {
         navigate("/");
+      } finally {
+        setLoader(false);
       }
     };
 
     fetchPrivateChat();
   }, [id, navigate]);
+
+  if (loader) {
+    return (
+      <div className="flex justify-center items-center w-full">
+        <ClipLoader />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -107,7 +120,7 @@ const PrivateChat = () => {
           </div>
         </header>
 
-        <MessagesContainer id={id} chat={privateChat} typeChat='private' />
+        <MessagesContainer id={id} chat={privateChat} typeChat="private" />
 
         <footer className="flex items-center justify-center gap-2 p-2 shadow bg-white">
           <MediaUploadButton id={id} />

@@ -18,6 +18,7 @@ import ImageZoom from "../ImageZoom";
 import BackHomeButton from "../BackHomeButton";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import MessagesContainer from "../MessagesContainer";
+import { ClipLoader } from "react-spinners";
 
 const Chatgroup = () => {
   const { id } = useParams();
@@ -25,6 +26,8 @@ const Chatgroup = () => {
   const [group, setGroup] = useState(null);
 
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+
+  const [loader, setLoader] = useState(true);
 
   const navigate = useNavigate();
 
@@ -42,6 +45,8 @@ const Chatgroup = () => {
         setGroup(data);
       } catch {
         navigate("/");
+      } finally {
+        setLoader(false);
       }
     };
 
@@ -61,6 +66,14 @@ const Chatgroup = () => {
   const toggleDropDown = () => {
     setIsDropDownOpen(!isDropDownOpen);
   };
+
+  if (loader) {
+    return (
+      <div className="flex justify-center items-center w-full">
+        <ClipLoader />
+      </div>
+    );
+  }
 
   return (
     <>
