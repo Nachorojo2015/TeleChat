@@ -8,16 +8,17 @@ import toast from "react-hot-toast";
 const DeleteChatModal = forwardRef(({ title, picture, type, id }, ref) => {
   const [loader, setLoader] = useState(false);
 
-  const closeDeleteGroupModal = () => {
+  const closeDeleteChatModal = () => {
     ref.current.close();
   };
 
-  const handleDeleteGroup = async () => {
+  const handleDeleteChat = async () => {
     setLoader(true);
     try {
       await deleteChat(id);
-      closeDeleteGroupModal();
+      closeDeleteChatModal();
       socket.emit('delete-chat', id);
+      toast.success(`${type === "group" ? "Grupo" : "Chat"} eliminado con éxito`);
     } catch {
       toast.error("Error al eliminar el chat. Inténtalo de nuevo.");
     } finally {
@@ -45,13 +46,13 @@ const DeleteChatModal = forwardRef(({ title, picture, type, id }, ref) => {
       </p>
 
       <div className="flex flex-col items-end mt-4">
-        <button className="uppercase flex items-center gap-2 text-red-500 p-1 rounded-md transition-all hover:bg-red-50 cursor-pointer" onClick={handleDeleteGroup}>
+        <button className="uppercase flex items-center gap-2 text-red-500 p-1 rounded-md transition-all hover:bg-red-50 cursor-pointer" onClick={handleDeleteChat}>
           <span>Eliminar {type === "group" ? "grupo" : "chat"}</span>
           {loader ? <ClipLoader size={10} /> : null}
         </button>
         <button
           className="uppercase text-blue-500 p-1 rounded-md transition-all hover:bg-blue-50 cursor-pointer"
-          onClick={closeDeleteGroupModal}
+          onClick={closeDeleteChatModal}
         >
           Cancelar
         </button>

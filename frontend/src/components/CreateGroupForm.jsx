@@ -1,52 +1,50 @@
 import { FaArrowLeft } from "react-icons/fa6";
 import { useMenuStore } from "../store/menuStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa6";
 import { createGroup } from "../services/groupsService";
 import { TbCameraPlus } from "react-icons/tb";
 import ClipLoader from "react-spinners/ClipLoader";
 import toast from "react-hot-toast";
 import Aside from "./ui/Aside";
+import { useForm } from "react-hook-form";
 
 const CreateGroupForm = () => {
   const closeCreateGroupForm = useMenuStore(
     (state) => state.closeCreateGroupForm
   );
 
-  const [picture, setPicture] = useState(null);
-  const [picturePreview, setPicturePreview] = useState(null);
-  const [name, setName] = useState("");
   const [loader, setLoader] = useState(false);
 
-  const handlePictureChange = (e) => {
-    const file = e.target.files[0];
+  const { register, handleSubmit, watch } = useForm();
+  const [preview, setPreview] = useState(null);
 
-    if (file) {
-      setPicture(file);
+  const name = watch("title");
+  const picture = watch("picture");
 
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPicturePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+  useEffect(() => {
+    if (picture && picture.length > 0) {
+      const file = picture[0];
+      const objectUrl = URL.createObjectURL(file);
+      setPreview(objectUrl);
     }
-  };
 
-  const handleNameChange = (e) => {
-    const name = e.target.value;
-    setName(name);
-  };
+    return () => {
+      setPreview(null);
+    };
+  }, [picture]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const onSubmit = async (data) => {
     setLoader(true);
 
     try {
-      await createGroup({ title: name, picture });
+      await createGroup({ title: data.title, picture: data.picture?.[0] });
       closeCreateGroupForm();
+      toast.success("Grupo creado con éxito");
     } catch {
       toast.error("Error al crear el grupo. Inténtalo de nuevo.");
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -61,13 +59,13 @@ const CreateGroupForm = () => {
 
       <form
         className="flex flex-col items-center justify-center gap-4 px-3"
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <label>
-          {picturePreview ? (
+          {preview ? (
             <div className="relative cursor-pointer group">
               <img
-                src={picturePreview}
+                src={preview}
                 alt="camera"
                 className="w-32 h-32 rounded-full object-cover"
                 style={{ filter: "brightness(50%)" }}
@@ -93,7 +91,7 @@ const CreateGroupForm = () => {
             name="picture"
             accept=".png, .jpg, .jpeg"
             hidden
-            onChange={handlePictureChange}
+            { ...register("picture") }
           />
         </label>
 
@@ -105,9 +103,9 @@ const CreateGroupForm = () => {
               name="title"
               className="w-full peer bg-transparent h-10 text-xl rounded-lg placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
               placeholder="Nombre del grupo"
-              onChange={handleNameChange}
               autoComplete="off"
               required
+              { ...register("title",{ required: true }) }
             />
             <label
               htmlFor="title"
