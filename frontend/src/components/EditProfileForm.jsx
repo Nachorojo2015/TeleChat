@@ -1,63 +1,53 @@
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 import { useMenuStore } from "../store/menuStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { TbCameraPlus } from "react-icons/tb";
 import { editProfile } from "../services/userService";
 import { useUserStore } from "../store/userStore";
 import toast from "react-hot-toast";
 import Aside from "./ui/Aside";
+import { useForm } from "react-hook-form";
 
 const EditProfileForm = () => {
   const { user, setUser } = useUserStore();
-  const [picture, setPicture] = useState(null);
-  const [picturePreview, setPicturePreview] = useState(
-    user?.profile_picture || null
-  );
-  const [fullname, setFullname] = useState(user?.display_name || "");
-  const [bio, setBio] = useState(user?.bio || "");
-  const [loader, setLoader] = useState(false);
-
   const { closeEditProfileForm } = useMenuStore();
 
-  const handlePictureChange = (e) => {
-    const file = e.target.files[0];
+  const [loader, setLoader] = useState(false);
 
-    if (file) {
-      setPicture(file);
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPicturePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+  const { register, handleSubmit, watch } = useForm({
+    defaultValues: {
+      fullname: user?.display_name,
+      bio: user?.bio,
+      picture: null,
     }
-  };
+  });
 
-  const handleFullnameChange = (e) => {
-    const name = e.target.value;
-    setFullname(name);
-  };
+  const picture = watch("picture");
+  
+  const [preview, setPreview] = useState(user?.profile_picture || null);
 
-  const handleBioChange = (e) => {
-    const bio = e.target.value;
-    setBio(bio);
-  };
+  useEffect(() => {
+    if (picture && picture.length > 0) {
+      const file = picture[0];
+      const objectUrl = URL.createObjectURL(file);
+      setPreview(objectUrl);
+    }
+  }, [picture])
 
-  const handleEditProfile = async (e) => {
-    e.preventDefault();
-
+  const onSubmit = async (data) => {
     setLoader(true);
 
     try {
-      await editProfile({ fullname, bio, picture });
+      await editProfile({ fullname: data.fullname, bio: data.bio, picture });
 
       setUser({
         ...user,
-        display_name: fullname,
-        bio,
-        profile_picture: picturePreview || user.profile_picture,
+        display_name: data.fullname,
+        bio: data.bio,
+        profile_picture: preview || user.profile_picture,
       });
+
       toast.success("Perfil actualizado con éxito");
     } catch {
       toast.error("Error al actualizar el perfil. Inténtalo de nuevo.");
@@ -77,13 +67,13 @@ const EditProfileForm = () => {
 
       <form
         className="flex flex-col items-center justify-center gap-4 px-3"
-        onSubmit={handleEditProfile}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <label>
-          {picturePreview ? (
+          {preview ? (
             <div className="relative cursor-pointer group">
               <img
-                src={picturePreview}
+                src={preview}
                 alt="camera"
                 className="w-32 h-32 rounded-full object-cover"
                 style={{ filter: "brightness(50%)" }}
@@ -106,25 +96,21 @@ const EditProfileForm = () => {
 
           <input
             type="file"
-            name="profile-picture"
             accept=".png, .jpg, .jpeg"
             hidden
-            onChange={handlePictureChange}
+            { ...register("picture") }
           />
         </label>
 
         <div className="bg-white rounded-lg w-full mt-4">
           <div className="relative bg-inherit">
             <input
-              type="text"
               id="fullname"
               name="fullname"
               className="w-full peer bg-transparent h-10 text-xl rounded-lg placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
               placeholder="Nombre completo"
-              onChange={handleFullnameChange}
-              defaultValue={fullname}
               autoComplete="off"
-              required
+              { ...register("fullname", { required: true } ) }
             />
             <label
               htmlFor="fullname"
@@ -138,14 +124,12 @@ const EditProfileForm = () => {
         <div className="bg-white rounded-lg w-full mt-4">
           <div className="relative bg-inherit">
             <input
-              type="text"
               id="bio"
               name="bio"
               className="w-full peer bg-transparent h-10 text-xl rounded-lg placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none focus:border-rose-600"
               placeholder="Biografía"
-              onChange={handleBioChange}
-              defaultValue={bio}
               autoComplete="off"
+              { ...register("bio") }
             />
             <label
               htmlFor="bio"
