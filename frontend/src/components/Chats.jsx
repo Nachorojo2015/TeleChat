@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { getChats } from "../services/chatsService";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { formatLastMessageChatTime } from "../utils/formatLastMessageChatTime";
-import HashLoader from "react-spinners/HashLoader";
 import { IoChatbubbleEllipses } from "react-icons/io5";
 import { FaImage, FaVideo } from "react-icons/fa6";
 import { socket } from "../socket/socket";
@@ -77,7 +76,7 @@ const Chats = () => {
   if (loader) {
     return (
       <ul className="flex items-center justify-center h-full w-full absolute">
-        <HashLoader />
+        <span className="loading loading-dots loading-xl"></span>
       </ul>
     );
   }

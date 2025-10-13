@@ -41,7 +41,7 @@ const ImageMessage = ({ messageData, typeChat }) => {
   // Verifica si el usuario actual es el remitente del mensaje
   if (user?.username === messageData.sender_username) {
     return (
-      <li
+      <div
         onContextMenu={handleContextMenu}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
@@ -95,7 +95,7 @@ const ImageMessage = ({ messageData, typeChat }) => {
             </Motion.div>
           )}
         </AnimatePresence>
-      </li>
+      </div>
     );
   }
 
@@ -106,7 +106,7 @@ const ImageMessage = ({ messageData, typeChat }) => {
         <img
           src={messageData.sender_avatar}
           alt="picture-of-chat"
-          className="object-cover w-8 h-8 rounded-full"
+          className="object-cover w-8 h-8 rounded-full mt-auto"
         />
         <div>
           <div className="relative">

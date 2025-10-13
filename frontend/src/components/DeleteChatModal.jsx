@@ -29,10 +29,10 @@ const DeleteChatModal = forwardRef(({ title, picture, type, id }, ref) => {
   return (
     <dialog
       ref={ref}
-      className="p-3 rounded-md backdrop:bg-black/50 
-             fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+      className="modal"
     >
-      <div className="flex items-center gap-3">
+      <div className="modal-box rounded bg-white">
+        <div className="flex items-center gap-3">
         <img
           src={picture}
           alt="picture-of-group"
@@ -56,6 +56,7 @@ const DeleteChatModal = forwardRef(({ title, picture, type, id }, ref) => {
         >
           Cancelar
         </button>
+      </div>
       </div>
     </dialog>
   );

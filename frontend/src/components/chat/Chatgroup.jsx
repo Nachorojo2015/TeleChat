@@ -96,8 +96,8 @@ const Chatgroup = () => {
           />
 
           <div>
-            <b>{group?.title}</b>
-            <p>
+            <b className="text-black">{group?.title}</b>
+            <p className="text-black">
               {group?.quantity_members > 1
                 ? `${group?.quantity_members} miembros`
                 : `${group?.quantity_members} miembro`}
@@ -114,6 +114,7 @@ const Chatgroup = () => {
                 <SlOptionsVertical
                   className="cursor-pointer"
                   onClick={toggleDropDown}
+                  color="black"
                 />
               </button>
             ) : (
@@ -134,8 +135,8 @@ const Chatgroup = () => {
                       className="flex w-full items-center gap-6 cursor-pointer"
                       onClick={openInfoGroup}
                     >
-                      <CiCircleInfo size={20} />
-                      <span>Info.</span>
+                      <CiCircleInfo size={20} color="black"/>
+                      <span className="text-black">Info.</span>
                     </button>
                   </li>
 
@@ -146,8 +147,8 @@ const Chatgroup = () => {
                           className="flex w-full items-center gap-6 cursor-pointer"
                           onClick={openEditGroupForm}
                         >
-                          <LuPencil size={20} />
-                          <span>Editar</span>
+                          <LuPencil size={20} color="black" />
+                          <span className="text-black">Editar</span>
                         </button>
                       </li>
                       <li className="px-4 py-2 hover:bg-gray-100 rounded-md">

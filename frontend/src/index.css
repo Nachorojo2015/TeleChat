@@ -1,4 +1,12 @@
 @import "tailwindcss";
+@plugin "daisyui" {
+  themes: light --default
+  root: ":root";
+  include: ;
+  exclude: ;
+  prefix: ;
+  logs: true;
+}
 
 /* Estilos personalizados para la barra de scroll del chat */
 .scrollbar-transparent::-webkit-scrollbar {
@@ -11,6 +19,10 @@
 }
 .scrollbar-transparent::-webkit-scrollbar-track {
   background: transparent;
+}
+
+html {
+  dark-mode: media;
 }
 
 /* Fuentes tipográficas */

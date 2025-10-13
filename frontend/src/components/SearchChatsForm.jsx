@@ -69,33 +69,32 @@ const SearchChatsForm = () => {
     } catch {
       toast.error("Error al crear el chat privado");
     }
-  }
+  };
 
   return (
     <Aside>
       <nav className="flex flex-col px-4">
         <div className="flex items-center gap-5 py-1">
-          <button className="cursor-pointer transition-colors duration-300 hover:bg-slate-200 p-2 rounded-full" onClick={closeSearchChats}>
+          <button
+            className="cursor-pointer transition-colors duration-300 hover:bg-slate-200 p-2 rounded-full"
+            onClick={closeSearchChats}
+          >
             <FaArrowLeft size={25} />
           </button>
-          <div className="relative w-full">
+          <label className="input input-primary border-1 rounded-full flex-1">
+            <CiSearch size={24} />
             <input
-              type="text"
+              type="search"
+              required
               placeholder={`${
                 valueSelected === "groups"
                   ? "Buscar grupos públicos..."
                   : "Buscar usuarios..."
               }`}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full p-3 rounded-full indent-8 bg-slate-50 outline-blue-300"
               autoFocus
             />
-            <CiSearch
-              color="black"
-              size={24}
-              className="absolute top-1/2 left-3 transform -translate-y-1/2 text-slate-400"
-            />
-          </div>
+          </label>
         </div>
 
         <div className="flex items-center justify-around mt-5">
@@ -128,17 +127,13 @@ const SearchChatsForm = () => {
             <ClipLoader cssOverride={{ margin: "0 auto", display: "block" }} />
           )}
 
-          {
-            valueSelected === "groups" && groups.length === 0 && (
-              <li className="p-2 text-center">No se encontraron grupos</li>
-            )
-          }
+          {valueSelected === "groups" && groups.length === 0 && (
+            <li className="p-2 text-center">No se encontraron grupos</li>
+          )}
 
-          {
-            valueSelected === "users" && users.length === 0 && (
-              <li className="p-2 text-center">No se encontraron usuarios</li>
-            )
-          }
+          {valueSelected === "users" && users.length === 0 && (
+            <li className="p-2 text-center">No se encontraron usuarios</li>
+          )}
 
           {valueSelected === "groups" &&
             groups.length > 0 &&

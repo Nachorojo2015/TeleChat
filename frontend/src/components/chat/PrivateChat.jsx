@@ -75,8 +75,8 @@ const PrivateChat = () => {
           </Zoom>
 
           <div>
-            <b>{privateChat?.display_name}</b>
-            <p>{formatLastSessionTime(privateChat?.last_active)}</p>
+            <b className="text-black">{privateChat?.display_name}</b>
+            <p className="text-black">{formatLastSessionTime(privateChat?.last_active)}</p>
           </div>
 
           <div className="ml-auto relative">
@@ -85,7 +85,7 @@ const PrivateChat = () => {
                 isDropDownOpen ? "bg-slate-200" : ""
               }`}
             >
-              <SlOptionsVertical onClick={toggleDropDown} />
+              <SlOptionsVertical onClick={toggleDropDown} color="black" />
             </button>
 
             <AnimatePresence>
@@ -102,8 +102,8 @@ const PrivateChat = () => {
                       className="flex w-full items-center gap-6 cursor-pointer"
                       onClick={openInfoPrivateChat}
                     >
-                      <CiCircleInfo size={20} />
-                      <span>Ver info</span>
+                      <CiCircleInfo size={20} color="black" />
+                      <span className="text-black">Ver info</span>
                     </button>
                   </li>
                   <li className="px-4 py-2 hover:bg-gray-100 rounded-md">

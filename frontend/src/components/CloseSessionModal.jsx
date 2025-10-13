@@ -16,10 +16,9 @@ const CloseSessionModal = forwardRef((_, ref) => {
   return (
     <dialog
       ref={ref}
-      className="p-3 rounded-md backdrop:bg-black/50 
-             fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full xl:w-1/3"
+      className="modal"
     >
-      <div className="flex flex-col gap-4">
+      <div className="modal-box bg-white rounded">
         <h2 className="text-xl font-bold">TeleChat</h2>
         <p className="text-lg">¿Quieres cerrar sesión?</p>
         <div className="flex justify-end gap-4">

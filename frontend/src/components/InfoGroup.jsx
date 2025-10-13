@@ -5,7 +5,7 @@ import { useMenuStore } from "../store/menuStore";
 import Members from "./Members";
 import { LuPencil } from "react-icons/lu";
 import ImageZoom from "./ImageZoom";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 
 const InfoGroup = ({ group, id }) => {
   const { closeInfoGroup, openEditGroupForm } = useMenuStore();
@@ -14,7 +14,7 @@ const InfoGroup = ({ group, id }) => {
     const link = `${window.location.origin}/g/${id}`;
     navigator.clipboard.writeText(link);
     toast.success("Link copiado al portapapeles");
-  }
+  };
 
   return (
     <aside className="shadow flex flex-col h-screen xl:w-[40%] w-full bg-white">
@@ -25,7 +25,10 @@ const InfoGroup = ({ group, id }) => {
         <b className="text-xl">Info. del grupo</b>
 
         {group?.role === "owner" && (
-          <button onClick={openEditGroupForm} className="ml-auto cursor-pointer">
+          <button
+            onClick={openEditGroupForm}
+            className="ml-auto cursor-pointer"
+          >
             <LuPencil size={20} />
           </button>
         )}
@@ -33,7 +36,13 @@ const InfoGroup = ({ group, id }) => {
 
       <div className="flex-1 overflow-y-auto scrollbar-transparent">
         <picture className="relative">
-          <ImageZoom width={100} height={100} url={group?.picture} alt="Group" styles={'w-full max-h-96 object-cover'} />
+          <ImageZoom
+            width={100}
+            height={100}
+            url={group?.picture}
+            alt="Group"
+            styles={"w-full max-h-96 object-cover"}
+          />
 
           <div className="absolute bottom-2 left-2 text-white">
             <b>{group?.title}</b>
@@ -53,7 +62,10 @@ const InfoGroup = ({ group, id }) => {
           <div className="flex items-center gap-2">
             <GoPaperclip size={30} />
             <div>
-              <button onClick={copyLinkGroup} className="truncate max-w-52 block text-blue-500 cursor-pointer">
+              <button
+                onClick={copyLinkGroup}
+                className="truncate max-w-52 block text-blue-500 cursor-pointer"
+              >
                 Copiar Link
               </button>
               <span className="text-sm">Link del grupo</span>

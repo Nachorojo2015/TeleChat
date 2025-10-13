@@ -6,7 +6,7 @@ const Aside = ({ children }) => {
   const chatId = location.pathname.split("/").pop();
     
   return (
-    <aside className={`relative border-r flex flex-col border-slate-50 xl:w-[25%] xl:flex w-full ${
+    <aside className={`relative flex flex-col xl:w-[25%] xl:flex w-full bg-white ${
         chatId ? "hidden" : "flex"
       } group`}>
         {children}
