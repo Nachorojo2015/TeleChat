@@ -75,48 +75,38 @@ const PrivateChat = () => {
           </Zoom>
 
           <div>
-            <b className="text-black">{privateChat?.display_name}</b>
-            <p className="text-black">{formatLastSessionTime(privateChat?.last_active)}</p>
+            <b>{privateChat?.display_name}</b>
+            <p>
+              {formatLastSessionTime(privateChat?.last_active)}
+            </p>
           </div>
 
-          <div className="ml-auto relative">
-            <button
-              className={`cursor-pointer transition-colors duration-300 hover:bg-slate-200 p-2 rounded-full ${
-                isDropDownOpen ? "bg-slate-200" : ""
-              }`}
+          <div className="dropdown dropdown-bottom dropdown-end ml-auto">
+            <div tabIndex={0} role="button" className="btn m-1">
+              <SlOptionsVertical onClick={toggleDropDown} />
+            </div>
+            <ul
+              tabIndex="-1"
+              className="dropdown-content menu bg-base-100 rounded-box w-52 mt-2 mr-2 p-2 shadow-sm"
             >
-              <SlOptionsVertical onClick={toggleDropDown} color="black" />
-            </button>
-
-            <AnimatePresence>
-              {isDropDownOpen && (
-                <Motion.ul
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute right-0 top-12 bg-white shadow-md rounded-md w-48 z-10 origin-top-right"
+              <li>
+                <button
+                  className="flex items-center gap-6"
+                  onClick={openInfoPrivateChat}
                 >
-                  <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
-                    <button
-                      className="flex w-full items-center gap-6 cursor-pointer"
-                      onClick={openInfoPrivateChat}
-                    >
-                      <CiCircleInfo size={20} color="black" />
-                      <span className="text-black">Ver info</span>
-                    </button>
-                  </li>
-                  <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
-                    <DeleteChatButton
-                      title={privateChat?.display_name}
-                      picture={privateChat?.profile_picture}
-                      type="private"
-                      id={id}
-                    />
-                  </li>
-                </Motion.ul>
-              )}
-            </AnimatePresence>
+                  <CiCircleInfo size={20} color="black" />
+                  <span>Ver info</span>
+                </button>
+              </li>
+              <li>
+                <DeleteChatButton
+                  title={privateChat?.display_name}
+                  picture={privateChat?.profile_picture}
+                  type="private"
+                  id={id}
+                />
+              </li>
+            </ul>
           </div>
         </header>
 

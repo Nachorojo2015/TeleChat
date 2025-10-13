@@ -10,7 +10,7 @@ const DeleteChatButton = ({ title, picture, type, id }) => {
   return (
     <>
       <button
-        className="flex w-full items-center gap-6 cursor-pointer"
+        className="flex items-center gap-6"
         onClick={openDeleteChatModal}
       >
         <FaTrash color="red" size={20} />

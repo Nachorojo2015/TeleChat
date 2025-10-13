@@ -1,11 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui" {
   themes: light --default
-  root: ":root";
-  include: ;
-  exclude: ;
-  prefix: ;
-  logs: true;
 }
 
 /* Estilos personalizados para la barra de scroll del chat */

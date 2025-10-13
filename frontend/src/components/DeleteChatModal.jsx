@@ -31,7 +31,7 @@ const DeleteChatModal = forwardRef(({ title, picture, type, id }, ref) => {
       ref={ref}
       className="modal"
     >
-      <div className="modal-box rounded bg-white">
+      <div className="modal-box fixed rounded bg-white">
         <div className="flex items-center gap-3">
         <img
           src={picture}

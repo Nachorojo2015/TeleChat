@@ -81,7 +81,7 @@ const SearchChatsForm = () => {
           >
             <FaArrowLeft size={25} />
           </button>
-          <label className="input input-primary border-1 rounded-full flex-1">
+          <label className="input border-1 rounded-full flex-1">
             <CiSearch size={24} />
             <input
               type="search"

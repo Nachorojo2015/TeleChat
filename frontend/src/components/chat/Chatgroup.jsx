@@ -96,80 +96,67 @@ const Chatgroup = () => {
           />
 
           <div>
-            <b className="text-black">{group?.title}</b>
-            <p className="text-black">
+            <b>{group?.title}</b>
+            <p>
               {group?.quantity_members > 1
                 ? `${group?.quantity_members} miembros`
                 : `${group?.quantity_members} miembro`}
             </p>
           </div>
 
-          <div className="ml-auto relative">
-            {group?.role === "owner" || group?.role === "member" ? (
-              <button
-                className={`p-2 rounded-full hover:bg-slate-200 ${
-                  isDropDownOpen ? "bg-slate-200" : ""
-                } transition-colors duration-300`}
-              >
+          {group?.role === "owner" || group?.role === "member" ? (
+            <div className="dropdown dropdown-bottom dropdown-end ml-auto">
+              <div tabIndex={0} role="button" className="btn m-1">
                 <SlOptionsVertical
                   className="cursor-pointer"
                   onClick={toggleDropDown}
                   color="black"
                 />
-              </button>
-            ) : (
-              <JoinGroupButton id={id} />
-            )}
-
-            <AnimatePresence>
-              {isDropDownOpen && (
-                <Motion.ul
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute right-0 top-12 bg-white shadow-md rounded-md w-48 z-10"
-                >
-                  <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
-                    <button
-                      className="flex w-full items-center gap-6 cursor-pointer"
-                      onClick={openInfoGroup}
-                    >
-                      <CiCircleInfo size={20} color="black"/>
-                      <span className="text-black">Info.</span>
-                    </button>
-                  </li>
-
-                  {group?.role === "owner" ? (
-                    <>
-                      <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
-                        <button
-                          className="flex w-full items-center gap-6 cursor-pointer"
-                          onClick={openEditGroupForm}
-                        >
-                          <LuPencil size={20} color="black" />
-                          <span className="text-black">Editar</span>
-                        </button>
-                      </li>
-                      <li className="px-4 py-2 hover:bg-gray-100 rounded-md">
-                        <DeleteChatButton
-                          title={group?.title}
-                          picture={group?.picture}
-                          type="group"
-                          id={id}
-                        />
-                      </li>
-                    </>
-                  ) : (
-                    group?.role === "member" && <LeaveGroupButton id={id} />
-                  )}
-                </Motion.ul>
-              )}
-            </AnimatePresence>
-          </div>
+              </div>
+              <ul
+                tabIndex="-1"
+                className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 mt-2 mr-2 p-2 shadow-sm"
+              >
+                <li>
+                  <button
+                    className="flex items-center gap-6"
+                    onClick={openInfoGroup}
+                  >
+                    <CiCircleInfo size={20} color="black" />
+                    <span className="text-black">Info.</span>
+                  </button>
+                </li>
+                {group?.role === "owner" ? (
+                  <>
+                    <li>
+                      <button
+                        className="flex items-center gap-6"
+                        onClick={openEditGroupForm}
+                      >
+                        <LuPencil size={20} color="black" />
+                        <span className="text-black">Editar</span>
+                      </button>
+                    </li>
+                    <li>
+                      <DeleteChatButton
+                        title={group?.title}
+                        picture={group?.picture}
+                        type="group"
+                        id={id}
+                      />
+                    </li>
+                  </>
+                ) : (
+                  group?.role === "member" && <LeaveGroupButton id={id} />
+                )}
+              </ul>
+            </div>
+          ) : (
+            <JoinGroupButton id={id} />
+          )}
         </header>
 
-        <MessagesContainer id={id} chat={group} typeChat='group' />
+        <MessagesContainer id={id} chat={group} typeChat="group" />
 
         {/* Footer */}
         {(group?.role === "owner" || group?.role === "member") && (
